@@ -1,0 +1,1908 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>共享单车调运 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>共享单车调运</h1><p class="lead">为多辆车给出可行且足够优的夜间调车路线、载荷与成本报告。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/bike-rebalance/task.md">原始任务要求</a></div><p class="meta">bike-rebalance · 优化与形式推理 · 4 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>为多辆车给出可行且足够优的夜间调车路线、载荷与成本报告。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>geospatial-routing-data</td><td>处理站点编号、经纬度及距离矩阵，回算路线长度。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/bike-rebalance/skills/geospatial-routing-data/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr><tr><td>logistics-rules-to-optimization</td><td>把运输、库存、容量和服务规则转为优化变量与约束。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/bike-rebalance/skills/logistics-rules-to-optimization/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr><tr><td>routing-subtour-elimination</td><td>用 MTZ、流或割约束排除不连通子环。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/bike-rebalance/skills/routing-subtour-elimination/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr><tr><td>scip-opt</td><td>使用 SCIP/PySCIPOpt 建立并求解离散优化问题。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/bike-rebalance/skills/scip-opt/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>19 项通过 / 20 项检查</td><td>19/20 项通过；目标值 8.7719317，高于允许上限 8.7583903，所有可行性等其他检查通过。</td></tr><tr><td>原始 Opus 4.7</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>20 项通过 / 20 项检查</td><td>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>19 项通过 / 20 项检查</td><td>19/20 项通过；目标值 8.8477274，距离参考最优值比原始运行更远。</td></tr><tr><td>SkillOpt · 实际 GPT-5.5</td><td><span class="status INVALID">无效执行</span></td><td>—</td><td>未提供可用的分项汇总</td><td>本次没有形成可计入有效任务恢复的执行结果。other</td></tr><tr><td>MMG2Skill · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>19 项通过 / 20 项检查</td><td>19/20 项通过；目标值 9.900142，距离参考最优值进一步扩大。</td></tr><tr><td>SkillRevise · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>20 项通过 / 20 项检查</td><td>20/20 项通过。实际求解后回读报告，目标值为 8.752281，低于校验上限 8.758390；原始为 8.771932。两次任务摘要与 provider 不同，不能把全部变化独立归因于 Skill 修改。</td></tr><tr><td>SkillTTA · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>19 项通过 / 20 项检查</td><td>19/20；调度结构与约束通过，目标值未达到 gap-limited benchmark 要求。</td></tr></tbody></table></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>scip-opt/SKILL.md</td><td>接受修改</td><td>0.0</td><td>1.0</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/bike-rebalance/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/bike-rebalance/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/bike-rebalance/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/bike-rebalance/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>19/20 项通过；目标值 8.7719317，高于允许上限 8.7583903，所有可行性等其他检查通过。</p><details><summary>::TestOptimality::test_objective_is_no_worse_than_gap_limited_benchmark</summary><pre>self = &lt;test_outputs.TestOptimality object at 0x77331abef8f0&gt;
+report = {&#x27;stations&#x27;: [{&#x27;net_bike_change&#x27;: 13.0, &#x27;net_rebalancing_target&#x27;: 13.0, &#x27;station_id&#x27;: 150, &#x27;total_bikes_dropped_off&#x27;: ...tion_id&#x27;: 433}, {&#x27;bikes_dropped_off&#x27;: 0.0, &#x27;bikes_picked_up&#x27;: 7.0, &#x27;load_after_stop&#x27;: 17.0, &#x27;station_id&#x27;: 302}], ...}]}
+reconstructed = {&#x27;objective&#x27;: 8.771931727631486, &#x27;station_reports&#x27;: {150: {&#x27;net_bike_change&#x27;: 13.0, &#x27;net_rebalancing_target&#x27;: 13.0, &#x27;s...ckup&#x27;: 0.0}, 251: {&#x27;dropoff&#x27;: 0.0, &#x27;pickup&#x27;: 3.0}, 265: {&#x27;dropoff&#x27;: 4.0, &#x27;pickup&#x27;: 0.0}, ...}, &#x27;total_unmet&#x27;: 5.0, ...}
+benchmark_objective = 8.75739030549318
+
+    def test_objective_is_no_worse_than_gap_limited_benchmark(
+        self,
+        report: dict[str, Any],
+        reconstructed: dict[str, Any],
+        benchmark_objective: float,
+    ) -&gt; None:
+        &quot;&quot;&quot;
+        Accept any feasible report whose reconstructed objective is no greater
+        than the verifier&#x27;s SCIP incumbent obtained with a 10% MIP gap limit.
+        &quot;&quot;&quot;
+        reported = float(report[&quot;summary&quot;][&quot;objective&quot;])
+        _assert_close(reported, reconstructed[&quot;objective&quot;], &quot;summary.objective&quot;, TOL_OBJECTIVE)
+    
+        actual_objective = reconstructed[&quot;objective&quot;]
+        allowed = benchmark_objective + max(TOL_OBJECTIVE, 1e-6 * max(1.0, benchmark_objective))
+&gt;       assert actual_objective &lt;= allowed, (
+            f&quot;Objective too high: reconstructed={actual_objective:.6f}, &quot;
+            f&quot;reported={reported:.6f}, 10pct-gap SCIP benchmark={benchmark_objective:.6f}, allowed&lt;={allowed:.6f}&quot;
+        )
+E       AssertionError: Objective too high: reconstructed=8.771932, reported=8.771932, 10pct-gap SCIP benchmark=8.757390, allowed&lt;=8.758390
+E       assert 8.771931727631486 &lt;= 8.75839030549318
+
+/verifier/test_outputs.py:774: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;bike-rebalance-original-skill-v11x-20260908-guarddiag-infra-r003&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:9366569f77d18bf7630a4ccdbad710c321374350c87e9d69746939432d2e0a7a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 8,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:4a6773330d317b8121c89bee07ab2e4b191e8188e1084181fa79b033c47aa435&quot;
+}</pre></details></details><details><summary>原始 Opus 4.7 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/bike-rebalance-opus47-original-skill-r001/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/bike-rebalance-opus47-original-skill-r001/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/bike-rebalance-opus47-original-skill-r001/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/bike-rebalance-opus47-original-skill-r001/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;bike-rebalance-opus47-original-skill-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/anthropic/claude-opus-4.7&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:9366569f77d18bf7630a4ccdbad710c321374350c87e9d69746939432d2e0a7a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 14,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:4a6773330d317b8121c89bee07ab2e4b191e8188e1084181fa79b033c47aa435&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/bike-rebalance/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/bike-rebalance/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/bike-rebalance/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/bike-rebalance/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/bike-rebalance/repaired_skill">上传修复包</a></p><p>19/20 项通过；目标值 8.8477274，距离参考最优值比原始运行更远。</p><details><summary>::TestOptimality::test_objective_is_no_worse_than_gap_limited_benchmark</summary><pre>self = &lt;test_outputs.TestOptimality object at 0xffffa75c22d0&gt;
+report = {&#x27;stations&#x27;: [{&#x27;net_bike_change&#x27;: 13.0, &#x27;net_rebalancing_target&#x27;: 13.0, &#x27;station_id&#x27;: 150, &#x27;total_bikes_dropped_off&#x27;: ...id&#x27;: 326}, {&#x27;bikes_dropped_off&#x27;: 0.0, &#x27;bikes_picked_up&#x27;: 3.0, &#x27;load_after_stop&#x27;: 14.0, &#x27;station_id&#x27;: 433}, ...], ...}]}
+reconstructed = {&#x27;objective&#x27;: 8.847727374820016, &#x27;station_reports&#x27;: {150: {&#x27;net_bike_change&#x27;: 13.0, &#x27;net_rebalancing_target&#x27;: 13.0, &#x27;s...ckup&#x27;: 0.0}, 251: {&#x27;dropoff&#x27;: 0.0, &#x27;pickup&#x27;: 3.0}, 265: {&#x27;dropoff&#x27;: 4.0, &#x27;pickup&#x27;: 0.0}, ...}, &#x27;total_unmet&#x27;: 5.0, ...}
+benchmark_objective = 8.75739030549318
+
+    def test_objective_is_no_worse_than_gap_limited_benchmark(
+        self,
+        report: dict[str, Any],
+        reconstructed: dict[str, Any],
+        benchmark_objective: float,
+    ) -&gt; None:
+        &quot;&quot;&quot;
+        Accept any feasible report whose reconstructed objective is no greater
+        than the verifier&#x27;s SCIP incumbent obtained with a 10% MIP gap limit.
+        &quot;&quot;&quot;
+        reported = float(report[&quot;summary&quot;][&quot;objective&quot;])
+        _assert_close(reported, reconstructed[&quot;objective&quot;], &quot;summary.objective&quot;, TOL_OBJECTIVE)
+    
+        actual_objective = reconstructed[&quot;objective&quot;]
+        allowed = benchmark_objective + max(TOL_OBJECTIVE, 1e-6 * max(1.0, benchmark_objective))
+&gt;       assert actual_objective &lt;= allowed, (
+            f&quot;Objective too high: reconstructed={actual_objective:.6f}, &quot;
+            f&quot;reported={reported:.6f}, 10pct-gap SCIP benchmark={benchmark_objective:.6f}, allowed&lt;={allowed:.6f}&quot;
+        )
+E       AssertionError: Objective too high: reconstructed=8.847727, reported=8.847727, 10pct-gap SCIP benchmark=8.757390, allowed&lt;=8.758390
+E       assert 8.847727374820016 &lt;= 8.75839030549318
+
+/verifier/test_outputs.py:774: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;bike-rebalance-a07&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:bbe7afbb7037711ef2f987c869c96a44887f1515c0b55a56f0dad12acd5b0277&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 12,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:a29141f635d0eaaf35d3882181878d27e769e7739f1a4265a61c15ae23f5599a&quot;
+}</pre></details></details><details><summary>SkillOpt · 实际 GPT-5.5 · 无效执行</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/bike-rebalance/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/bike-rebalance/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/bike-rebalance/repaired_skill">上传修复包</a></p><p>本次没有形成可计入有效任务恢复的执行结果。other</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;bike-rebalance-skillopt-gatererun-20260921T101323Z&quot;,
+  &quot;model&quot;: &quot;tatu/gpt-5.5@CODING_TATU&quot;,
+  &quot;provider_route&quot;: &quot;tatu&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:9366569f77d18bf7630a4ccdbad710c321374350c87e9d69746939432d2e0a7a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: null,
+  &quot;termination_reason&quot;: &quot;infrastructure_error&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: false,
+  &quot;error&quot;: &quot;Failed to enforce sandbox-user egress firewall.\nstdout: iptables v1.8.11 (nf_tables): Could not fetch rule set generation id: Permission denied (you must be root)&quot;,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:c027a2a33247206f53c12276cb1ff70d523b37cd63743054759a8c7d20432016&quot;
+}</pre></details></details><details><summary>MMG2Skill · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/bike-rebalance-mmg2skill-gpt52-r001/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/bike-rebalance-mmg2skill-gpt52-r001/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/bike-rebalance-mmg2skill-gpt52-r001/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/bike-rebalance-mmg2skill-gpt52-r001/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/bike-rebalance/skills">上传修复包</a></p><p>19/20 项通过；目标值 9.900142，距离参考最优值进一步扩大。</p><details><summary>::TestOptimality::test_objective_is_no_worse_than_gap_limited_benchmark</summary><pre>self = &lt;test_outputs.TestOptimality object at 0x783952da80b0&gt;
+report = {&#x27;stations&#x27;: [{&#x27;net_bike_change&#x27;: 13.0, &#x27;net_rebalancing_target&#x27;: 13.0, &#x27;station_id&#x27;: 150, &#x27;total_bikes_dropped_off&#x27;: ...id&#x27;: 335}, {&#x27;bikes_dropped_off&#x27;: 3.0, &#x27;bikes_picked_up&#x27;: 0.0, &#x27;load_after_stop&#x27;: 15.0, &#x27;station_id&#x27;: 280}, ...], ...}]}
+reconstructed = {&#x27;objective&#x27;: 9.900142036816279, &#x27;station_reports&#x27;: {150: {&#x27;net_bike_change&#x27;: 13.0, &#x27;net_rebalancing_target&#x27;: 13.0, &#x27;s...ckup&#x27;: 0.0}, 251: {&#x27;dropoff&#x27;: 0.0, &#x27;pickup&#x27;: 3.0}, 265: {&#x27;dropoff&#x27;: 4.0, &#x27;pickup&#x27;: 0.0}, ...}, &#x27;total_unmet&#x27;: 5.0, ...}
+benchmark_objective = 8.75739030549318
+
+    def test_objective_is_no_worse_than_gap_limited_benchmark(
+        self,
+        report: dict[str, Any],
+        reconstructed: dict[str, Any],
+        benchmark_objective: float,
+    ) -&gt; None:
+        &quot;&quot;&quot;
+        Accept any feasible report whose reconstructed objective is no greater
+        than the verifier&#x27;s SCIP incumbent obtained with a 10% MIP gap limit.
+        &quot;&quot;&quot;
+        reported = float(report[&quot;summary&quot;][&quot;objective&quot;])
+        _assert_close(reported, reconstructed[&quot;objective&quot;], &quot;summary.objective&quot;, TOL_OBJECTIVE)
+    
+        actual_objective = reconstructed[&quot;objective&quot;]
+        allowed = benchmark_objective + max(TOL_OBJECTIVE, 1e-6 * max(1.0, benchmark_objective))
+&gt;       assert actual_objective &lt;= allowed, (
+            f&quot;Objective too high: reconstructed={actual_objective:.6f}, &quot;
+            f&quot;reported={reported:.6f}, 10pct-gap SCIP benchmark={benchmark_objective:.6f}, allowed&lt;={allowed:.6f}&quot;
+        )
+E       AssertionError: Objective too high: reconstructed=9.900142, reported=9.900142, 10pct-gap SCIP benchmark=8.757390, allowed&lt;=8.758390
+E       assert 9.900142036816279 &lt;= 8.75839030549318
+
+/verifier/test_outputs.py:774: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;bike-rebalance-mmg2skill-gpt52-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:9366569f77d18bf7630a4ccdbad710c321374350c87e9d69746939432d2e0a7a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 12,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:072a56af1963b91be059538dde7518cd944e96351d98abc80a2e9946fde2e178&quot;
+}</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_skill">上传修复包</a></p><p>20/20 项通过。实际求解后回读报告，目标值为 8.752281，低于校验上限 8.758390；原始为 8.771932。两次任务摘要与 provider 不同，不能把全部变化独立归因于 Skill 修改。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;bike-rebalance-bundle-1-published-original-revi-67f0c26d1a79&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:8413cdd386a71f0e4a881a4dbc9527d86311c197bf8ff2fe60e0165ea40bff2a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 7,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:e45c4b35d270a9dc89880afccd89d6cb84407e7c36d817f3240acb3724f58124&quot;
+}</pre></details></details><details><summary>SkillTTA · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/bike-rebalance/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/bike-rebalance/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/bike-rebalance/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/bike-rebalance/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/bike-rebalance/repaired_skill">上传修复包</a></p><p>19/20；调度结构与约束通过，目标值未达到 gap-limited benchmark 要求。</p><details><summary>::TestOptimality::test_objective_is_no_worse_than_gap_limited_benchmark</summary><pre>self = &lt;test_outputs.TestOptimality object at 0x7d0edb4ff290&gt;
+report = {&#x27;stations&#x27;: [{&#x27;net_bike_change&#x27;: 13.0, &#x27;net_rebalancing_target&#x27;: 13.0, &#x27;station_id&#x27;: 150, &#x27;total_bikes_dropped_off&#x27;: ...tion_id&#x27;: 433}, {&#x27;bikes_dropped_off&#x27;: 0.0, &#x27;bikes_picked_up&#x27;: 7.0, &#x27;load_after_stop&#x27;: 23.0, &#x27;station_id&#x27;: 302}], ...}]}
+reconstructed = {&#x27;objective&#x27;: 8.866821257997621, &#x27;station_reports&#x27;: {150: {&#x27;net_bike_change&#x27;: 13.0, &#x27;net_rebalancing_target&#x27;: 13.0, &#x27;s...ckup&#x27;: 0.0}, 251: {&#x27;dropoff&#x27;: 0.0, &#x27;pickup&#x27;: 3.0}, 265: {&#x27;dropoff&#x27;: 4.0, &#x27;pickup&#x27;: 0.0}, ...}, &#x27;total_unmet&#x27;: 5.0, ...}
+benchmark_objective = 8.75739030549318
+
+    def test_objective_is_no_worse_than_gap_limited_benchmark(
+        self,
+        report: dict[str, Any],
+        reconstructed: dict[str, Any],
+        benchmark_objective: float,
+    ) -&gt; None:
+        &quot;&quot;&quot;
+        Accept any feasible report whose reconstructed objective is no greater
+        than the verifier&#x27;s SCIP incumbent obtained with a 10% MIP gap limit.
+        &quot;&quot;&quot;
+        reported = float(report[&quot;summary&quot;][&quot;objective&quot;])
+        _assert_close(reported, reconstructed[&quot;objective&quot;], &quot;summary.objective&quot;, TOL_OBJECTIVE)
+    
+        actual_objective = reconstructed[&quot;objective&quot;]
+        allowed = benchmark_objective + max(TOL_OBJECTIVE, 1e-6 * max(1.0, benchmark_objective))
+&gt;       assert actual_objective &lt;= allowed, (
+            f&quot;Objective too high: reconstructed={actual_objective:.6f}, &quot;
+            f&quot;reported={reported:.6f}, 10pct-gap SCIP benchmark={benchmark_objective:.6f}, allowed&lt;={allowed:.6f}&quot;
+        )
+E       AssertionError: Objective too high: reconstructed=8.866821, reported=8.866821, 10pct-gap SCIP benchmark=8.757390, allowed&lt;=8.758390
+E       assert 8.866821257997621 &lt;= 8.75839030549318
+
+/verifier/test_outputs.py:774: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;bike-rebalance-skilltta-gpt52-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:9366569f77d18bf7630a4ccdbad710c321374350c87e9d69746939432d2e0a7a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 12,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:54a4f050b52152d6849ac477c9c89af412832ddef1db56974bfc89cb7cd37ca1&quot;
+}</pre></details></details><h2>人工 Gold 要求修哪里</h2><p>人工标注与参考修复用于定位已知缺陷。它们主要针对 GPT 原始失败；换模型后应重新核对这一缺陷是否仍在轨迹中出现。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">编号 / 主类型</th><th scope="col">原始缺陷</th><th scope="col">定位</th><th scope="col">要求的修复</th></tr></thead><tbody><tr><td>D001<br>质量门与独立验收</td><td>Original-Skill guard 诊断轮建立了正确的联合优化模型并生成完整可行报告，schema、路线、载荷、站点库存、未满足惩罚、距离和 objective 算术等19项均通过；但 Agent 在60秒求解后只检查 model.getNSols() &gt; 0 就导出 objective 8.771931727631486，超过官方允许上限 8.75839030549318，唯一失败为 objective quality。</td><td>scip-opt/SKILL.md<br><small>Modeling Workflow; Minimal PySCIPOpt Template; Incumbent Quality Gate; Extraction And Validation</small></td><td>明确可行 incumbent 只通过可行性门；对 objective-scored task，在导出前依据公开任务合同检查 solver status、incumbent objective、dual bound、achieved gap 或等价的可审计质量条件。若资源限制停止且 incumbent 尚未通过质量门，应保留当前解并在剩余预算内继续优化、强化模型或采用确定性的改进策略；只有质量要求和独立可行性、算术验证同时通过时才写出最终答案。</td></tr></tbody></table></div><details><summary>人工参考修复如何验证，以及原标注记录的限制</summary><div class="table-wrap"><table class=""><thead><tr><th scope="col">缺陷</th><th scope="col">验证方式原文</th><th scope="col">验证证据原文</th><th scope="col">verifier 说明原文</th></tr></thead><tbody><tr><td>D001</td><td>agent-validated (1/1; guard-enabled)</td><td>完整 Round 1 bundle 在 bike-rebalance-round-1-r002 中正式通过：execution_ok=true、task_passed=true、reward=1.0、官方 verifier 20/20；12/60 iterations、12 provider requests、10 tool calls，正常 end_turn。Agent 没有导出首个60秒 time-limited incumbent（objective 9.025246780897934），而是延长至300秒、强化模型并重新求解至 8.739464483129852，随后独立复算通过。四个 Skill 正文已通过 persistent AgentContext 完整预载，expected/observed bundle digest 均为 sha256:892df5cf7e3a5dcc9736e66b8b538fd6d3e359a372402f7659b314ce1faf56a5；n_skill_invocations=0 仅表示没有额外 Skill 工具调用。Guard 在求解前因错误目录命令实际续跑1次。Agent 未调用 getDualbound() 或 getGap()，所以本轮验证完整修复 bundle 的行为与官方结果，不证明质量门每个组成动作均被逐字遵守；report.json 也未作为独立 artifact 归档。</td><td>此字段未记录冲突；不等于已排除所有冲突</td></tr></tbody></table></div></details><div class="note warning">参考验证使用统一 completion guard，并在求解前实际续跑1次；按当前评测规则正常计分。完整 Round 1 bundle 通过20/20，但没有证明 dual-bound/gap gate 的每个组成动作均被逐字执行，且 report.json 未作为独立 artifact 归档。</div><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/gold.json">人工 Gold 与参考修复来源</a></p><details><summary>参考修复的实际文件差异</summary><p>缺失文件可能来自打包不完整，不能直接认定为有意删除；修改行数也不代表最小修复量。</p><details><summary>scip-opt/SKILL.md · modified</summary><pre>--- scip-opt/SKILL.md
+
++++ scip-opt/SKILL.md
+
+@@ -50,6 +50,7 @@
+
+    - Keep named objective components such as travel cost and penalty cost.
+ 
+-6. Solve with time and gap limits.
+-   - Require at least one incumbent before extracting a solution.
++6. Solve with time and gap limits, then apply the incumbent-quality gate below.
++   - Require at least one incumbent to establish feasibility.
++   - Do not extract a final answer until the task&#x27;s objective-quality criterion is met.
+ 
+ 7. Reconstruct and independently validate the output.
+@@ -83,5 +84,6 @@
+
+ 
+ model.setParam(&quot;limits/time&quot;, 300.0)
+-model.setParam(&quot;limits/gap&quot;, 0.01)
++target_gap = 0.01
++model.setParam(&quot;limits/gap&quot;, target_gap)
+ model.optimize()
+ 
+@@ -91,4 +93,14 @@
+
+ 
+ objective = float(model.getObjVal())
++dual_bound = float(model.getDualbound())
++gap = float(model.getGap())
++quality_ok = status == &quot;optimal&quot; or gap &lt;= target_gap + 1e-12
++if not quality_ok:
++    raise RuntimeError(
++        &quot;SCIP has a feasible but provisional incumbent; improve it before export: &quot;
++        f&quot;status={status}, objective={objective}, dual_bound={dual_bound}, &quot;
++        f&quot;gap={gap}, target_gap={target_gap}&quot;
++    )
++
+ selected = [i for i in I if model.getVal(x[i]) &gt; 0.5]
+ ```
+@@ -210,4 +222,16 @@
+
+ ```
+ 
++## Incumbent Quality Gate
++
++When the task scores objective quality, a feasible incumbent is not automatically a publishable answer. `model.getNSols() &gt; 0` establishes only that SCIP found a feasible solution. A configured `limits/gap` is a stopping target, not evidence that the achieved gap is acceptable.
++
++Before solving, derive and predeclare a checkable quality criterion from the public task contract: proven optimality, an explicit objective threshold, or a stated relative or absolute gap. Do not relax this gate after seeing the incumbent. If the task provides no tolerance, use a conservative small gap and the documented solve budget rather than accepting the first feasible incumbent.
++
++After every solve, record and inspect the status, incumbent objective, dual bound, and achieved relative gap, as shown in the template above.
++
++Treat the quality gate as failed when SCIP stops at a time or resource limit and the achieved gap or objective still misses the task criterion. In that case, keep the incumbent and continue with a task-justified larger time budget, a warm start, or a stronger formulation or cut strategy. Do not replace a documented reference budget with a substantially shorter limit merely to finish sooner when objective quality is scored.
++
++Only serialize the final answer after the quality gate passes. The run log should retain the solver status, incumbent objective, dual bound, achieved gap, and acceptance criterion so that solution quality can be audited separately from feasibility and report arithmetic.
++
+ ## Extraction And Validation
+ 
+@@ -225,3 +249,3 @@
+
+ ```
+ 
+-Treat SCIP feasibility as necessary but not sufficient. The final reported file still needs independent checks for schema, route reconstruction, capacity, inventory, penalties, and objective arithmetic.
++Treat SCIP feasibility as necessary but not sufficient. The final reported file still needs both the solver-quality certificate above and independent checks for schema, route reconstruction, capacity, inventory, penalties, and objective arithmetic.</pre></details></details><h2>最终 Skill 包究竟改了什么</h2><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/bike-rebalance/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;bike-rebalance&quot;,
+  &quot;file_count&quot;: 4,
+  &quot;total_bytes&quot;: 35713,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:a29141f635d0eaaf35d3882181878d27e769e7739f1a4265a61c15ae23f5599a&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:a29141f635d0eaaf35d3882181878d27e769e7739f1a4265a61c15ae23f5599a&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/bike-rebalance/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/bike-rebalance/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>scip-opt/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/bike-rebalance/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/bike-rebalance/repaired_skill/scip-opt/SKILL.md">修改后</a></p><pre>--- original/scip-opt/SKILL.md
++++ repaired/scip-opt/SKILL.md
+@@ -225,3 +225,73 @@
+ ```
+ 
+ Treat SCIP feasibility as necessary but not sufficient. The final reported file still needs independent checks for schema, route reconstruction, capacity, inventory, penalties, and objective arithmetic.
++
++### Quality Gate: Verify Objective Acceptance Before Writeback
++
++Some evaluators impose a *quantitative acceptance gate* on the objective (e.g., must be no worse than a reference incumbent within tolerance). In those settings, producing any feasible solution and validating arithmetic is not enough.
++
++Add an explicit pre-write check:
++
++1. **Compute a trusted reconstructed objective** from the candidate report (distance recomputed from coordinates + penalty recomputed from unmet amounts).
++2. **Compare against an acceptance threshold** if one is provided or can be computed by a standardized reference run.
++3. **Only write the final `report.json`** once the candidate passes the objective gate; otherwise continue improvement.
++
++Practical pattern:
++
++```python
++best_report = None
++best_obj = float(&quot;inf&quot;)
++
++def reconstruct_objective(report) -&gt; float:
++    # Implement task-specific reconstruction: travel distance from geometry + penalty from unmet.
++    ...
++
++def passes_quality_gate(obj: float, threshold: float, tol: float = 1e-6) -&gt; bool:
++    return obj &lt;= threshold + max(tol, tol * max(1.0, abs(threshold)))
++```
++
++### Fallback: Incumbent-Improvement Loop When Objective Is Slightly High
++
++If feasibility and reconstruction checks pass but the objective is still above the required gate, treat it as an optimization problem, not a validation problem. Use a bounded improvement loop with a runtime cap and a monotone best-incumbent tracker:
++
++- **Escalate solve effort**: increase `limits/time`, tighten `limits/gap`, or run a second phase with more search.
++- **Warm start / reoptimize** using the current incumbent when possible.
++- **Keep reproducibility** (fixed seeds, single thread), but allow controlled escalation of limits.
++
++Example policy skeleton:
++
++```python
++# Phase A: get a feasible incumbent quickly
++model.setParam(&quot;limits/time&quot;, 60.0)
++model.setParam(&quot;limits/gap&quot;, 0.10)
++model.optimize()
++
++# Phase B: improve incumbent under a total time budget
++for time_limit, gap in [(180.0, 0.05), (300.0, 0.02), (600.0, 0.01)]:
++    if model.getNSols() == 0:
++        break
++    model.setParam(&quot;limits/time&quot;, time_limit)
++    model.setParam(&quot;limits/gap&quot;, gap)
++    model.optimize()
++
++    candidate_report = extract_report_from_solution(model)
++    candidate_obj = reconstruct_objective(candidate_report)
++
++    if candidate_obj &lt; best_obj:
++        best_obj = candidate_obj
++        best_report = candidate_report
++
++    if HAVE_THRESHOLD and passes_quality_gate(best_obj, threshold_obj):
++        break
++
++if best_report is None:
++    raise RuntimeError(&quot;no feasible solution extracted&quot;)
++
++# Write best_report only after it passes all hard checks;
++# when a quality gate exists, also require it before final writeback.
++```
++
++Scope boundary:
++
++- Apply this quality gate and improvement loop **only when the evaluation explicitly grades objective quality** (thresholded/relative) rather than accepting any feasible solution.
++- Do **not** skip feasibility and reconstruction checks; the quality gate is an *additional* step before final writeback.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>scip-opt/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details></details><details><summary>SkillOpt · 实际 GPT-5.5 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/bike-rebalance/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillopt_gpt55&quot;,
+  &quot;task_id&quot;: &quot;bike-rebalance&quot;,
+  &quot;file_count&quot;: 4,
+  &quot;total_bytes&quot;: 34223,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:c027a2a33247206f53c12276cb1ff70d523b37cd63743054759a8c7d20432016&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:c027a2a33247206f53c12276cb1ff70d523b37cd63743054759a8c7d20432016&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: false,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/bike-rebalance/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/bike-rebalance/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>scip-opt/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/bike-rebalance/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/bike-rebalance/repaired_skill/scip-opt/SKILL.md">修改后</a></p><pre>--- original/scip-opt/SKILL.md
++++ repaired/scip-opt/SKILL.md
+@@ -19,14 +19,20 @@
+ - hard rules that every valid answer must satisfy;
+ - soft rules that can be violated with an explicit penalty.
+ 
+-Do not start by installing another optimization package. First check whether PySCIPOpt is already available:
++Do not install packages as part of the optimization workflow. Check the provisioned Python package and native SCIP libraries first, before constructing a model or attempting report generation:
+ 
+ ```python
+ try:
+     from pyscipopt import Model, quicksum
+-except ImportError as exc:
+-    raise RuntimeError(&quot;PySCIPOpt is required for this optimization approach&quot;) from exc
+-```
++except (ImportError, OSError) as exc:
++    raise RuntimeError(
++        &quot;PySCIPOpt or its provisioned native SCIP dependency is unavailable; &quot;
++        &quot;do not install packages at runtime. Use the provisioned solver or an &quot;
++        &quot;already-supported deterministic fallback.&quot;
++    ) from exc
++```
++
++Do not run `apt`, `apt-get`, `pip install`, download commands, or other network-dependent provisioning steps merely to obtain PySCIPOpt, SCIP, `libgfortran5`, or similar native libraries. If the provisioned solver is unavailable, fail early with a concise actionable error naming the missing dependency; use a fallback only when it is already available and explicitly supported by the task. Do not begin optimization, extraction, or report writing after a failed dependency check.
+ 
+ ## Modeling Workflow
+ 
+@@ -225,3 +231,9 @@
+ ```
+ 
+ Treat SCIP feasibility as necessary but not sufficient. The final reported file still needs independent checks for schema, route reconstruction, capacity, inventory, penalties, and objective arithmetic.
++
++
++
++## Offline-Safe Provisioning Boundary
++
++Treat environment provisioning as separate from solver modeling, solution extraction, and validation. The modeling workflow may assume only dependencies that successfully passed the initial local availability check. In a no-network or otherwise restricted environment, never retry package downloads, add operating-system repositories, or install native dependencies speculatively. Check native-load errors at startup, preserve the original exception for diagnosis, and stop before creating variables if the provisioned PySCIPOpt/SCIP stack is unusable. Once the solver check succeeds, proceed directly to the model, independent extraction, and report validation described below; those stages must not contain installation or network setup logic.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>scip-opt/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P001&quot;,
+    &quot;description&quot;: &quot;The skill&#x27;s solver workflow can encourage an environment setup that assumes network access or installs native SCIP dependencies unnecessarily. The observed HTTP 502 package-download failure occurred before any optimization or report-generation logic ran.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;scip-opt/SKILL.md&quot;,
+        &quot;section&quot;: &quot;scip-opt&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>MMG2Skill · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/bike-rebalance/skills">完整上传修复包</a></p><p>以同任务其他归档保存的原始包为对照，完整包哈希已与共享原始运行核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;mmg2skill_gpt52&quot;,
+  &quot;task_id&quot;: &quot;bike-rebalance&quot;,
+  &quot;file_count&quot;: 4,
+  &quot;total_bytes&quot;: 7231,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:072a56af1963b91be059538dde7518cd944e96351d98abc80a2e9946fde2e178&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:072a56af1963b91be059538dde7518cd944e96351d98abc80a2e9946fde2e178&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/bike-rebalance-mmg2skill-gpt52-r001/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/bike-rebalance/skills&quot;
+}</pre></details><p>字节变化文件 4 个；排除仅空白变化后 4 个。</p><details><summary>geospatial-routing-data/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/bike-rebalance/skills/geospatial-routing-data/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/bike-rebalance/skills/geospatial-routing-data/SKILL.md">修改后</a></p><pre>--- original/geospatial-routing-data/SKILL.md
++++ repaired/geospatial-routing-data/SKILL.md
+@@ -1,206 +1,23 @@
+ ---
+ name: geospatial-routing-data
+-description: Geospatial routing data handling for depot and station coordinates, route node IDs, internal index mappings, great-circle distance matrices, and route-distance reconstruction. Use when optimization or reporting tasks involve latitude/longitude, station IDs, depots, distance metrics, vehicle routes, or validating travel distance from reported paths.
++description: Handle depot/station coordinates, ID↔index mapping, great-circle distance
++  (radius 3960.0 miles), and travel-distance reconstruction/validation for reported
++  routes.
+ ---
+ 
+-# Geospatial Routing Data
+-
+-Use this skill before building a routing model or validating a routing report that contains coordinates, depots, station IDs, and route sequences.
+-
+-The main risk is mixing user-facing IDs with internal array indices or using a different distance metric from the task.
+-
+-## Parse Data Safely
+-
+-Load structured data with a parser and build explicit mappings:
+-
+-```python
+-import json
+-from pathlib import Path
+-
+-data = json.loads(Path(&quot;/root/data.json&quot;).read_text())
+-stations_data = data[&quot;stations&quot;]
+-
+-station_ids = [int(s[&quot;id&quot;]) for s in stations_data]
+-if len(station_ids) != len(set(station_ids)):
+-    raise ValueError(&quot;duplicate station ids&quot;)
+-
+-id_to_idx = {sid: idx for idx, sid in enumerate(station_ids)}
+-idx_to_id = {idx: sid for sid, idx in id_to_idx.items()}
+-```
+-
+-Use internal indices in optimization variables. Use original station IDs in final reports.
+-
+-## Coordinate Validation
+-
+-Check coordinates before building distances:
+-
+-```python
+-def parse_location(record, label):
+-    lat = float(record[&quot;latitude&quot;])
+-    lon = float(record[&quot;longitude&quot;])
+-    if not (-90.0 &lt;= lat &lt;= 90.0):
+-        raise ValueError(f&quot;{label} latitude out of range: {lat}&quot;)
+-    if not (-180.0 &lt;= lon &lt;= 180.0):
+-        raise ValueError(f&quot;{label} longitude out of range: {lon}&quot;)
+-    return {&quot;latitude&quot;: lat, &quot;longitude&quot;: lon}
+-
+-depot = parse_location(data[&quot;depot&quot;], &quot;depot&quot;)
+-station_locations = [parse_location(s, f&quot;station {s[&#x27;id&#x27;]}&quot;) for s in stations_data]
+-```
+-
+-Latitude and longitude are degrees. Convert to radians only inside the distance function.
+-
+-## Great-Circle Distance
+-
+-Match the task&#x27;s declared distance metric. If the task specifies an Earth radius, use that exact value.
+-
+-For great-circle miles with Earth radius `3960.0`, use:
+-
+-```python
+-import math
+-
+-def great_circle_miles(a, b, radius=3960.0):
+-    lat1 = float(a[&quot;latitude&quot;])
+-    lon1 = float(a[&quot;longitude&quot;])
+-    lat2 = float(b[&quot;latitude&quot;])
+-    lon2 = float(b[&quot;longitude&quot;])
+-
+-    deg_to_rad = math.pi / 180.0
+-    phi1 = (90.0 - lat1) * deg_to_rad
+-    phi2 = (90.0 - lat2) * deg_to_rad
+-    theta1 = lon1 * deg_to_rad
+-    theta2 = lon2 * deg_to_rad
+-
+-    cos_arc = (
+-        math.sin(phi1) * math.sin(phi2) * math.cos(theta1 - theta2)
+-        + math.cos(phi1) * math.cos(phi2)
+-    )
+-    cos_arc = max(-1.0, min(1.0, cos_arc))
+-    return math.acos(cos_arc) * radius
+-```
+-
+-Clamp `cos_arc` into `[-1, 1]` to avoid floating-point domain errors.
+-
+-Do not mix:
+-
+-- Euclidean distance on degrees;
+-- haversine with a different Earth radius;
+-- miles and meters;
+-- rounded distances inside the optimization objective.
+-
+-## Build Routing Nodes
+-
+-Use separate depot labels when the route output must show a start and end depot:
+-
+-```python
+-START = &quot;depot_start&quot;
+-END = &quot;depot_end&quot;
+-
+-stations = range(len(stations_data))
+-from_nodes = [START, *stations]
+-to_nodes = [*stations, END]
+-
+-def node_location(node):
+-    if node in (START, END):
+-        return depot
+-    return station_locations[int(node)]
+-```
+-
+-Build distances over the same arc set used by the optimization model:
+-
+-```python
+-distances = {}
+-for i in from_nodes:
+-    for j in to_nodes:
+-        if i == j:
+-            continue
+-        if i == START and j == END:
+-            continue  # omit if vehicles must visit at least one station
+-        distances[i, j] = great_circle_miles(node_location(i), node_location(j))
+-```
+-
+-If direct depot-to-depot travel is allowed, keep the `(START, END)` arc.
+-
+-## Convert Routes Between IDs and Indices
+-
+-Optimization route using internal indices:
+-
+-```python
+-route_nodes = [START, 3, 7, 2, END]
+-```
+-
+-Report route using original station IDs:
+-
+-```python
+-report_route = [
+-    node if isinstance(node, str) else idx_to_id[int(node)]
+-    for node in route_nodes
+-]
+-```
+-
+-Parse a reported route back to internal indices:
+-
+-```python
+-def parse_report_route(route):
+-    if route[0] != START or route[-1] != END:
+-        raise ValueError(&quot;route must start at depot_start and end at depot_end&quot;)
+-
+-    parsed = [START]
+-    for raw in route[1:-1]:
+-        sid = int(raw)
+-        if sid not in id_to_idx:
+-            raise ValueError(f&quot;unknown station id {sid}&quot;)
+-        parsed.append(id_to_idx[sid])
+-    parsed.append(END)
+-    return parsed
+-```
+-
+-Never assume station IDs are `0..n-1`.
+-
+-## Reconstruct Route Distance
+-
+-Recompute reported travel distance from route sequences:
+-
+-```python
+-def pairwise(items):
+-    return list(zip(items, items[1:]))
+-
+-def route_distance_internal(route_nodes):
+-    total = 0.0
+-    for i, j in pairwise(route_nodes):
+-        total += distances[i, j]
+-    return total
+-
+-def route_distance_reported_ids(route):
+-    internal = parse_report_route(route)
+-    return route_distance_internal(internal)
+-```
+-
+-For multiple vehicles:
+-
+-```python
+-travel_distance = sum(
+-    route_distance_reported_ids(vehicle[&quot;route&quot;])
+-    for vehicle in report[&quot;vehicles&quot;]
+-)
+-```
+-
+-Compare with tolerance, not exact string equality:
+-
+-```python
+-def assert_close(actual, expected, tol=1e-6):
+-    if abs(actual - expected) &gt; max(tol, tol * max(1.0, abs(expected))):
+-        raise AssertionError(f&quot;{actual} != {expected}&quot;)
+-```
+-
+-## Route Data Checks
+-
+-Before trusting a route:
+-
+-- first node is the start depot label;
+-- last node is the end depot label;
+-- every non-depot node is a known station ID;
+-- route has at least one station if vehicles cannot stay at the depot;
+-- station sequence length equals the stop list length;
+-- no repeated station within a route when per-vehicle no-repeat is required;
+-- distance is recomputed from coordinates, not copied from model output.
++## Steps
++1. Load `/root/data.json` and build explicit `station_id ↔ internal_index` maps; never assume IDs are contiguous.
++2. Parse and sanity-check `latitude/longitude` ranges for depot and every station.
++3. Implement great-circle distance exactly as specified (Earth radius `3960.0`) and clamp the cosine term to `[-1, 1]` to avoid FP domain errors.
++4. Build routing nodes with explicit depot labels:
++   - `START=&quot;depot_start&quot;`, `END=&quot;depot_end&quot;`
++   - Internal station nodes are indices `0..n-1`, but reports must use original station IDs.
++5. Build the distance matrix only over arcs actually allowed by the model (often exclude `START→END` if vehicles must visit ≥1 station).
++6. For any produced `report.json`, recompute total travel distance by summing great-circle distances along each vehicle’s reported `route` (after converting station IDs back to indices) and compare to `summary.travel_distance_miles` within tolerance.
++7. Validate basic route structure from the report:
++   - starts with `depot_start`, ends with `depot_end`
++   - contains ≥1 station (if required)
++   - no station repeats within a vehicle route
++   - stops list matches the non-depot nodes in the route (same order/length)
++## Expected Result
++Distances and route reconstructions match the task’s great-circle metric (radius 3960.0), and reported routes can be validated against coordinates with consistent ID/index handling.</pre></details><details><summary>logistics-rules-to-optimization/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/bike-rebalance/skills/logistics-rules-to-optimization/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/bike-rebalance/skills/logistics-rules-to-optimization/SKILL.md">修改后</a></p><pre>--- original/logistics-rules-to-optimization/SKILL.md
++++ repaired/logistics-rules-to-optimization/SKILL.md
+@@ -1,306 +1,39 @@
+ ---
+ name: logistics-rules-to-optimization
+-description: Translate logistics and operations rules into optimization variables and constraints. Use when an operations problem describes vehicles, routes, depots, pickups, dropoffs, inventory, capacity, assignments, time windows, service targets, penalties, resource limits, or other business rules that need to become an optimization model.
++description: Translate rebalancing business rules (routing + pickup/dropoff + inventory
++  + unmet-target penalty) into a consistent MIP formulation and extract a reportable
++  solution.
+ ---
+ 
+-# Logistics Rules To Optimization
+-
+-Use this skill when the problem statement gives operational rules in words and the agent must turn them into an optimization model.
+-
+-The goal is not only routing. The same translation pattern applies to transportation, dispatch, rebalancing, warehouse moves, staffing, scheduling, assignment, capacity planning, production, and service-level problems.
+-
+-## Rule Translation Workflow
+-
+-1. List the entities.
+-   - Examples: vehicles, locations, depots, jobs, workers, machines, products, arcs, time periods.
+-
+-2. Choose the decision state.
+-   - Binary variables for yes/no choices.
+-   - Integer variables for counts, loads, inventory, units moved.
+-   - Continuous variables for time, flow, cost, utilization, or fractional quantities.
+-
+-3. Convert each business rule into one of these patterns.
+-   - Conservation: what enters equals what leaves, plus/minus changes.
+-   - Capacity: quantity cannot exceed a limit.
+-   - Linking: a quantity is allowed only if a binary decision is active.
+-   - Assignment: exactly one, at most one, or at least one choice.
+-   - Sequence: if one action follows another, update load/time/state.
+-   - Compatibility: prohibit impossible combinations.
+-   - Soft penalty: add slack for unmet demand or violation cost.
+-
+-4. Add the objective last.
+-   - Keep named components such as travel cost, labor cost, inventory penalty, unmet demand penalty.
+-
+-5. Extract and independently validate the answer.
+-   - Recompute routes, loads, assignments, inventory, penalties, and objective from the output data.
+-
+-## Variable Patterns
+-
+-### Selection and Assignment
+-
+-Use binary variables when an option is selected.
+-
+-```python
+-x = {(i, j): model.addVar(vtype=&quot;B&quot;, name=f&quot;x_{i}_{j}&quot;) for i in I for j in J}
+-```
+-
+-Common rules:
+-
+-```python
+-# each item i assigned to exactly one option j
+-for i in I:
+-    model.addCons(quicksum(x[i, j] for j in J) == 1)
+-
+-# option j can handle at most capacity[j] items
+-for j in J:
+-    model.addCons(quicksum(x[i, j] for i in I) &lt;= capacity[j])
+-```
+-
+-### Route Arcs
+-
+-Use binary arc variables when the order of visits matters.
+-
+-```python
+-x = {
+-    (v, i, j): model.addVar(vtype=&quot;B&quot;, name=f&quot;x_{v}_{i}_{j}&quot;)
+-    for v in vehicles
+-    for i, j in arcs
+-}
+-```
+-
+-Use `x[v, i, j] = 1` to mean vehicle/resource `v` goes directly from node `i` to node `j`.
+-
+-### Visit Indicator
+-
+-Define visit from route arcs instead of creating a second binary unless the model needs it repeatedly.
+-
+-```python
+-visit = quicksum(x[v, i, j] for j in to_nodes if j != i)
+-```
+-
+-If a standalone variable is useful:
+-
+-```python
+-visit = {(v, i): model.addVar(vtype=&quot;B&quot;, name=f&quot;visit_{v}_{i}&quot;) for v in vehicles for i in locations}
+-
+-for v in vehicles:
+-    for i in locations:
+-        model.addCons(visit[v, i] == quicksum(x[v, i, j] for j in to_nodes if j != i))
+-```
+-
+-### Quantity, Load, Inventory, and Time
+-
+-```python
+-load = {(v, i): model.addVar(vtype=&quot;I&quot;, lb=0, ub=vehicle_capacity, name=f&quot;load_{v}_{i}&quot;) for v in vehicles for i in nodes}
+-service = {(v, i): model.addVar(vtype=&quot;I&quot;, lb=-vehicle_capacity, ub=vehicle_capacity, name=f&quot;service_{v}_{i}&quot;) for v in vehicles for i in locations}
+-inventory = {(i, t): model.addVar(vtype=&quot;I&quot;, lb=0, ub=storage_capacity[i], name=f&quot;inventory_{i}_{t}&quot;) for i in locations for t in periods}
+-arrival = {(v, i): model.addVar(vtype=&quot;C&quot;, lb=0, name=f&quot;arrival_{v}_{i}&quot;) for v in vehicles for i in nodes}
+-```
+-
+-Use integer variables for physical unit counts when the output must be integer-valued.
+-
+-## Common Logistics Rules
+-
+-| Business Rule | Variable Choice | Constraint Pattern |
+-| --- | --- | --- |
+-| Choose exactly one option | `x[i,j]` binary | `sum_j x[i,j] == 1` |
+-| Choose at most one option | `x[i,j]` binary | `sum_j x[i,j] &lt;= 1` |
+-| Open facility before assigning to it | `open[j]`, `assign[i,j]` binary | `assign[i,j] &lt;= open[j]` |
+-| Resource capacity | quantity variable | `sum_i q[i,j] &lt;= capacity[j]` |
+-| Quantity only if selected | `q[i]`, `use[i]` | `q[i] &lt;= M * use[i]` |
+-| Fixed cost if used | `use[i]` binary | add `fixed_cost[i] * use[i]` to objective |
+-| Mutually exclusive modes | mode binaries | `sum_m mode[i,m] &lt;= 1` |
+-| Incompatible pair | two binaries | `x[a] + x[b] &lt;= 1` |
+-| Demand must be met | flow/quantity | `supply_to[i] &gt;= demand[i]` |
+-| Demand may be unmet | nonnegative slack | `served[i] + unmet[i] &gt;= demand[i]` |
+-| Absolute deviation penalty | nonnegative slack | `actual-target &lt;= dev`, `target-actual &lt;= dev` |
+-| Inventory balance | inventory variables | `inv[t+1] = inv[t] + inbound - outbound` |
+-| Station/storage upper bound | inventory variable | `inv[i,t] &lt;= capacity[i]` |
+-| Cannot remove unavailable stock | move variable | `outbound[i,t] &lt;= inv[i,t]` |
+-| Vehicle starts at depot | arc variables | `sum_j x[v, START, j] == use_vehicle[v]` |
+-| Vehicle ends at depot | arc variables | `sum_i x[v, i, END] == use_vehicle[v]` |
+-| Route continuity | arc variables | `incoming[v,i] == outgoing[v,i]` |
+-| Visit at most once | arc variables | `outgoing[v,i] &lt;= 1` |
+-| Split service allowed | arc/quantity variables | omit global single-visit; aggregate quantities over resources |
+-| Time window | arrival variable | `earliest[i] &lt;= arrival[v,i] &lt;= latest[i]` when visited |
+-| Travel time propagation | arc + arrival | `arrival[j] &gt;= arrival[i] + service_time[i] + travel[i,j] - M(1-x[i,j])` |
+-| Precedence | start/arrival variables | `start[b] &gt;= finish[a]` |
+-| Route duration limit | arc variables | `sum travel[i,j] * x[v,i,j] &lt;= max_duration[v]` |
+-
+-## Constraint Examples
+-
+-### Capacity
+-
+-```python
+-for r in resources:
+-    model.addCons(quicksum(amount[i, r] for i in items) &lt;= capacity[r])
+-```
+-
+-### Quantity Allowed Only When Active
+-
+-Use the tightest possible `M`.
+-
+-```python
+-for i in items:
+-    model.addCons(quantity[i] &lt;= upper_bound[i] * use[i])
+-```
+-
+-### Soft Demand Satisfaction
+-
+-```python
+-unmet = {i: model.addVar(vtype=&quot;I&quot;, lb=0, name=f&quot;unmet_{i}&quot;) for i in customers}
+-
+-for i in customers:
+-    model.addCons(served[i] + unmet[i] &gt;= demand[i])
+-
+-penalty_cost = quicksum(penalty[i] * unmet[i] for i in customers)
+-```
+-
+-### Absolute Target Deviation
+-
+-Never use Python `abs()` on solver expressions.
+-
+-```python
+-dev = {i: model.addVar(vtype=&quot;C&quot;, lb=0, name=f&quot;dev_{i}&quot;) for i in items}
+-
+-for i in items:
+-    model.addCons(actual[i] - target[i] &lt;= dev[i])
+-    model.addCons(target[i] - actual[i] &lt;= dev[i])
+-```
+-
+-### Depot Start and End
+-
+-If every vehicle must be used:
+-
+-```python
+-for v in vehicles:
+-    model.addCons(quicksum(x[v, START, j] for j in locations) == 1)
+-    model.addCons(quicksum(x[v, i, END] for i in locations) == 1)
+-```
+-
+-If vehicles are optional:
+-
+-```python
+-use_vehicle = {v: model.addVar(vtype=&quot;B&quot;, name=f&quot;use_vehicle_{v}&quot;) for v in vehicles}
+-
+-for v in vehicles:
+-    model.addCons(quicksum(x[v, START, j] for j in locations) == use_vehicle[v])
+-    model.addCons(quicksum(x[v, i, END] for i in locations) == use_vehicle[v])
+-```
+-
+-### Route Continuity and At-Most-Once Visits
+-
+-```python
+-for v in vehicles:
+-    for i in locations:
+-        incoming = quicksum(x[v, j, i] for j in from_nodes if j != i)
+-        outgoing = quicksum(x[v, i, j] for j in to_nodes if j != i)
+-
+-        model.addCons(incoming == outgoing)
+-        model.addCons(outgoing &lt;= 1)
+-```
+-
+-This means vehicle `v` visits location `i` no more than once. It does not prevent a different vehicle from also visiting `i`.
+-
+-### Global Single-Visit Rule
+-
+-Use only when the real rule forbids split service across vehicles/resources.
+-
+-```python
+-for i in locations:
+-    model.addCons(
+-        quicksum(x[v, i, j] for v in vehicles for j in to_nodes if j != i) &lt;= 1
+-    )
+-```
+-
+-Do not add this rule when a large pickup/dropoff target may need multiple vehicles.
+-
+-### Load or State Transition Along Selected Arcs
+-
+-If `state[j] = state[i] + change[j]` when arc `(i, j)` is used:
+-
+-```python
+-M = 2 * vehicle_capacity
+-
+-for v in vehicles:
+-    for i, j in arcs:
+-        change_at_j = service[v, j] if isinstance(j, int) else 0
+-        model.addCons(load[v, j] - load[v, i] - change_at_j &lt;= M * (1 - x[v, i, j]))
+-        model.addCons(load[v, j] - load[v, i] - change_at_j &gt;= -M * (1 - x[v, i, j]))
+-```
+-
+-This pattern works for load, arrival time, battery charge, inventory state, and other route-dependent state variables. Pick `M` from real variable bounds.
+-
+-### Time Windows
+-
+-```python
+-for v in vehicles:
+-    for i in locations:
+-        visit_i = quicksum(x[v, i, j] for j in to_nodes if j != i)
+-        model.addCons(arrival[v, i] &gt;= earliest[i] - horizon * (1 - visit_i))
+-        model.addCons(arrival[v, i] &lt;= latest[i] + horizon * (1 - visit_i))
+-
+-    for i, j in arcs:
+-        if j in locations:
+-            model.addCons(
+-                arrival[v, j] &gt;= arrival[v, i] + service_time.get(i, 0) + travel_time[i, j] - horizon * (1 - x[v, i, j])
+-            )
+-```
+-
+-## Inventory Pickup/Dropoff Pattern
+-
+-For rebalancing or material movement, define one signed service variable. Recommended convention:
+-
+-- `service[v, i] &gt; 0`: pickup from location `i`, vehicle load increases, location inventory decreases.
+-- `service[v, i] &lt; 0`: dropoff to location `i`, vehicle load decreases, location inventory increases.
+-
+-```python
+-service = {
+-    (v, i): model.addVar(vtype=&quot;I&quot;, lb=-vehicle_capacity, ub=vehicle_capacity, name=f&quot;service_{v}_{i}&quot;)
+-    for v in vehicles
+-    for i in locations
+-}
+-
+-for v in vehicles:
+-    for i in locations:
+-        visit_i = quicksum(x[v, i, j] for j in to_nodes if j != i)
+-        model.addCons(service[v, i] &lt;= vehicle_capacity * visit_i)
+-        model.addCons(service[v, i] &gt;= -vehicle_capacity * visit_i)
+-
+-for i in locations:
+-    net_change = quicksum(service[v, i] for v in vehicles)
+-    free_space = storage_capacity[i] - initial_inventory[i]
+-
+-    model.addCons(net_change &lt;= initial_inventory[i])  # pickup cannot exceed stock
+-    model.addCons(net_change &gt;= -free_space)           # dropoff cannot exceed space
+-```
+-
+-If the target is a desired net pickup/dropoff:
+-
+-```python
+-unmet = {i: model.addVar(vtype=&quot;I&quot;, lb=0, name=f&quot;unmet_{i}&quot;) for i in locations}
+-
+-for i in locations:
+-    net_change = quicksum(service[v, i] for v in vehicles)
+-    model.addCons(net_change - target[i] &lt;= unmet[i])
+-    model.addCons(target[i] - net_change &lt;= unmet[i])
+-```
+-
+-Extract pickup/dropoff output as:
+-
+-```python
+-picked_up = max(service_value, 0)
+-dropped_off = max(-service_value, 0)
+-```
+-
+-## Objective Assembly
+-
+-Build named components:
+-
+-```python
+-travel_cost = quicksum(distance[i, j] * x[v, i, j] for v in vehicles for i, j in arcs)
+-fixed_cost = quicksum(vehicle_fixed_cost[v] * use_vehicle[v] for v in vehicles)
+-penalty_cost = quicksum(penalty[i] * unmet[i] for i in customers)
+-
+-model.setObjective(travel_cost + fixed_cost + penalty_cost, &quot;minimize&quot;)
+-```
++## Steps
++1. Enumerate entities and sets: vehicles `K`, stations `N`, depot start/end nodes, and routing arcs.
++2. Choose variables consistent with the rules:
++   - `x[v,i,j] ∈ {0,1}` for route arcs
++   - `service[v,i] ∈ Z` (signed): `&gt;0` pickup, `&lt;0` dropoff, `=0` no service
++   - `load[v,node] ∈ Z` bounded in `[0, vehicle_capacity]`
++   - `unmet[i] ≥ 0` for absolute deviation from station `net_rebalancing_target`
++3. Add routing feasibility constraints:
++   - each vehicle leaves `depot_start` once and enters `depot_end` once (vehicles must be used)
++   - continuity at each station: in-degree = out-degree per vehicle
++   - per-vehicle “visit at most once”: out-degree at a station ≤ 1
++4. Link service to visiting and enforce “no pickup and drop at the same stop” by using a *single signed* `service[v,i]` and bounding it to zero when not visited:
++   - `-cap * visit[v,i] ≤ service[v,i] ≤ cap * visit[v,i]`
++5. Enforce load propagation along selected arcs with big‑M:
++   - `load[v,j] = load[v,i] + service[v,j]` when arc `(i→j)` is used (treat depot change as 0)
++   - keep all loads within `[0, vehicle_capacity]`, including start and end loads
++6. Enforce station inventory feasibility (hard bounds), using aggregated station net change:
++   - `net_change[i] = Σ_v service[v,i]`
++   - pickup limit: `net_change[i] ≤ initial_bikes[i]`
++   - dropoff limit: `net_change[i] ≥ -(station_capacity[i] - initial_bikes[i])`
++   These bounds correctly handle structurally impossible targets (e.g., pickup target exceeding available bikes) by limiting achievable service.
++7. Model unmet rebalancing with absolute deviation linearization:
++   - `net_change[i] - target[i] ≤ unmet[i]`
++   - `target[i] - net_change[i] ≤ unmet[i]`
++   - penalty term: `penalty_weight * Σ_i unmet[i]`
++8. Objective: minimize `total_travel_distance + unmet_penalty`.
++9. Extract a reportable solution:
++   - reconstruct each vehicle’s ordered route from selected arcs (and ensure it is a single depot→…→depot path)
++   - per stop, output either `bikes_picked_up=max(service,0)` or `bikes_dropped_off=max(-service,0)`, and compute `load_after_stop`
++   - station section must include **every station** with totals, `net_bike_change`, and `unmet_rebalancing_amount = abs(target - net_bike_change)`.
++## Expected Result
++A solution that satisfies all hard routing/load/inventory rules, allows unavoidable target shortfalls via `unmet` penalties when targets exceed physical bounds, and supports direct construction of the required `report.json` station/vehicle summaries.</pre></details><details><summary>routing-subtour-elimination/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/bike-rebalance/skills/routing-subtour-elimination/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/bike-rebalance/skills/routing-subtour-elimination/SKILL.md">修改后</a></p><pre>--- original/routing-subtour-elimination/SKILL.md
++++ repaired/routing-subtour-elimination/SKILL.md
+@@ -1,255 +1,21 @@
+ ---
+ name: routing-subtour-elimination
+-description: Subtour-elimination methods for TSP, VRP, pickup/dropoff routing, and routing MIPs with binary arc variables. Use when route-continuity constraints may permit disconnected cycles and the model needs MTZ constraints, flow-based connectivity constraints, DFJ subset cuts, or lazy/iterative subtour cuts.
++description: Prevent disconnected station-only cycles in VRP/TSP-style MIPs that use
++  binary arc variables.
+ ---
+ 
+-# Routing Subtour Elimination
+-
+-In routing MIPs, degree and continuity constraints are not enough. A vehicle can have one depot-to-depot path and a separate closed cycle among stations. Add subtour-elimination constraints whenever binary arc variables decide routes.
+-
+-Use this base notation:
+-
+-```python
+-START = &quot;depot_start&quot;
+-END = &quot;depot_end&quot;
+-vehicles = range(K)
+-stations = range(n)
+-from_nodes = [START, *stations]
+-to_nodes = [*stations, END]
+-arcs = [(i, j) for i in from_nodes for j in to_nodes if i != j and not (i == START and j == END)]
+-
+-x = {(v, i, j): model.addVar(vtype=&quot;B&quot;, name=f&quot;x_{v}_{i}_{j}&quot;) for v in vehicles for i, j in arcs}
+-```
+-
+-## Required Base Route Constraints
+-
+-Subtour elimination assumes each selected station has matching inbound and outbound route arcs.
+-
+-```python
+-for v in vehicles:
+-    model.addCons(quicksum(x[v, START, j] for j in stations) == 1)
+-    model.addCons(quicksum(x[v, i, END] for i in stations) == 1)
+-
+-    for i in stations:
+-        incoming = quicksum(x[v, j, i] for j in from_nodes if j != i)
+-        outgoing = quicksum(x[v, i, j] for j in to_nodes if j != i)
+-        model.addCons(incoming == outgoing)
+-        model.addCons(outgoing &lt;= 1)
+-```
+-
+-The subtour methods below prevent station-only cycles that are disconnected from `START`.
+-
+-## 1. MTZ Order Constraints
+-
+-MTZ adds an order variable for each vehicle-station pair. If vehicle `v` travels from station `i` to station `j`, then `order[v, j]` must be greater than `order[v, i]`.
+-
+-```python
+-order = {
+-    (v, i): model.addVar(vtype=&quot;C&quot;, lb=1, ub=max(1, n), name=f&quot;order_{v}_{i}&quot;)
+-    for v in vehicles
+-    for i in stations
+-}
+-
+-for v in vehicles:
+-    for i in stations:
+-        for j in stations:
+-            if i != j:
+-                model.addCons(order[v, i] - order[v, j] + n * x[v, i, j] &lt;= n - 1)
+-```
+-
+-Pros:
+-
+-- Compact: `O(K n^2)` constraints and `O(K n)` extra variables.
+-- Easy to implement in common Python optimization APIs.
+-- Good default for small and medium benchmark instances.
+-
+-Cons:
+-
+-- LP relaxation is weak compared with cutset or flow formulations.
+-- Can be slow for larger VRPs.
+-- Order variables are artificial; do not interpret them as service times unless you also model time.
+-
+-Use MTZ first when correctness and implementation speed matter more than best possible MIP strength.
+-
+-## 2. Single-Commodity Flow Connectivity
+-
+-Add an artificial connectivity flow that starts at the depot and sends one unit to every visited station. This flow is not physical vehicle load.
+-
+-```python
+-visit = {
+-    (v, i): quicksum(x[v, i, j] for j in to_nodes if j != i)
+-    for v in vehicles
+-    for i in stations
+-}
+-
+-flow_arcs = [(i, j) for i in [START, *stations] for j in stations if i != j]
+-f = {
+-    (v, i, j): model.addVar(vtype=&quot;C&quot;, lb=0, ub=n, name=f&quot;conn_flow_{v}_{i}_{j}&quot;)
+-    for v in vehicles
+-    for i, j in flow_arcs
+-}
+-
+-for v in vehicles:
+-    total_visits = quicksum(visit[v, i] for i in stations)
+-    model.addCons(quicksum(f[v, START, j] for j in stations) == total_visits)
+-
+-    for i, j in flow_arcs:
+-        model.addCons(f[v, i, j] &lt;= n * x[v, i, j])
+-
+-    for i in stations:
+-        incoming_flow = quicksum(f[v, h, i] for h in [START, *stations] if h != i)
+-        outgoing_flow = quicksum(f[v, i, j] for j in stations if j != i)
+-        model.addCons(incoming_flow - outgoing_flow == visit[v, i])
+-```
+-
+-Pros:
+-
+-- Stronger connectivity logic than MTZ in many models.
+-- Static constraints, no callback needed.
+-- Works with optional station visits.
+-
+-Cons:
+-
+-- Adds `O(K n^2)` continuous variables.
+-- Do not reuse truck load as the connectivity flow when the vehicle can both pick up and drop off. Physical load can increase and decrease; connectivity flow should monotonically distribute artificial units.
+-- More memory than MTZ.
+-
+-Use this when MTZ gives weak incumbents or slow progress and the instance is still modest in size.
+-
+-## 3. DFJ Subset Cuts
+-
+-For every nonempty proper subset `S` of stations, selected station-to-station arcs inside `S` cannot form a closed cycle:
+-
+-```text
+-sum_{i in S, j in S, i != j} x[v,i,j] &lt;= |S| - 1
+-```
+-
+-For very small `n`, static enumeration is possible:
+-
+-```python
+-from itertools import combinations
+-
+-for v in vehicles:
+-    for r in range(2, n):
+-        for S_tuple in combinations(stations, r):
+-            S = set(S_tuple)
+-            model.addCons(
+-                quicksum(x[v, i, j] for i in S for j in S if i != j) &lt;= len(S) - 1
+-            )
+-```
+-
+-Pros:
+-
+-- Strong, direct subtour elimination.
+-- No artificial order or flow variables.
+-
+-Cons:
+-
+-- Exponential number of constraints.
+-- Static enumeration is only acceptable for small station counts.
+-
+-Use static DFJ only for tiny instances or as a debugging baseline.
+-
+-## 4. Lazy or Iterative Cut Separation
+-
+-The strongest practical pattern is to solve with base route constraints, detect subtours in incumbents, add only the violated DFJ cuts, and continue.
+-
+-In solvers with convenient lazy callbacks, add cuts during branch-and-bound. Some Python solver APIs require callback or constraint-handler plumbing for true lazy enforcement, so iterative cut separation is often simpler for portable benchmark code:
+-
+-```python
+-def selected_arcs(model, x, v, arcs):
+-    return [(i, j) for i, j in arcs if model.getVal(x[v, i, j]) &gt; 0.5]
+-
+-
+-def station_cycles_without_start(selected, stations):
+-    succ = {i: j for i, j in selected}
+-    cycles = []
+-    seen = set()
+-
+-    for start in stations:
+-        if start in seen or start not in succ:
+-            continue
+-        path = []
+-        cur = start
+-        pos = {}
+-        while cur in succ and cur not in pos and cur not in seen:
+-            pos[cur] = len(path)
+-            path.append(cur)
+-            cur = succ[cur]
+-        seen.update(path)
+-        if cur in pos:
+-            cycle = path[pos[cur]:]
+-            if START not in cycle and END not in cycle:
+-                cycles.append(cycle)
+-    return cycles
+-
+-
+-while True:
+-    model.optimize()
+-    if model.getNSols() == 0:
+-        raise RuntimeError(f&quot;no feasible solution; status={model.getStatus()}&quot;)
+-
+-    cuts_added = 0
+-    for v in vehicles:
+-        selected = selected_arcs(model, x, v, arcs)
+-        for cycle in station_cycles_without_start(selected, stations):
+-            if len(cycle) &gt;= 2:
+-                S = set(cycle)
+-                model.freeTransform()
+-                model.addCons(
+-                    quicksum(x[v, i, j] for i in S for j in S if i != j) &lt;= len(S) - 1
+-                )
+-                cuts_added += 1
+-
+-    if cuts_added == 0:
+-        break
+-```
+-
+-Pros:
+-
+-- Adds only cuts that are needed.
+-- Often stronger than MTZ.
+-- Avoids exponential static SEC generation.
+-
+-Cons:
+-
+-- Iterative resolve can be slower than a true callback.
+-- Requires reliable subtour detection.
+-- More moving parts than MTZ.
+-
+-Use this when static MTZ is too weak and the solver environment does not make lazy callbacks convenient.
+-
+-## Method Choice
+-
+-| Method | Best For | Avoid When |
+-| --- | --- | --- |
+-| MTZ | Quick, compact, small/medium MIPs | Large hard VRPs where relaxation strength matters |
+-| Single-commodity flow | Stronger static connectivity, optional visits | Memory is tight, or `n` is large |
+-| Multi-commodity flow | Very strong small routing models | Most practical benchmark tasks; too many variables |
+-| Static DFJ | Tiny instances, debugging | More than roughly 15-18 stations without careful filtering |
+-| Lazy/iterative DFJ cuts | Strong routing models with many possible SECs | Solver API/callback complexity is too risky |
+-
+-For pickup/dropoff rebalancing, start with MTZ or artificial connectivity flow. Do not use physical truck load as the only subtour-elimination mechanism because pickup/dropoff load can increase and decrease and may not prove route connectivity.
+-
+-## Validation
+-
+-After solving, reconstruct each route by following selected arcs:
+-
+-```python
+-def extract_route(selected):
+-    outgoing = dict(selected)
+-    route = [START]
+-    cur = START
+-    seen = {START}
+-    while cur != END:
+-        if cur not in outgoing:
+-            raise RuntimeError(f&quot;route disconnected at {cur!r}&quot;)
+-        cur = outgoing[cur]
+-        if cur in seen and cur != END:
+-            raise RuntimeError(f&quot;cycle detected at {cur!r}&quot;)
+-        route.append(cur)
+-        seen.add(cur)
+-    return route
+-```
+-
+-Fail fast if a selected solution has a disconnected cycle, repeated station, missing depot start, or missing depot end.
++## Steps
++1. After adding depot start/end, continuity, and per-station out-degree ≤ 1 constraints, assume subtours are still possible.
++2. Add one subtour-elimination method (pick one appropriate for size/complexity):
++   - MTZ order constraints (compact, good default for small/medium instances), or
++   - single-commodity connectivity flow (stronger, more memory), or
++   - iterative DFJ cut separation (strong, more moving parts).
++3. If using MTZ:
++   - create `order[v,i]` for each vehicle and station
++   - add `order[v,i] - order[v,j] + n*x[v,i,j] ≤ n-1` for all station pairs `i≠j`.
++4. After solving, reconstruct each vehicle’s route by following its selected outgoing arcs from `depot_start` until `depot_end`; fail fast if:
++   - a station cycle is detected,
++   - the path is disconnected,
++   - multiple outgoing arcs exist from one node.
++## Expected Result
++Each vehicle’s selected arcs form exactly one connected depot_start→…→depot_end path with no disconnected subtours.</pre></details><details><summary>scip-opt/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/bike-rebalance/skills/scip-opt/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/bike-rebalance/skills/scip-opt/SKILL.md">修改后</a></p><pre>--- original/scip-opt/SKILL.md
++++ repaired/scip-opt/SKILL.md
+@@ -1,227 +1,24 @@
+ ---
+ name: scip-opt
+-description: SCIP optimization with PySCIPOpt. Use when facing an optimization problem with an objective, hard constraints, soft penalties, integer decisions, routing, assignment, scheduling, allocation, packing, capacity, inventory, or service-level rules. Prefer modeling and solving the problem with PySCIPOpt when it is available.
++description: Build, solve, and extract/validate MIP models in PySCIPOpt for routing/rebalancing
++  problems, including penalties for unmet targets.
+ ---
+ 
+-# SCIP Optimization
+-
+-Use SCIP through `pyscipopt` when a task asks you to minimize or maximize an objective subject to constraints.
+-
+-SCIP is a strong open-source optimization solver with a Python API. It is well suited for mixed-integer optimization, routing-style models, assignment models, capacity planning, inventory movement, scheduling, and problems with soft penalties. For benchmark tasks, a SCIP-backed model plus an independent validator is usually safer than a greedy construction.
+-
+-## When To Use
+-
+-Consider PySCIPOpt when the request includes:
+-
+-- an objective such as minimizing cost, distance, time, unmet demand, or penalty;
+-- yes/no choices, route arcs, assignments, selected items, or ordering decisions;
+-- integer or continuous quantities such as load, inventory, flow, served units, or slack;
+-- hard rules that every valid answer must satisfy;
+-- soft rules that can be violated with an explicit penalty.
+-
+-Do not start by installing another optimization package. First check whether PySCIPOpt is already available:
+-
+-```python
+-try:
+-    from pyscipopt import Model, quicksum
+-except ImportError as exc:
+-    raise RuntimeError(&quot;PySCIPOpt is required for this optimization approach&quot;) from exc
+-```
+-
+-## Modeling Workflow
+-
+-1. Identify sets and indices.
+-   - Examples: vehicles `K`, stations `N`, jobs `J`, periods `T`, arcs `A`.
+-   - Build explicit mappings when input IDs are not contiguous.
+-
+-2. Define decision variables.
+-   - Binary variables for choices, visits, assignments, route arcs, or modes.
+-   - Integer variables for counts, loads, inventory moves, or unmet units.
+-   - Continuous variables for flows, costs, times, slacks, or resource levels.
+-
+-3. Add hard constraints.
+-   - Conservation, capacity, bounds, linking, continuity, inventory limits, and mutual exclusion.
+-
+-4. Add soft constraints with explicit slack variables.
+-   - Never use Python `abs()` on solver expressions.
+-   - Linearize absolute deviation with two inequalities.
+-
+-5. Set a single objective.
+-   - Keep named objective components such as travel cost and penalty cost.
+-
+-6. Solve with time and gap limits.
+-   - Require at least one incumbent before extracting a solution.
+-
+-7. Reconstruct and independently validate the output.
+-   - Recompute objective components and every hard rule from the reported answer.
+-
+-## Minimal PySCIPOpt Template
+-
+-```python
+-from pyscipopt import Model, quicksum
+-
+-model = Model(&quot;optimization_model&quot;)
+-model.hideOutput()
+-
+-I = range(n_items)
+-
+-x = {i: model.addVar(vtype=&quot;B&quot;, name=f&quot;x_{i}&quot;) for i in I}
+-amount = {
+-    i: model.addVar(vtype=&quot;I&quot;, lb=0, ub=capacity[i], name=f&quot;amount_{i}&quot;)
+-    for i in I
+-}
+-dev = {i: model.addVar(lb=0, name=f&quot;dev_{i}&quot;) for i in I}
+-
+-for i in I:
+-    model.addCons(amount[i] &lt;= capacity[i] * x[i])
+-    model.addCons(amount[i] - target[i] &lt;= dev[i])
+-    model.addCons(target[i] - amount[i] &lt;= dev[i])
+-
+-cost = quicksum(fixed_cost[i] * x[i] for i in I)
+-penalty = penalty_weight * quicksum(dev[i] for i in I)
+-model.setObjective(cost + penalty, &quot;minimize&quot;)
+-
+-model.setParam(&quot;limits/time&quot;, 300.0)
+-model.setParam(&quot;limits/gap&quot;, 0.01)
+-model.optimize()
+-
+-status = str(model.getStatus()).lower()
+-if model.getNSols() == 0:
+-    raise RuntimeError(f&quot;SCIP found no feasible solution; status={status}&quot;)
+-
+-objective = float(model.getObjVal())
+-selected = [i for i in I if model.getVal(x[i]) &gt; 0.5]
+-```
+-
+-## Common Patterns
+-
+-### Binary Activation
+-
+-Use a binary variable to allow a quantity only when an option is active.
+-
+-```python
+-use = {i: model.addVar(vtype=&quot;B&quot;, name=f&quot;use_{i}&quot;) for i in I}
+-q = {i: model.addVar(lb=0, ub=upper[i], name=f&quot;q_{i}&quot;) for i in I}
+-
+-for i in I:
+-    model.addCons(q[i] &lt;= upper[i] * use[i])
+-```
+-
+-### Assignment
+-
+-```python
+-assign = {
+-    (i, j): model.addVar(vtype=&quot;B&quot;, name=f&quot;assign_{i}_{j}&quot;)
+-    for i in items
+-    for j in options
+-}
+-
+-for i in items:
+-    model.addCons(quicksum(assign[i, j] for j in options) == 1)
+-
+-for j in options:
+-    model.addCons(quicksum(weight[i] * assign[i, j] for i in items) &lt;= capacity[j])
+-```
+-
+-### Absolute Deviation Penalty
+-
+-```python
+-dev = {i: model.addVar(lb=0, name=f&quot;dev_{i}&quot;) for i in I}
+-
+-for i in I:
+-    model.addCons(actual[i] - target[i] &lt;= dev[i])
+-    model.addCons(target[i] - actual[i] &lt;= dev[i])
+-
+-penalty_cost = penalty_weight * quicksum(dev[i] for i in I)
+-```
+-
+-### Route Arcs
+-
+-```python
+-START = &quot;depot_start&quot;
+-END = &quot;depot_end&quot;
+-nodes_from = [START, *locations]
+-nodes_to = [*locations, END]
+-arcs = [
+-    (i, j)
+-    for i in nodes_from
+-    for j in nodes_to
+-    if i != j and not (i == START and j == END)
+-]
+-
+-x = {
+-    (k, i, j): model.addVar(vtype=&quot;B&quot;, name=f&quot;x_{k}_{i}_{j}&quot;)
+-    for k in vehicles
+-    for i, j in arcs
+-}
+-
+-for k in vehicles:
+-    model.addCons(quicksum(x[k, START, j] for j in locations) == 1)
+-    model.addCons(quicksum(x[k, i, END] for i in locations) == 1)
+-
+-    for i in locations:
+-        incoming = quicksum(x[k, j, i] for j in nodes_from if (j, i) in arcs)
+-        outgoing = quicksum(x[k, i, j] for j in nodes_to if (i, j) in arcs)
+-        model.addCons(incoming == outgoing)
+-        model.addCons(outgoing &lt;= 1)
+-```
+-
+-Degree and continuity constraints alone can permit disconnected cycles. Add subtour elimination for routing models.
+-
+-### MTZ Subtour Elimination
+-
+-```python
+-order = {
+-    (k, i): model.addVar(lb=1, ub=max(1, len(locations)), name=f&quot;order_{k}_{i}&quot;)
+-    for k in vehicles
+-    for i in locations
+-}
+-
+-n = len(locations)
+-for k in vehicles:
+-    for i in locations:
+-        for j in locations:
+-            if i != j:
+-                model.addCons(order[k, i] - order[k, j] + n * x[k, i, j] &lt;= n - 1)
+-```
+-
+-## Reproducibility
+-
+-Fix SCIP randomization and thread settings when repeatability matters.
+-
+-```python
+-def set_if_available(model, name, value):
+-    try:
+-        model.setParam(name, value)
+-    except Exception:
+-        pass
+-
+-for name in [
+-    &quot;randomization/randomseedshift&quot;,
+-    &quot;randomization/permutationseed&quot;,
+-    &quot;randomization/lpseed&quot;,
+-]:
+-    set_if_available(model, name, 0)
+-
+-for name in [&quot;randomization/permutevars&quot;, &quot;randomization/permuteconss&quot;]:
+-    set_if_available(model, name, False)
+-
+-set_if_available(model, &quot;parallel/maxnthreads&quot;, 1)
+-```
+-
+-## Extraction And Validation
+-
+-After solving, reconstruct the answer from variable values and validate it outside SCIP.
+-
+-```python
+-def is_selected(var):
+-    return model.getVal(var) &gt; 0.5
+-
+-selected_arcs = [(i, j) for i, j in arcs if is_selected(x[vehicle, i, j])]
+-reported_cost = sum(distance[i, j] for i, j in selected_arcs)
+-
+-if abs(reported_cost - expected_cost) &gt; 1e-6:
+-    raise AssertionError(&quot;reported objective component does not match reconstruction&quot;)
+-```
+-
+-Treat SCIP feasibility as necessary but not sufficient. The final reported file still needs independent checks for schema, route reconstruction, capacity, inventory, penalties, and objective arithmetic.
++## Steps
++1. Confirm PySCIPOpt is importable before modeling:
++   ```python
++   from pyscipopt import Model, quicksum
++   ```
++2. Create the model, define variables (binary arcs, integer loads/services, nonnegative unmet slacks), and add constraints (routing + subtour elimination + load/inventory feasibility + unmet linearization).
++3. Set objective as “travel distance + penalty_weight * total_unmet”.
++4. Set practical solve limits (time and/or mip gap), optimize, and require at least one incumbent (`model.getNSols() &gt; 0`) before extracting.
++5. Extract solution values using `model.getVal(var)` with a clear selection threshold for binaries (e.g., `&gt; 0.5`).
++6. Write output to `/root/report.json` matching the required schema:
++   - include **all** `vehicle_count` vehicles and **all** stations from `data.json`
++   - routes use `[&quot;depot_start&quot;, &lt;station_id...&gt;, &quot;depot_end&quot;]`
++7. Independently validate the produced JSON *outside* SCIP:
++   - recompute travel distance from coordinates (radius 3960.0)
++   - recompute station totals, unmet amounts, penalty, and objective
++   - check all stated hard rules (single-visit-per-vehicle, load propagation/capacity, inventory bounds, no pickup+drop at same stop, vehicles must visit ≥1 station)
++## Expected Result
++A valid `/root/report.json` whose summary/objective fields exactly match independent recomputation and whose routes/operations satisfy all hard constraints, with any unavoidable shortfalls captured via the unmet-penalty mechanism.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>scip-opt/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;MMG-001&quot;,
+    &quot;description&quot;: &quot;This appears structurally unavoidable given the constraints: station 312 has initial_bikes=1 but a positive pickup target of 6 (data.json line 101–107), so at most 1 bike can be picked up without violating nonnegative final inventory; the model correctly uses unmet penalty to handle this infeasibility.\nEvidence: The solution leaves unmet rebalancing of 5 bikes at station 312 (report.json line 241–247 shows target 6.0, net_bike_change 1.0, unmet_rebalancing_amount 5.0; summary shows total_unmet_rebalancing_amount 5.0 and penalty 2.5).\nTrajectory location: turn 4–6&quot;,
+    &quot;locations&quot;: []
+  }
+]</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_skill">完整上传修复包</a></p><p>以同任务其他归档保存的原始包为对照，完整包哈希已与共享原始运行核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillrevise_gpt52&quot;,
+  &quot;task_id&quot;: &quot;bike-rebalance&quot;,
+  &quot;file_count&quot;: 4,
+  &quot;total_bytes&quot;: 31518,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:e45c4b35d270a9dc89880afccd89d6cb84407e7c36d817f3240acb3724f58124&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:e45c4b35d270a9dc89880afccd89d6cb84407e7c36d817f3240acb3724f58124&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>scip-opt/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/bike-rebalance/skills/scip-opt/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_skill/scip-opt/SKILL.md">修改后</a></p><pre>--- original/scip-opt/SKILL.md
++++ repaired/scip-opt/SKILL.md
+@@ -1,227 +1,67 @@
+----
+-name: scip-opt
+-description: SCIP optimization with PySCIPOpt. Use when facing an optimization problem with an objective, hard constraints, soft penalties, integer decisions, routing, assignment, scheduling, allocation, packing, capacity, inventory, or service-level rules. Prefer modeling and solving the problem with PySCIPOpt when it is available.
+----
++# Robust Optimization Modeling (SCIP optional, contract-driven)
+ 
+-# SCIP Optimization
++## Purpose
++Produce a correct, verifier-aligned solution artifact for optimization-style tasks (objective + constraints), using PySCIPOpt/SCIP when available and a deterministic heuristic-with-repair fallback when it is not, with mandatory discovery and post-write validation.
+ 
+-Use SCIP through `pyscipopt` when a task asks you to minimize or maximize an objective subject to constraints.
++## When to Use
++Use this skill when the task describes an optimization problem (min/max objective with hard constraints, possibly with soft penalties) and the evaluation likely depends on a JSON (or similar) output artifact whose schema and internal consistency must match a validator.
+ 
+-SCIP is a strong open-source optimization solver with a Python API. It is well suited for mixed-integer optimization, routing-style models, assignment models, capacity planning, inventory movement, scheduling, and problems with soft penalties. For benchmark tasks, a SCIP-backed model plus an independent validator is usually safer than a greedy construction.
++## Procedure
++- 1) Discover the environment contract (before modeling)
++- List the working directory and locate: input files (often *.json), required output filename(s) mentioned in instructions/README, and any validator/tests (e.g., test_*.py, validate*.py, scripts).
++- Open and parse the primary input file(s) as JSON.
++- Extract and record a minimal contract snapshot used for later validation:
++- required entity IDs (e.g., all stations/jobs/items),
++- declared counts (e.g., vehicle_count),
++- any bounds/capacities,
++- required output path/name (if explicitly stated).
++- Checkpoint: if the required output path/schema is not explicit, search for it in repo docs/tests; if still ambiguous, proceed but keep output validation derived from discovered input structure and any validator code found.
++- 2) Validate inputs and assumptions (fail fast on non-recoverable issues)
++- Assert input JSON parses; required top-level keys exist (as discovered); IDs are unique; numeric fields are finite numbers.
++- If any key/field is missing or ambiguous, stop and request clarification only if the task interface allows; otherwise choose the least-committal interpretation and record it for validation.
++- 3) Select solution method with a bounded fallback gate
++- Try importing PySCIPOpt. If import succeeds, run a sanity optimization (tiny model) to confirm the backend works (optimize, status feasible/optimal, at least one solution).
++- Decision:
++- If PySCIPOpt works: use the solver path (step 4).
++- If PySCIPOpt is missing/broken OR solver later yields no incumbent: use the heuristic + repair path (step 5).
++- Constraint: do not install packages or assume system binaries unless the environment contract explicitly allows it.
++- 4) Solver path (SCIP via PySCIPOpt), kept minimal and safe
++- Build the smallest model that matches the discovered contract:
++- decision variables for the required decisions (binary/integer/continuous),
++- hard constraints for feasibility,
++- explicit slack variables for any soft rules (no abs() on expressions).
++- Set limits (time and optional gap) and suppress verbose output when allowed.
++- Optimize and checkpoint:
++- If model.getNSols() == 0, capture status and switch to step 5 (fallback) rather than failing.
++- Otherwise extract solution values with numeric tolerances (e.g., binary &gt; 0.5).
++- Reconstruct key quantities outside the solver (objective components and each hard constraint LHS/RHS) for later validation.
++- 5) Heuristic + repair fallback (deterministic, bounded)
++- Construct an initial feasible (or near-feasible) solution using greedy rules grounded in the input:
++- prioritize satisfying hard constraints first; treat soft penalties as tie-breakers.
++- Add a bounded repair loop:
++- detect violations (capacity, balance, coverage, route continuity, etc. as applicable),
++- apply local fixes (swap, move, clamp, add slack/unmet variables),
++- stop after a small fixed number of passes or when violations do not decrease.
++- If strict feasibility is impossible due to input bounds, produce the best-effort solution that still respects non-negotiable format requirements, and represent unmet quantities via explicit slack/unmet fields if the contract/validator supports them; otherwise keep values within bounds and document shortfall in optional metadata fields only if allowed by schema discovery.
++- 6) Build the output artifact from the solution (no assumptions about schema)
++- Create the output JSON structure by following (in order of priority):
++- explicit task instruction schema,
++- discovered validator expectations (read validator code to learn required keys),
++- pattern from any provided example output file,
++- otherwise mirror input entity IDs with per-entity records plus an objective summary.
++- Ensure ID coverage: every required ID from the input snapshot must appear exactly once where expected.
++- Ensure internal consistency: totals equal sums over records; derived fields are recomputed from primitives (do not copy solver objective without reconstruction).
++- 7) Post-write schema and consistency validation (mandatory final gate)
++- Write the output JSON to the required path/name if specified; otherwise to the task-specified default if discovered; otherwise to a conservative default like report.json only if no other evidence exists.
++- Reload the written file and validate:
++- JSON parses,
++- required top-level keys exist and have correct types,
++- list lengths match declared counts (e.g., vehicle_count),
++- all required IDs are present with no extras/duplicates,
++- numeric fields are within discovered bounds (capacities, non-negativity, etc.),
++- recomputed objective/totals match reported values within a small tolerance.
++- If validation fails: fix the minimal issue and rewrite once (bounded). If it still fails, stop and surface the specific failing assertion and the discovered contract snapshot.
+ 
+-## When To Use
+-
+-Consider PySCIPOpt when the request includes:
+-
+-- an objective such as minimizing cost, distance, time, unmet demand, or penalty;
+-- yes/no choices, route arcs, assignments, selected items, or ordering decisions;
+-- integer or continuous quantities such as load, inventory, flow, served units, or slack;
+-- hard rules that every valid answer must satisfy;
+-- soft rules that can be violated with an explicit penalty.
+-
+-Do not start by installing another optimization package. First check whether PySCIPOpt is already available:
+-
+-```python
+-try:
+-    from pyscipopt import Model, quicksum
+-except ImportError as exc:
+-    raise RuntimeError(&quot;PySCIPOpt is required for this optimization approach&quot;) from exc
+-```
+-
+-## Modeling Workflow
+-
+-1. Identify sets and indices.
+-   - Examples: vehicles `K`, stations `N`, jobs `J`, periods `T`, arcs `A`.
+-   - Build explicit mappings when input IDs are not contiguous.
+-
+-2. Define decision variables.
+-   - Binary variables for choices, visits, assignments, route arcs, or modes.
+-   - Integer variables for counts, loads, inventory moves, or unmet units.
+-   - Continuous variables for flows, costs, times, slacks, or resource levels.
+-
+-3. Add hard constraints.
+-   - Conservation, capacity, bounds, linking, continuity, inventory limits, and mutual exclusion.
+-
+-4. Add soft constraints with explicit slack variables.
+-   - Never use Python `abs()` on solver expressions.
+-   - Linearize absolute deviation with two inequalities.
+-
+-5. Set a single objective.
+-   - Keep named objective components such as travel cost and penalty cost.
+-
+-6. Solve with time and gap limits.
+-   - Require at least one incumbent before extracting a solution.
+-
+-7. Reconstruct and independently validate the output.
+-   - Recompute objective components and every hard rule from the reported answer.
+-
+-## Minimal PySCIPOpt Template
+-
+-```python
+-from pyscipopt import Model, quicksum
+-
+-model = Model(&quot;optimization_model&quot;)
+-model.hideOutput()
+-
+-I = range(n_items)
+-
+-x = {i: model.addVar(vtype=&quot;B&quot;, name=f&quot;x_{i}&quot;) for i in I}
+-amount = {
+-    i: model.addVar(vtype=&quot;I&quot;, lb=0, ub=capacity[i], name=f&quot;amount_{i}&quot;)
+-    for i in I
+-}
+-dev = {i: model.addVar(lb=0, name=f&quot;dev_{i}&quot;) for i in I}
+-
+-for i in I:
+-    model.addCons(amount[i] &lt;= capacity[i] * x[i])
+-    model.addCons(amount[i] - target[i] &lt;= dev[i])
+-    model.addCons(target[i] - amount[i] &lt;= dev[i])
+-
+-cost = quicksum(fixed_cost[i] * x[i] for i in I)
+-penalty = penalty_weight * quicksum(dev[i] for i in I)
+-model.setObjective(cost + penalty, &quot;minimize&quot;)
+-
+-model.setParam(&quot;limits/time&quot;, 300.0)
+-model.setParam(&quot;limits/gap&quot;, 0.01)
+-model.optimize()
+-
+-status = str(model.getStatus()).lower()
+-if model.getNSols() == 0:
+-    raise RuntimeError(f&quot;SCIP found no feasible solution; status={status}&quot;)
+-
+-objective = float(model.getObjVal())
+-selected = [i for i in I if model.getVal(x[i]) &gt; 0.5]
+-```
+-
+-## Common Patterns
+-
+-### Binary Activation
+-
+-Use a binary variable to allow a quantity only when an option is active.
+-
+-```python
+-use = {i: model.addVar(vtype=&quot;B&quot;, name=f&quot;use_{i}&quot;) for i in I}
+-q = {i: model.addVar(lb=0, ub=upper[i], name=f&quot;q_{i}&quot;) for i in I}
+-
+-for i in I:
+-    model.addCons(q[i] &lt;= upper[i] * use[i])
+-```
+-
+-### Assignment
+-
+-```python
+-assign = {
+-    (i, j): model.addVar(vtype=&quot;B&quot;, name=f&quot;assign_{i}_{j}&quot;)
+-    for i in items
+-    for j in options
+-}
+-
+-for i in items:
+-    model.addCons(quicksum(assign[i, j] for j in options) == 1)
+-
+-for j in options:
+-    model.addCons(quicksum(weight[i] * assign[i, j] for i in items) &lt;= capacity[j])
+-```
+-
+-### Absolute Deviation Penalty
+-
+-```python
+-dev = {i: model.addVar(lb=0, name=f&quot;dev_{i}&quot;) for i in I}
+-
+-for i in I:
+-    model.addCons(actual[i] - target[i] &lt;= dev[i])
+-    model.addCons(target[i] - actual[i] &lt;= dev[i])
+-
+-penalty_cost = penalty_weight * quicksum(dev[i] for i in I)
+-```
+-
+-### Route Arcs
+-
+-```python
+-START = &quot;depot_start&quot;
+-END = &quot;depot_end&quot;
+-nodes_from = [START, *locations]
+-nodes_to = [*locations, END]
+-arcs = [
+-    (i, j)
+-    for i in nodes_from
+-    for j in nodes_to
+-    if i != j and not (i == START and j == END)
+-]
+-
+-x = {
+-    (k, i, j): model.addVar(vtype=&quot;B&quot;, name=f&quot;x_{k}_{i}_{j}&quot;)
+-    for k in vehicles
+-    for i, j in arcs
+-}
+-
+-for k in vehicles:
+-    model.addCons(quicksum(x[k, START, j] for j in locations) == 1)
+-    model.addCons(quicksum(x[k, i, END] for i in locations) == 1)
+-
+-    for i in locations:
+-        incoming = quicksum(x[k, j, i] for j in nodes_from if (j, i) in arcs)
+-        outgoing = quicksum(x[k, i, j] for j in nodes_to if (i, j) in arcs)
+-        model.addCons(incoming == outgoing)
+-        model.addCons(outgoing &lt;= 1)
+-```
+-
+-Degree and continuity constraints alone can permit disconnected cycles. Add subtour elimination for routing models.
+-
+-### MTZ Subtour Elimination
+-
+-```python
+-order = {
+-    (k, i): model.addVar(lb=1, ub=max(1, len(locations)), name=f&quot;order_{k}_{i}&quot;)
+-    for k in vehicles
+-    for i in locations
+-}
+-
+-n = len(locations)
+-for k in vehicles:
+-    for i in locations:
+-        for j in locations:
+-            if i != j:
+-                model.addCons(order[k, i] - order[k, j] + n * x[k, i, j] &lt;= n - 1)
+-```
+-
+-## Reproducibility
+-
+-Fix SCIP randomization and thread settings when repeatability matters.
+-
+-```python
+-def set_if_available(model, name, value):
+-    try:
+-        model.setParam(name, value)
+-    except Exception:
+-        pass
+-
+-for name in [
+-    &quot;randomization/randomseedshift&quot;,
+-    &quot;randomization/permutationseed&quot;,
+-    &quot;randomization/lpseed&quot;,
+-]:
+-    set_if_available(model, name, 0)
+-
+-for name in [&quot;randomization/permutevars&quot;, &quot;randomization/permuteconss&quot;]:
+-    set_if_available(model, name, False)
+-
+-set_if_available(model, &quot;parallel/maxnthreads&quot;, 1)
+-```
+-
+-## Extraction And Validation
+-
+-After solving, reconstruct the answer from variable values and validate it outside SCIP.
+-
+-```python
+-def is_selected(var):
+-    return model.getVal(var) &gt; 0.5
+-
+-selected_arcs = [(i, j) for i, j in arcs if is_selected(x[vehicle, i, j])]
+-reported_cost = sum(distance[i, j] for i, j in selected_arcs)
+-
+-if abs(reported_cost - expected_cost) &gt; 1e-6:
+-    raise AssertionError(&quot;reported objective component does not match reconstruction&quot;)
+-```
+-
+-Treat SCIP feasibility as necessary but not sufficient. The final reported file still needs independent checks for schema, route reconstruction, capacity, inventory, penalties, and objective arithmetic.
++## Constraints / Pitfalls
++- Never hard-require PySCIPOpt: if import, sanity solve, or optimization fails to produce an incumbent, you must switch to a bounded heuristic + repair path and still produce a valid artifact.
++- Do not hard-code paths, schema keys, or counts unless they are explicitly stated in instructions or discovered from input/validator; always perform discovery preflight and a post-write reload validation before declaring completion.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>scip-opt/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The skill failed because it relies on a fragile PySCIPOpt-only approach (environment mismatch) and provides a broad optimization tutorial instead of a task-specific, output-contract-driven workflow (wrong abstraction level), leading to inefficiency and likely mismatches with verifier expectations; it also lacks fallback and uses overly certain directives without robust gating. Primary cause: the skill is tightly coupled to PySCIPOpt (and even recommends raising if unavailable), making it prone to environment mismatch. Secondary cause: the skill operates at the wrong abstraction level—it&#x27;s an extensive modeling guide, not an executable, schema-constrained procedure—leading to high token/latency and missed or unenforced output-contract details that the verifier checks. The skill also exhibits false certainty by prescribing a single solver-based path without robust validation gates and fallback behavior, and its length adds context pollution that dilutes the critical task-specific requirements.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;scip-opt/SKILL.md&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>SkillTTA · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/bike-rebalance/repaired_skill">完整上传修复包</a></p><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;Station identifier key mismatch: the skill’s parsing/mapping code assumes each station record has an \&quot;id\&quot; field (e.g., s[\&quot;id\&quot;]) for building station_ids and labels. The bike-rebalance task/output schema uses \&quot;station_id\&quot; (and related station fields like initial_bikes, station_capacity), so this will cause KeyError or incorrect ID↔index mappings when applied to the task’s data.json.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;geospatial-routing-data/SKILL.md&quot;,
+        &quot;section&quot;: &quot;## Parse Data Safely&quot;
+      },
+      {
+        &quot;file&quot;: &quot;geospatial-routing-data/SKILL.md&quot;,
+        &quot;section&quot;: &quot;## Coordinate Validation&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P2&quot;,
+    &quot;description&quot;: &quot;Hard-coded input path: the skill reads the instance from an absolute path \&quot;/root/data.json\&quot;. The task specification only states a \&quot;data.json\&quot; file (no absolute location), so this assumption can break in environments where the file is not located at /root/data.json.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;geospatial-routing-data/SKILL.md&quot;,
+        &quot;section&quot;: &quot;## Parse Data Safely&quot;
+      }
+    ]
+  }
+]</pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

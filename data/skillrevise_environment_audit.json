@@ -1,0 +1,669 @@
+{
+  "rows": [
+    {
+      "task_id": "azure-bgp-oscillation-route-leak",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-azure-bgp-oscillation-route-leak",
+        "image": "bf__azure-bgp-oscillation-route-leak",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/azure-bgp-oscillation-route-leak/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/azure-bgp-oscillation-route-leak/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/azure-bgp-oscillation-route-leak/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/azure-bgp-oscillation-route-leak/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "bike-rebalance",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-bike-rebalance",
+        "image": "bf__bike-rebalance",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/bike-rebalance/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "data-to-d3",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-data-to-d3",
+        "image": "bf__data-to-d3",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/data-to-d3/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/data-to-d3/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/data-to-d3/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/data-to-d3/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "dialogue-parser",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-dialogue-parser",
+        "image": "bf__dialogue-parser",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "drone-planning-control",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-drone-planning-control",
+        "image": "bf__drone-planning-control",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/drone-planning-control/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/drone-planning-control/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/drone-planning-control/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/drone-planning-control/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "dynamic-object-aware-egomotion",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-dynamic-object-aware-egomotion",
+        "image": "bf__dynamic-object-aware-egomotion",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dynamic-object-aware-egomotion/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dynamic-object-aware-egomotion/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dynamic-object-aware-egomotion/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dynamic-object-aware-egomotion/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "energy-market-pricing",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-energy-market-pricing",
+        "image": "bf__energy-market-pricing",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-market-pricing/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-market-pricing/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-market-pricing/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-market-pricing/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "energy-unit-commitment",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-energy-unit-commitment",
+        "image": "bf__energy-unit-commitment",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "enterprise-information-search",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-enterprise-information-search",
+        "image": "bf__enterprise-information-search",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/enterprise-information-search/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/enterprise-information-search/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/enterprise-information-search/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/enterprise-information-search/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "exceltable-in-ppt",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-exceltable-in-ppt",
+        "image": "bf__exceltable-in-ppt",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "exoplanet-detection-period",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-exoplanet-detection-period",
+        "image": "bf__exoplanet-detection-period",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "financial-modeling-qa",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-financial-modeling-qa",
+        "image": "bf__financial-modeling-qa",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "fix-build-agentops",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-fix-build-agentops",
+        "image": "bf__fix-build-agentops",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-agentops/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-agentops/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-agentops/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-agentops/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "fix-build-google-auto",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-fix-build-google-auto",
+        "image": "bf__fix-build-google-auto",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-google-auto/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-google-auto/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-google-auto/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-google-auto/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "fix-druid-loophole-cve",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-fix-druid-loophole-cve",
+        "image": "bf__fix-druid-loophole-cve",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-druid-loophole-cve/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-druid-loophole-cve/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-druid-loophole-cve/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-druid-loophole-cve/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "flink-query",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-flink-query",
+        "image": "bf__flink-query",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/flink-query/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/flink-query/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/flink-query/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/flink-query/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "invoice-fraud-detection",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-invoice-fraud-detection",
+        "image": "bf__invoice-fraud-detection",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "jpg-ocr-stat",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-jpg-ocr-stat",
+        "image": "bf__jpg-ocr-stat",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/jpg-ocr-stat/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/jpg-ocr-stat/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/jpg-ocr-stat/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/jpg-ocr-stat/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "manufacturing-codebook-normalization",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-manufacturing-codebook-normalization",
+        "image": "bf__manufacturing-codebook-normalization",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": false,
+      "task_message_preserved": true,
+      "original_user_message_count": 3,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/original_run/selected_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/original_run/selected_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "multilingual-video-dubbing",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-multilingual-video-dubbing",
+        "image": "bf__multilingual-video-dubbing",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/multilingual-video-dubbing/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/multilingual-video-dubbing/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/multilingual-video-dubbing/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/multilingual-video-dubbing/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "organize-messy-files",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-organize-messy-files",
+        "image": "bf__organize-messy-files",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/organize-messy-files/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/organize-messy-files/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/organize-messy-files/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/organize-messy-files/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "paper-anonymizer",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-paper-anonymizer",
+        "image": "bf__paper-anonymizer",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/paper-anonymizer/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/paper-anonymizer/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/paper-anonymizer/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/paper-anonymizer/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "pddl-airport-planning",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-pddl-airport-planning",
+        "image": "bf__pddl-airport-planning",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/pddl-airport-planning/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/pddl-airport-planning/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/pddl-airport-planning/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/pddl-airport-planning/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "python-scala-translation",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-python-scala-translation",
+        "image": "bf__python-scala-translation",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/python-scala-translation/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/python-scala-translation/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/python-scala-translation/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/python-scala-translation/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "reserves-at-risk-calc",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-reserves-at-risk-calc",
+        "image": "bf__reserves-at-risk-calc",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/reserves-at-risk-calc/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/reserves-at-risk-calc/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/reserves-at-risk-calc/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/reserves-at-risk-calc/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "sec-financial-report",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-sec-financial-report",
+        "image": "bf__sec-financial-report",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/sec-financial-report/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/sec-financial-report/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/sec-financial-report/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/sec-financial-report/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "seismic-phase-picking",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-seismic-phase-picking",
+        "image": "bf__seismic-phase-picking",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/seismic-phase-picking/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/seismic-phase-picking/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/seismic-phase-picking/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/seismic-phase-picking/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "shock-analysis-demand",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-shock-analysis-demand",
+        "image": "bf__shock-analysis-demand",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "shock-analysis-supply",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-shock-analysis-supply",
+        "image": "bf__shock-analysis-supply",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-supply/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-supply/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-supply/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-supply/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "software-dependency-audit",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-software-dependency-audit",
+        "image": "bf__software-dependency-audit",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/software-dependency-audit/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/software-dependency-audit/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/software-dependency-audit/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/software-dependency-audit/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "syzkaller-ppdev-syzlang",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-syzkaller-ppdev-syzlang",
+        "image": "bf__syzkaller-ppdev-syzlang",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/syzkaller-ppdev-syzlang/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/syzkaller-ppdev-syzlang/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/syzkaller-ppdev-syzlang/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/syzkaller-ppdev-syzlang/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "video-silence-remover",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-video-silence-remover",
+        "image": "bf__video-silence-remover",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/video-silence-remover/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/video-silence-remover/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/video-silence-remover/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/video-silence-remover/repaired_run/trajectory/acp_trajectory.jsonl"
+    },
+    {
+      "task_id": "xlsx-recover-data",
+      "original_environment_manifest": null,
+      "repaired_environment_manifest": {
+        "name": "skillrevise-prebuilt-xlsx-recover-data",
+        "image": "bf__xlsx-recover-data",
+        "base_image": null,
+        "owns_lifecycle": true,
+        "isolation": "per_task",
+        "services": []
+      },
+      "same_user_messages": true,
+      "task_message_preserved": true,
+      "original_user_message_count": 1,
+      "repaired_user_message_count": 1,
+      "original_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/xlsx-recover-data/original_run/config.json",
+      "repaired_config_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/xlsx-recover-data/repaired_run/config.json",
+      "original_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/xlsx-recover-data/original_run/trajectory/acp_trajectory.jsonl",
+      "repaired_trajectory_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/xlsx-recover-data/repaired_run/trajectory/acp_trajectory.jsonl"
+    }
+  ],
+  "same_user_message_counts": {
+    "True": 32,
+    "False": 1
+  },
+  "interpretation_zh": "33 次修后运行都记录了 skillrevise-prebuilt 环境，使用 bf__任务名 镜像标签；公开配置未给出镜像内容摘要。任务摘要差异可能包含这种环境包装变化，不能据摘要不同直接认定题面或 verifier 被改变。"
+}

@@ -1,0 +1,635 @@
+{
+  "stages": [
+    {
+      "position": 1,
+      "tasks": 39,
+      "accepted": 33,
+      "improved": 2,
+      "new_pass": 1,
+      "rejected_lower": 3,
+      "pass_tasks": [
+        "bike-rebalance"
+      ]
+    },
+    {
+      "position": 2,
+      "tasks": 18,
+      "accepted": 15,
+      "improved": 3,
+      "new_pass": 3,
+      "rejected_lower": 2,
+      "pass_tasks": [
+        "financial-modeling-qa",
+        "energy-market-pricing",
+        "seismic-phase-picking"
+      ]
+    },
+    {
+      "position": 3,
+      "tasks": 6,
+      "accepted": 6,
+      "improved": 0,
+      "new_pass": 0,
+      "rejected_lower": 0,
+      "pass_tasks": []
+    }
+  ],
+  "rejected_drops": [
+    {
+      "task_id": "drone-planning-control",
+      "position": 2,
+      "target_skill": "attitude-controller-planner/SKILL.md",
+      "accepted": false,
+      "accepted_revision": false,
+      "decision": "rejected_revision_not_better",
+      "score_before": 0.566667,
+      "score_after": 0.4,
+      "source_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/drone-planning-control/provenance.json"
+    },
+    {
+      "task_id": "setup-fuzzing-py",
+      "position": 1,
+      "target_skill": "setup-env/SKILL.md",
+      "accepted": false,
+      "accepted_revision": false,
+      "decision": "rejected_revision_not_better",
+      "score_before": 0.66,
+      "score_after": 0.5,
+      "source_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/setup-fuzzing-py/provenance.json"
+    },
+    {
+      "task_id": "setup-fuzzing-py",
+      "position": 2,
+      "target_skill": "fuzzing-python/SKILL.md",
+      "accepted": false,
+      "accepted_revision": false,
+      "decision": "rejected_revision_not_better",
+      "score_before": 0.66,
+      "score_after": 0.33,
+      "source_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/setup-fuzzing-py/provenance.json"
+    },
+    {
+      "task_id": "lab-unit-harmonization",
+      "position": 1,
+      "target_skill": "lab-unit-harmonization/SKILL.md",
+      "accepted": false,
+      "accepted_revision": false,
+      "decision": "rejected_revision_not_better",
+      "score_before": 0.667,
+      "score_after": 0.604,
+      "source_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/lab-unit-harmonization/provenance.json"
+    },
+    {
+      "task_id": "civ6-adjacency-optimizer",
+      "position": 1,
+      "target_skill": "civ6lib/SKILL.md",
+      "accepted": false,
+      "accepted_revision": false,
+      "decision": "rejected_revision_not_better",
+      "score_before": 0.95,
+      "score_after": 0.0,
+      "source_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/civ6-adjacency-optimizer/provenance.json"
+    }
+  ],
+  "comparisons": [
+    {
+      "scope": "all_targets",
+      "n": 36,
+      "counts": {
+        "neither_pass": 27,
+        "axe_only": 6,
+        "revise_only": 2,
+        "both_pass": 1
+      },
+      "pairs": [
+        {
+          "task_id": "software-dependency-audit",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/software-dependency-audit/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/software-dependency-audit/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "xlsx-recover-data",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/xlsx-recover-data/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/xlsx-recover-data/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "invoice-fraud-detection",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/invoice-fraud-detection/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "sec-financial-report",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/sec-financial-report/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/sec-financial-report/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "manufacturing-codebook-normalization",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/manufacturing-codebook-normalization/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "video-silence-remover",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/video-silence-remover/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/video-silence-remover/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "exoplanet-detection-period",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "dialogue-parser",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "python-scala-translation",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/python-scala-translation/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/python-scala-translation/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "azure-bgp-oscillation-route-leak",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/azure-bgp-oscillation-route-leak/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/azure-bgp-oscillation-route-leak/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "drone-planning-control",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/drone-planning-control/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/drone-planning-control/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "enterprise-information-search",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/enterprise-information-search/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/enterprise-information-search/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "financial-modeling-qa",
+          "relation": "revise_only",
+          "revise_status": "PASS",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/financial-modeling-qa/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "pddl-airport-planning",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/pddl-airport-planning/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/pddl-airport-planning/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "reserves-at-risk-calc",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/reserves-at-risk-calc/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/reserves-at-risk-calc/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "simpo-code-reproduction",
+          "relation": "neither_pass",
+          "revise_status": "NO_SELECTED_AFTER_RUN",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/simpo-code-reproduction/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe-Infra-Rerun/tasks/simpo-code-reproduction/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "setup-fuzzing-py",
+          "relation": "neither_pass",
+          "revise_status": "NO_SELECTED_AFTER_RUN",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/setup-fuzzing-py/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "energy-market-pricing",
+          "relation": "revise_only",
+          "revise_status": "PASS",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-market-pricing/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-market-pricing/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "exceltable-in-ppt",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "paper-anonymizer",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/paper-anonymizer/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/paper-anonymizer/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "shock-analysis-demand",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-demand/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "shock-analysis-supply",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-supply/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-supply/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "data-to-d3",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/data-to-d3/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/data-to-d3/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "dynamic-object-aware-egomotion",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dynamic-object-aware-egomotion/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dynamic-object-aware-egomotion/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "lab-unit-harmonization",
+          "relation": "neither_pass",
+          "revise_status": "NO_SELECTED_AFTER_RUN",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/lab-unit-harmonization/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/lab-unit-harmonization/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "fix-build-agentops",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-agentops/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/fix-build-agentops/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "fix-build-google-auto",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-google-auto/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/fix-build-google-auto/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "flink-query",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/flink-query/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe-Infra-Rerun/tasks/flink-query/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "jpg-ocr-stat",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/jpg-ocr-stat/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/jpg-ocr-stat/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "organize-messy-files",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/organize-messy-files/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/organize-messy-files/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "energy-unit-commitment",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "syzkaller-ppdev-syzlang",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/syzkaller-ppdev-syzlang/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/syzkaller-ppdev-syzlang/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "seismic-phase-picking",
+          "relation": "both_pass",
+          "revise_status": "PASS",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/seismic-phase-picking/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe-Infra-Rerun/tasks/seismic-phase-picking/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "quantum-numerical-simulation",
+          "relation": "neither_pass",
+          "revise_status": "NO_SELECTED_AFTER_RUN",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/quantum-numerical-simulation/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/quantum-numerical-simulation/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "fix-druid-loophole-cve",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-druid-loophole-cve/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe-Infra-Rerun/tasks/fix-druid-loophole-cve/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "civ6-adjacency-optimizer",
+          "relation": "neither_pass",
+          "revise_status": "NO_SELECTED_AFTER_RUN",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/civ6-adjacency-optimizer/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_run/benchmark_result.json"
+        }
+      ]
+    },
+    {
+      "scope": "gold_targets",
+      "n": 28,
+      "counts": {
+        "neither_pass": 21,
+        "axe_only": 5,
+        "revise_only": 1,
+        "both_pass": 1
+      },
+      "pairs": [
+        {
+          "task_id": "software-dependency-audit",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/software-dependency-audit/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/software-dependency-audit/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "sec-financial-report",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/sec-financial-report/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/sec-financial-report/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "video-silence-remover",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/video-silence-remover/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/video-silence-remover/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "exoplanet-detection-period",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "dialogue-parser",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "python-scala-translation",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/python-scala-translation/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/python-scala-translation/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "azure-bgp-oscillation-route-leak",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/azure-bgp-oscillation-route-leak/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/azure-bgp-oscillation-route-leak/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "drone-planning-control",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/drone-planning-control/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/drone-planning-control/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "enterprise-information-search",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/enterprise-information-search/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/enterprise-information-search/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "pddl-airport-planning",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/pddl-airport-planning/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/pddl-airport-planning/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "reserves-at-risk-calc",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/reserves-at-risk-calc/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/reserves-at-risk-calc/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "simpo-code-reproduction",
+          "relation": "neither_pass",
+          "revise_status": "NO_SELECTED_AFTER_RUN",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/simpo-code-reproduction/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe-Infra-Rerun/tasks/simpo-code-reproduction/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "energy-market-pricing",
+          "relation": "revise_only",
+          "revise_status": "PASS",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-market-pricing/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-market-pricing/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "exceltable-in-ppt",
+          "relation": "axe_only",
+          "revise_status": "FAIL",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "paper-anonymizer",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/paper-anonymizer/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/paper-anonymizer/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "shock-analysis-supply",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-supply/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-supply/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "data-to-d3",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/data-to-d3/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/data-to-d3/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "dynamic-object-aware-egomotion",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dynamic-object-aware-egomotion/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dynamic-object-aware-egomotion/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "lab-unit-harmonization",
+          "relation": "neither_pass",
+          "revise_status": "NO_SELECTED_AFTER_RUN",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/lab-unit-harmonization/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/lab-unit-harmonization/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "fix-build-agentops",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-agentops/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/fix-build-agentops/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "fix-build-google-auto",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-build-google-auto/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/fix-build-google-auto/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "flink-query",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/flink-query/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe-Infra-Rerun/tasks/flink-query/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "jpg-ocr-stat",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/jpg-ocr-stat/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/jpg-ocr-stat/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "organize-messy-files",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/organize-messy-files/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/organize-messy-files/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "energy-unit-commitment",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "syzkaller-ppdev-syzlang",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/syzkaller-ppdev-syzlang/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/syzkaller-ppdev-syzlang/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "seismic-phase-picking",
+          "relation": "both_pass",
+          "revise_status": "PASS",
+          "axe_status": "PASS",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/seismic-phase-picking/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe-Infra-Rerun/tasks/seismic-phase-picking/repaired_run/benchmark_result.json"
+        },
+        {
+          "task_id": "fix-druid-loophole-cve",
+          "relation": "neither_pass",
+          "revise_status": "FAIL",
+          "axe_status": "FAIL",
+          "revise_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/fix-druid-loophole-cve/provenance.json",
+          "axe_url": "https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe-Infra-Rerun/tasks/fix-druid-loophole-cve/repaired_run/benchmark_result.json"
+        }
+      ]
+    }
+  ],
+  "accepted_incumbent_non_decreasing": true,
+  "source_ref": "8c8a7556f9c3f2c9b980af21b5fd2015d613950a",
+  "limits_zh": "episode 是依次处理一个目标 Skill 的选择记录。公开目录不含完整内部修订与中间执行；阶段 2 与阶段 3 的分母是选择后的子集，不能估计独立重跑概率或因果收益。"
+}

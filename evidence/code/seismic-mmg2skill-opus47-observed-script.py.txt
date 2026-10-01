@@ -1,0 +1,212 @@
+import os
+import numpy as np
+import obspy
+from obspy import Trace, Stream, UTCDateTime
+import seisbench.models as sbm
+import csv
+from scipy.signal import find_peaks
+
+DATA_DIR = "/root/data"
+OUT_CSV = "/root/results.csv"
+
+# 100 Hz => 0.1s tolerance = 10 samples.
+# Task allows multiple picks per phase; skill recommends event window and S-P prior.
+SR = 100.0
+EVENT_LO, EVENT_HI = 3000, 9000  # allowed pick idx range (skill)
+SP_MIN, SP_MAX = 20, 800         # S-P gap in samples (skill)
+
+# Confidence thresholds
+HIGH_P_SOLO = 0.55
+HIGH_S_SOLO = 0.45
+LOW_P = 0.2
+LOW_S = 0.2
+AGREE_TOL = 30  # samples for agreement between models
+
+
+def load_stream(path):
+    d = np.load(path)
+    arr = d["data"]
+    dt = float(d["dt"])
+    ch_names = str(d["channels"]).split(",")
+    # Detect zero columns; keep only non-zero columns, map positionally
+    keep_idx = [i for i in range(arr.shape[1]) if np.count_nonzero(arr[:, i]) > 0]
+    # Map nonzero columns to declared channel names in order.
+    # When len(ch_names) < 3, only nonzero columns are named.
+    # When len(ch_names) == 3 with a zero column, use the positional name.
+    if len(ch_names) == len(keep_idx):
+        name_map = {kept: ch_names[k] for k, kept in enumerate(keep_idx)}
+    elif len(ch_names) == arr.shape[1]:
+        name_map = {kept: ch_names[kept] for kept in keep_idx}
+    else:
+        # Fallback: pair in order, pad with generic names
+        name_map = {}
+        for k, kept in enumerate(keep_idx):
+            name_map[kept] = ch_names[k] if k < len(ch_names) else f"CH{kept}"
+    traces = []
+    for i in keep_idx:
+        col = arr[:, i].astype(np.float64)
+        # Amplitude rescale to avoid epsilon issues in seisbench normalization
+        col = col * 1e10
+        tr = Trace(data=col)
+        tr.stats.delta = dt
+        tr.stats.sampling_rate = 1.0 / dt
+        tr.stats.network = str(d["network"]) if "network" in d.files else "XX"
+        tr.stats.station = str(d["station"]) if "station" in d.files else "STA"
+        tr.stats.location = ""
+        tr.stats.channel = name_map[i]
+        tr.stats.starttime = UTCDateTime(0)
+        traces.append(tr)
+    st = Stream(traces)
+    # Preprocess
+    st.detrend("linear")
+    st.taper(0.05)
+    st.filter("bandpass", freqmin=2, freqmax=20)
+    return st
+
+
+def annotations_to_peaks(ann_stream, phase_channel_suffix):
+    """Return list of (idx, prob) peaks from the phase channel of annotation stream."""
+    # find channel that ends with the phase suffix (P or S)
+    tr = None
+    for t in ann_stream:
+        if t.stats.channel.endswith(phase_channel_suffix):
+            tr = t
+            break
+    if tr is None:
+        return []
+    x = tr.data
+    # Offset: annotations may have a starttime offset from stream start
+    start_offset = int(round((tr.stats.starttime - UTCDateTime(0)) * tr.stats.sampling_rate))
+    peaks, props = find_peaks(x, height=LOW_P if phase_channel_suffix == "P" else LOW_S, distance=50)
+    results = []
+    for p, h in zip(peaks, props["peak_heights"]):
+        results.append((int(p + start_offset), float(h)))
+    return results
+
+
+def combine_candidates(candidates_by_model, high_solo_thr):
+    """candidates_by_model: dict model_name -> list of (idx, prob)
+    Merge peaks: accept if >=2 models agree (within AGREE_TOL) OR one model very confident.
+    Returns list of (idx, best_prob).
+    """
+    all_pts = []  # (idx, prob, model)
+    for m, lst in candidates_by_model.items():
+        for idx, prob in lst:
+            all_pts.append((idx, prob, m))
+    if not all_pts:
+        return []
+    all_pts.sort(key=lambda x: x[0])
+    accepted = []
+    used = [False] * len(all_pts)
+    for i, (idx, prob, m) in enumerate(all_pts):
+        if used[i]:
+            continue
+        cluster = [(idx, prob, m)]
+        used[i] = True
+        for j in range(i + 1, len(all_pts)):
+            if used[j]:
+                continue
+            if all_pts[j][0] - idx <= AGREE_TOL:
+                cluster.append(all_pts[j])
+                used[j] = True
+            else:
+                break
+        models = set(x[2] for x in cluster)
+        best = max(cluster, key=lambda x: x[1])
+        if len(models) >= 2 or best[1] >= high_solo_thr:
+            # weighted average idx by probs
+            idxs = np.array([c[0] for c in cluster], dtype=float)
+            ps = np.array([c[1] for c in cluster], dtype=float)
+            avg_idx = int(round(np.sum(idxs * ps) / np.sum(ps)))
+            accepted.append((avg_idx, float(best[1])))
+    return accepted
+
+
+def in_window(idx):
+    return EVENT_LO <= idx <= EVENT_HI
+
+
+def filter_pairs(p_picks, s_picks):
+    """Apply S-P prior as a soft filter: if both P and S exist, prefer combinations
+    where at least one S is after some P with SP in range. But don't drop picks
+    unnecessarily. Return (p_picks, s_picks) filtered lightly."""
+    if not p_picks or not s_picks:
+        return p_picks, s_picks
+    # Require S to be after some P by at least SP_MIN; discard S with no such P
+    # unless S has very high probability.
+    filtered_s = []
+    for si, sp_prob in s_picks:
+        ok = any((si - pi) >= SP_MIN and (si - pi) <= SP_MAX for pi, _ in p_picks)
+        if ok or sp_prob >= 0.6:
+            filtered_s.append((si, sp_prob))
+    # If we accidentally dropped everything, revert
+    if not filtered_s:
+        filtered_s = s_picks
+    return p_picks, filtered_s
+
+
+def main():
+    # Load models
+    print("Loading models...")
+    models = {}
+    try:
+        models["pn_scedc"] = sbm.PhaseNet.from_pretrained("scedc")
+    except Exception as e:
+        print("scedc failed:", e)
+    try:
+        models["pn_stead"] = sbm.PhaseNet.from_pretrained("stead")
+    except Exception as e:
+        print("stead failed:", e)
+    try:
+        models["eqt_scedc"] = sbm.EQTransformer.from_pretrained("scedc")
+    except Exception as e:
+        print("eqt failed:", e)
+    print("Models loaded:", list(models.keys()))
+
+    files = sorted(os.listdir(DATA_DIR))
+    rows = []
+    for fi, fname in enumerate(files):
+        path = os.path.join(DATA_DIR, fname)
+        try:
+            st = load_stream(path)
+        except Exception as e:
+            print(f"[{fi}] {fname} load fail: {e}")
+            continue
+
+        p_cands = {}
+        s_cands = {}
+        for mname, model in models.items():
+            try:
+                ann = model.annotate(st.copy())
+            except Exception as e:
+                print(f"[{fi}] {fname} {mname} annotate fail: {e}")
+                continue
+            p_cands[mname] = annotations_to_peaks(ann, "P")
+            s_cands[mname] = annotations_to_peaks(ann, "S")
+
+        p_picks = combine_candidates(p_cands, HIGH_P_SOLO)
+        s_picks = combine_candidates(s_cands, HIGH_S_SOLO)
+
+        # Restrict to event window (soft physical prior)
+        p_picks = [(i, p) for i, p in p_picks if in_window(i)]
+        s_picks = [(i, p) for i, p in s_picks if in_window(i)]
+
+        # Apply S-P prior
+        p_picks, s_picks = filter_pairs(p_picks, s_picks)
+
+        for idx, _ in p_picks:
+            rows.append((fname, "P", idx))
+        for idx, _ in s_picks:
+            rows.append((fname, "S", idx))
+        print(f"[{fi+1}/{len(files)}] {fname}: P={len(p_picks)} S={len(s_picks)}")
+
+    with open(OUT_CSV, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["file_name", "phase", "pick_idx"])
+        for r in rows:
+            w.writerow(r)
+    print(f"Wrote {len(rows)} rows to {OUT_CSV}")
+
+
+if __name__ == "__main__":
+    main()

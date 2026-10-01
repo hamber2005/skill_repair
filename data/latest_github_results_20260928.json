@@ -1,0 +1,181 @@
+{
+  "checked_at_utc": "2026-09-28T11:29:04Z",
+  "repository": "https://github.com/linyouxue/skill-repair-benchmark",
+  "comparison_baseline": {
+    "previous_checked_at_utc": "2026-09-24T15:03:12.059039+00:00",
+    "previous_main": "13cd97ca4c9db50e3a7969560ef019ff244bc43f"
+  },
+  "current_refs": {
+    "main": "c9ca883d1af68fe12bb7e07275999543bd1cd963",
+    "skillrevise_open_pr_branch": "04caf4d0c99d0ad05adbc725e789cd13466cdeb3",
+    "skillgrad_branch": "978f3fe208893f036f2c78cdce2aa324312671f9",
+    "skilladaptor_branch": "a36c7e6b7eca9a65d96ce59b71b07a8cefa8e7f8"
+  },
+  "tags": {
+    "latest_and_only_result_tag": "mmg2skill-evidence-20260924",
+    "target": "fae23793b1a529da94581f0d46652671ab04197a",
+    "new_tag_since_previous_audit": false
+  },
+  "pull_requests": {
+    "skillrevise_no_skill_and_agentops": {
+      "number": 16,
+      "state": "open",
+      "url": "https://github.com/linyouxue/skill-repair-benchmark/pull/16"
+    },
+    "druid_completion": {
+      "number": 17,
+      "state": "merged",
+      "merged_at_utc": "2026-09-27T07:21:08Z",
+      "url": "https://github.com/linyouxue/skill-repair-benchmark/pull/17"
+    }
+  },
+  "updates": {
+    "human_gold_reference": {
+      "status": "merged_reference_not_method",
+      "tasks": 31,
+      "fresh_pass": 27,
+      "special_validation_pass": 4,
+      "special_tasks": [
+        "exoplanet-detection-period",
+        "fix-build-agentops",
+        "jpg-ocr-stat",
+        "enterprise-information-search"
+      ]
+    },
+    "skilltta_gpt52": {
+      "status": "merged_complete_execution",
+      "valid_tasks": 31,
+      "pass": 4,
+      "fail": 27,
+      "verified_fix_rate": 0.12903225806451613,
+      "pass_tasks": [
+        "dialogue-parser",
+        "drone-planning-control",
+        "software-dependency-audit",
+        "syzkaller-ppdev-syzlang"
+      ],
+      "druid": "valid_fail"
+    },
+    "skillaxe_opus47": {
+      "status": "merged_corrected_selected_run",
+      "previous_pass": 6,
+      "current_pass": 7,
+      "tasks": 15,
+      "previous_vfr": 0.4,
+      "current_vfr": 0.4666666666666667,
+      "changed_task": "jpg-ocr-stat",
+      "same_repaired_bundle": true,
+      "selected_rollout": "jpg-ocr-stat-skillaxe-opus47-r004-budget65",
+      "selected_rollout_iterations": 27,
+      "parent_iteration_budget": 65,
+      "interpretation": "同一修复包在更正配置后的新鲜重跑中通过；实际运行在 27 步结束，不能把变化单独归因于额外 5 步预算。"
+    },
+    "skillgrad": {
+      "status": "branch_only_partial",
+      "completed_tasks": 24,
+      "pass": 8,
+      "fail": 16,
+      "verified_fix_rate_over_completed": 0.3333333333333333,
+      "visible_valid_feedback_executions": 96,
+      "visible_infrastructure_invalid_attempts": 19,
+      "success_round_distribution": {
+        "1": 2,
+        "2": 4,
+        "3": 1,
+        "4": 1,
+        "5": 0
+      },
+      "successes_after_more_than_one_valid_round": 6,
+      "new_task": "drone-planning-control",
+      "new_task_status": "fail",
+      "new_task_visible_valid_rewards": [
+        0.033333,
+        0.566667,
+        0.566667,
+        0.533333
+      ],
+      "new_task_infrastructure_invalid_attempts": 2,
+      "new_task_original_reward": 0.533333,
+      "failed_tasks_final_below_earlier_best_under_prior_ctrf_count": 5,
+      "new_drone_final_below_best_reward": true,
+      "tasks_with_any_observed_final_below_best": 6,
+      "failed_tasks_final_below_original_under_prior_ctrf_count": 5,
+      "skillaxe_common_tasks": 23,
+      "skillaxe_comparison": {
+        "both_fail": 13,
+        "skillgrad_only": 5,
+        "skillaxe_only": 3,
+        "both_pass": 2
+      }
+    },
+    "skilladaptor_gpt41": {
+      "status": "branch_only_summary_package",
+      "valid_tasks": 31,
+      "pass": 3,
+      "fail": 28,
+      "verified_fix_rate": 0.0967741935483871,
+      "pass_tasks": [
+        "multilingual-video-dubbing",
+        "pddl-airport-planning",
+        "software-dependency-audit"
+      ],
+      "diagnosis": {
+        "tp": 10,
+        "fp": 21,
+        "fn": 47,
+        "precision": 0.3225806451612903,
+        "recall": 0.17543859649122806,
+        "f1": 0.22727272727272727
+      },
+      "repair": {
+        "tp": 16,
+        "fp": 5,
+        "fn": 41,
+        "precision": 0.7619047619047619,
+        "recall": 0.2807017543859649,
+        "f1": 0.41025641025641024
+      },
+      "location_accuracy": 0.3,
+      "regressed_bundles": 1,
+      "low_confidence_judgments": 58,
+      "total_judgments": 150,
+      "public_tree_file_count": 20,
+      "public_tree_has_per_task_benchmark_results": false,
+      "public_tree_has_per_task_trajectories": false,
+      "public_tree_has_repaired_skill_bundles": false,
+      "full_upstream_validator_run": false
+    },
+    "skillrevise_followup": {
+      "status": "open_pr_control_and_adjudication",
+      "new_repair_passes": 0,
+      "no_skill_tasks": 39,
+      "no_skill_pass": 0,
+      "no_skill_mean_reward": 0.068846,
+      "no_skill_infrastructure_errors": 0,
+      "agentops_replay": "valid_failure",
+      "agentops_detail": "py310 与 py311 均为 1 failed、9 passed；不是基础设施错误。"
+    },
+    "mmg2skill_gpt52_druid": {
+      "status": "merged_valid_fail",
+      "valid_tasks": 31,
+      "pass": 5,
+      "fail": 26,
+      "verified_fix_rate": 0.16129032258064516,
+      "druid_rollout": "fix-druid-loophole-cve-mmg2skill-gpt52-server-r002",
+      "druid_iterations": 50,
+      "druid_reward": 0.0,
+      "stale_summary_fields": [
+        "semantic_gold_status",
+        "missing_valid_execution"
+      ]
+    }
+  },
+  "integration_policy": {
+    "count_human_gold_as_method": false,
+    "count_skilladaptor_as_fully_evidenced_method_result": false,
+    "treat_skillaxe_jpg_change_as_new_repair": false,
+    "treat_mmg_druid_as_new_pass": false,
+    "recommended_method_family_count_including_branch_only_skilladaptor": 10,
+    "selected_repair_record_count_requires_reindex": true
+  }
+}

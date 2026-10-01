@@ -1,0 +1,378 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>制造故障码规范化 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>制造故障码规范化</h1><p class="lead">将现场故障描述规范化为 codebook 结果 JSON。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/manufacturing-codebook-normalization/task.md">原始任务要求</a></div><p class="meta">manufacturing-codebook-normalization · 工业与物理系统 · 1 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>将现场故障描述规范化为 codebook 结果 JSON。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>manufacturing-failure-reason-codebook-normalization</td><td>清洗现场故障描述，并映射到产品和工位对应的标准缺陷码。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/manufacturing-codebook-normalization/environment/skills/manufacturing-failure-reason-codebook-normalization/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>15 项通过 / 16 项检查</td><td>15/16 项通过；语义证据覆盖率 56.53%，要求 70%。人工排除说明同时指出中文分词评分缺陷与部分真实映射错误。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>15 项通过 / 16 项检查</td><td>语义证据覆盖率升至 62.61%，仍低于 70%。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>15 项通过 / 16 项检查</td><td>语义检查通过，但已知类别置信度的第 10 百分位为 0.4372，低于 0.48；失败位置转移。</td></tr><tr><td>SkillRevise · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>15 项通过 / 16 项检查</td><td>15/16 项通过；已知代码预测中，词汇证据重叠至少 0.01 的比例为 69.6157%，门槛为 70%。最终卡在低证据预测比例，仍需同时保留其他语义约束。</td></tr></tbody></table></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>manufacturing-failure-reason-codebook-normalization/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/manufacturing-codebook-normalization/selected_run/result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/manufacturing-codebook-normalization/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/manufacturing-codebook-normalization/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/manufacturing-codebook-normalization/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>15/16 项通过；语义证据覆盖率 56.53%，要求 70%。人工排除说明同时指出中文分词评分缺陷与部分真实映射错误。</p><details><summary>::test_T11_semantic_alignment_should_hold</summary><pre>def test_T11_semantic_alignment_should_hold():
+        &quot;&quot;&quot;
+        Semantic alignment check (replaces old hash/distribution-driven requirement).
+    
+        For non-UNKNOWN predictions, span_text should share at least some tokens with the
+        codebook description (label/keywords/categories) for the predicted code.
+        &quot;&quot;&quot;
+        logs = load_logs()
+        sol = load_solution()
+        recs = to_records(sol)
+    
+        valid_codes, _, _, kw_tokens = load_codebooks_full()
+    
+        overlaps_known: List[float] = []
+    
+        for r in recs[:2500]:
+            rid = norm_str(r.get(&quot;record_id&quot;))
+            prod = norm_str(r.get(&quot;product_id&quot;)) or norm_str(logs.get(rid, {}).get(&quot;product_id&quot;))
+            if prod not in valid_codes:
+                continue
+    
+            for s in get_segments(r):
+                span = norm_str(s.get(&quot;span_text&quot;))
+                code = norm_str(s.get(&quot;pred_code&quot;))
+                if not span:
+                    continue
+    
+                if code == UNKNOWN:
+                    continue
+                kt = kw_tokens.get(prod, {}).get(code, set())
+                st = token_set(span)
+    
+                if st and kt:
+                    ov = len(st &amp; kt) / len(st | kt)
+                else:
+                    ov = 0.0
+                overlaps_known.append(ov)
+    
+        assert len(overlaps_known) &gt; 0, &quot;No non-UNKNOWN predictions produced.&quot;
+    
+        m = mean(overlaps_known)
+        assert m &gt;= 0.05, f&quot;Semantic overlap too low on average: {m:.3f} (need ≥ 0.05)&quot;
+    
+        overlaps_known.sort()
+        p60 = overlaps_known[int(0.60 * (len(overlaps_known) - 1))]
+        assert p60 &gt;= 0.03, f&quot;Too many weakly-supported predictions: p60 overlap={p60:.3f} (need ≥ 0.03)&quot;
+    
+        # Harder: require that most known predictions have at least minimal lexical support
+        # (guards against passing by emitting many arbitrary known codes with near-zero evidence).
+        strong_enough = sum(1 for v in overlaps_known if v &gt;= 0.01)
+        frac = strong_enough / len(overlaps_known)
+&gt;       assert frac &gt;= 0.70, f&quot;Too many near-zero-evidence known predictions: frac(ov&gt;=0.01)={frac:.2%} (need ≥ 70%)&quot;
+E       AssertionError: Too many near-zero-evidence known predictions: frac(ov&gt;=0.01)=56.53% (need ≥ 70%)
+E       assert 0.5653170359052712 &gt;= 0.7
+
+/verifier/test_outputs.py:497: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;manufacturing-codebook-normalization__20d53cd3&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: null,
+  &quot;protocol_id&quot;: null,
+  &quot;protocol_version&quot;: null,
+  &quot;task_digest&quot;: &quot;sha256:07f8f87ed53b8224fefc65dc220537572980e0794970db30e3873aebd063c9d3&quot;,
+  &quot;max_parent_iterations&quot;: null,
+  &quot;iterations&quot;: null,
+  &quot;termination_reason&quot;: null,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: null
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/manufacturing-codebook-normalization/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/manufacturing-codebook-normalization/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/manufacturing-codebook-normalization/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/manufacturing-codebook-normalization/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/manufacturing-codebook-normalization/repaired_skill">上传修复包</a></p><p>语义证据覆盖率升至 62.61%，仍低于 70%。</p><details><summary>::test_T11_semantic_alignment_should_hold</summary><pre>def test_T11_semantic_alignment_should_hold():
+        &quot;&quot;&quot;
+        Semantic alignment check (replaces old hash/distribution-driven requirement).
+    
+        For non-UNKNOWN predictions, span_text should share at least some tokens with the
+        codebook description (label/keywords/categories) for the predicted code.
+        &quot;&quot;&quot;
+        logs = load_logs()
+        sol = load_solution()
+        recs = to_records(sol)
+    
+        valid_codes, _, _, kw_tokens = load_codebooks_full()
+    
+        overlaps_known: List[float] = []
+    
+        for r in recs[:2500]:
+            rid = norm_str(r.get(&quot;record_id&quot;))
+            prod = norm_str(r.get(&quot;product_id&quot;)) or norm_str(logs.get(rid, {}).get(&quot;product_id&quot;))
+            if prod not in valid_codes:
+                continue
+    
+            for s in get_segments(r):
+                span = norm_str(s.get(&quot;span_text&quot;))
+                code = norm_str(s.get(&quot;pred_code&quot;))
+                if not span:
+                    continue
+    
+                if code == UNKNOWN:
+                    continue
+                kt = kw_tokens.get(prod, {}).get(code, set())
+                st = token_set(span)
+    
+                if st and kt:
+                    ov = len(st &amp; kt) / len(st | kt)
+                else:
+                    ov = 0.0
+                overlaps_known.append(ov)
+    
+        assert len(overlaps_known) &gt; 0, &quot;No non-UNKNOWN predictions produced.&quot;
+    
+        m = mean(overlaps_known)
+        assert m &gt;= 0.05, f&quot;Semantic overlap too low on average: {m:.3f} (need ≥ 0.05)&quot;
+    
+        overlaps_known.sort()
+        p60 = overlaps_known[int(0.60 * (len(overlaps_known) - 1))]
+        assert p60 &gt;= 0.03, f&quot;Too many weakly-supported predictions: p60 overlap={p60:.3f} (need ≥ 0.03)&quot;
+    
+        # Harder: require that most known predictions have at least minimal lexical support
+        # (guards against passing by emitting many arbitrary known codes with near-zero evidence).
+        strong_enough = sum(1 for v in overlaps_known if v &gt;= 0.01)
+        frac = strong_enough / len(overlaps_known)
+&gt;       assert frac &gt;= 0.70, f&quot;Too many near-zero-evidence known predictions: frac(ov&gt;=0.01)={frac:.2%} (need ≥ 70%)&quot;
+E       AssertionError: Too many near-zero-evidence known predictions: frac(ov&gt;=0.01)=62.61% (need ≥ 70%)
+E       assert 0.6260899895361004 &gt;= 0.7
+
+/verifier/test_outputs.py:497: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;manufacturing-codebook-normalization-a04&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:07f8f87ed53b8224fefc65dc220537572980e0794970db30e3873aebd063c9d3&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 22,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:1c60e8099dd428451ae4572f1cf9fc2748a00dac5c1575544b061f9704f77113&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/manufacturing-codebook-normalization/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/manufacturing-codebook-normalization/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/manufacturing-codebook-normalization/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/manufacturing-codebook-normalization/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/manufacturing-codebook-normalization/repaired_skill">上传修复包</a></p><p>语义检查通过，但已知类别置信度的第 10 百分位为 0.4372，低于 0.48；失败位置转移。</p><details><summary>::test_T09_confidence_valid_and_well_separated</summary><pre>def test_T09_confidence_valid_and_well_separated():
+        sol = load_solution()
+        recs = to_records(sol)
+    
+        confs: List[float] = []
+        unk: List[float] = []
+        kn: List[float] = []
+    
+        missing = 0
+        invalid = 0
+    
+        for r in recs[:2000]:
+            for s in get_segments(r):
+                if s.get(&quot;confidence&quot;) is None:
+                    missing += 1
+                    continue
+                c = as_float(s.get(&quot;confidence&quot;), -1.0)
+                if c &lt; 0.0 or c &gt; 1.0:
+                    invalid += 1
+                    continue
+    
+                confs.append(c)
+                code = norm_str(s.get(&quot;pred_code&quot;))
+                if code == UNKNOWN:
+                    unk.append(c)
+                else:
+                    kn.append(c)
+    
+        assert missing == 0, f&quot;{missing} segments missing confidence&quot;
+        assert invalid == 0, f&quot;{invalid} segments with invalid confidence&quot;
+    
+        # Anti-cheat: confidence should not be nearly constant
+        assert _unique_count(confs, 2) &gt;= 3, f&quot;Confidence too uniform: only {_unique_count(confs, 2)} unique values @2dp (need ≥ 3)&quot;
+    
+        # Keep the original mean constraints (backward compatible)
+        if unk:
+            assert mean(unk) &lt;= 0.58, f&quot;UNKNOWN too confident on average: {mean(unk):.3f} (need ≤ 0.58)&quot;
+        if kn:
+            assert mean(kn) &gt;= 0.52, f&quot;Known too unconfident on average: {mean(kn):.3f} (need ≥ 0.52)&quot;
+        if unk and kn:
+            assert mean(kn) - mean(unk) &gt;= 0.06, f&quot;Confidence gap too small: known {mean(kn):.3f} unknown {mean(unk):.3f}&quot;
+    
+        # ---- Plan A: distribution-level constraints (harder to game than mean) ----
+        # Sample-size guards to avoid flaky behavior on small sets
+        if len(unk) &gt;= 30:
+            p90_unk = _quantile(unk, 0.90)
+            assert p90_unk &lt;= 0.62, f&quot;UNKNOWN p90 too high: {p90_unk:.3f} (need ≤ 0.62)&quot;
+            assert _unique_count(unk, 2) &gt;= 2, f&quot;UNKNOWN confidence too uniform @2dp: {_unique_count(unk, 2)} unique (need ≥ 2)&quot;
+    
+        if len(kn) &gt;= 30:
+            p10_kn = _quantile(kn, 0.10)
+&gt;           assert p10_kn &gt;= 0.48, f&quot;Known p10 too low: {p10_kn:.3f} (need ≥ 0.48)&quot;
+E           AssertionError: Known p10 too low: 0.437 (need ≥ 0.48)
+E           assert 0.4372 &gt;= 0.48
+
+/verifier/test_outputs.py:406: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;manufacturing-codebook-normalization-a08&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:9e280f78f426c2d4f86a217499ac5e3c0aebd5e8c55d4487bd6ad4a9aff7c86a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 17,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:11ec407caa2b9bdde540f5c0f9cb56843a6921d6ca4e018fc2912d17e79fbeb0&quot;
+}</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_skill">上传修复包</a></p><p>15/16 项通过；已知代码预测中，词汇证据重叠至少 0.01 的比例为 69.6157%，门槛为 70%。最终卡在低证据预测比例，仍需同时保留其他语义约束。</p><details><summary>::test_T11_semantic_alignment_should_hold</summary><pre>def test_T11_semantic_alignment_should_hold():
+        &quot;&quot;&quot;
+        Semantic alignment check (replaces old hash/distribution-driven requirement).
+    
+        For non-UNKNOWN predictions, span_text should share at least some tokens with the
+        codebook description (label/keywords/categories) for the predicted code.
+        &quot;&quot;&quot;
+        logs = load_logs()
+        sol = load_solution()
+        recs = to_records(sol)
+    
+        valid_codes, _, _, kw_tokens = load_codebooks_full()
+    
+        overlaps_known: List[float] = []
+    
+        for r in recs[:2500]:
+            rid = norm_str(r.get(&quot;record_id&quot;))
+            prod = norm_str(r.get(&quot;product_id&quot;)) or norm_str(logs.get(rid, {}).get(&quot;product_id&quot;))
+            if prod not in valid_codes:
+                continue
+    
+            for s in get_segments(r):
+                span = norm_str(s.get(&quot;span_text&quot;))
+                code = norm_str(s.get(&quot;pred_code&quot;))
+                if not span:
+                    continue
+    
+                if code == UNKNOWN:
+                    continue
+                kt = kw_tokens.get(prod, {}).get(code, set())
+                st = token_set(span)
+    
+                if st and kt:
+                    ov = len(st &amp; kt) / len(st | kt)
+                else:
+                    ov = 0.0
+                overlaps_known.append(ov)
+    
+        assert len(overlaps_known) &gt; 0, &quot;No non-UNKNOWN predictions produced.&quot;
+    
+        m = mean(overlaps_known)
+        assert m &gt;= 0.05, f&quot;Semantic overlap too low on average: {m:.3f} (need ≥ 0.05)&quot;
+    
+        overlaps_known.sort()
+        p60 = overlaps_known[int(0.60 * (len(overlaps_known) - 1))]
+        assert p60 &gt;= 0.03, f&quot;Too many weakly-supported predictions: p60 overlap={p60:.3f} (need ≥ 0.03)&quot;
+    
+        # Harder: require that most known predictions have at least minimal lexical support
+        # (guards against passing by emitting many arbitrary known codes with near-zero evidence).
+        strong_enough = sum(1 for v in overlaps_known if v &gt;= 0.01)
+        frac = strong_enough / len(overlaps_known)
+&gt;       assert frac &gt;= 0.70, f&quot;Too many near-zero-evidence known predictions: frac(ov&gt;=0.01)={frac:.2%} (need ≥ 70%)&quot;
+E       AssertionError: Too many near-zero-evidence known predictions: frac(ov&gt;=0.01)=69.62% (need ≥ 70%)
+E       assert 0.6961568222852721 &gt;= 0.7
+
+/verifier/test_outputs.py:497: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;manufacturing-codebook-normalization-bundle-1-published-original-revi-a6ee3a581903&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:6780680470f1840a0b42d053f8a01eccd407e658683dbb9edbdff0ce2fe860f5&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 27,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:3bb4b3e1363a8b3c349d7cdbb50ceb313b261a778a3f5fa226cb4e58439bec3c&quot;
+}</pre></details></details><h2>人工 Gold 范围</h2><p>该题属于原始失败但排除出人工 Gold 的 8 题之一。“排除”只表示未纳入这一 Gold 评分集合，不表示任务已解决或不值得分析。</p><div class="note warning"><strong>该题为何被排除出人工 Gold</strong><p>T11 的词汇证据检查可能把连续中文短语视为单个 token，错误拒绝“探针接触不良”等有语义支持的文本。原 Agent 输出同时存在独立实现问题，不能把全部失败都归于校验器。</p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/exclusions.json">发布者的排除说明</a></div><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/manufacturing-codebook-normalization/repaired_skill">完整上传修复包</a></p><p>missing。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;manufacturing-codebook-normalization&quot;,
+  &quot;file_count&quot;: 2,
+  &quot;total_bytes&quot;: 9235,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:1c60e8099dd428451ae4572f1cf9fc2748a00dac5c1575544b061f9704f77113&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:1c60e8099dd428451ae4572f1cf9fc2748a00dac5c1575544b061f9704f77113&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/manufacturing-codebook-normalization/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/manufacturing-codebook-normalization/repaired_skill&quot;
+}</pre></details><p>缺少可信原包，不能把无法比较记成“没有修改”。</p><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;semantic-overlap-guard-missing-for-non-UNKNOWN&quot;,
+    &quot;description&quot;: &quot;Skill guidance under-specifies an explicit lexical-support requirement for non-UNKNOWN predictions, allowing the agent to output many known codes with near-zero token overlap against codebook keyword/label tokens. This caused the verifier to fail the semantic alignment test that requires most known predictions to have minimal lexical support.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;manufacturing-failure-reason-codebook-normalization/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Scoring / UNKNOWN handling / Evidence guidance&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;evidence-computation-not-aligned-to-verifier-tokenization&quot;,
+    &quot;description&quot;: &quot;Skill guidance does not instruct aligning text-evidence computation to the verifier’s token-set overlap notion (tokens from span_text vs tokens from codebook label/keywords/categories). Without a check mirroring that overlap, an implementation can rely on non-lexical heuristics (station/fail_code/test_item) and still emit known codes that the verifier deems unsupported.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;manufacturing-failure-reason-codebook-normalization/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Evidence sources / Ranking / Rationale&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;rationale-guidance-allows-context-only-justifications&quot;,
+    &quot;description&quot;: &quot;Skill suggests adding station/fail_code/test_item cues to the rationale, which can inadvertently encourage choosing codes primarily via context without lexical support in span_text. This increases near-zero lexical overlap for known predictions.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;manufacturing-failure-reason-codebook-normalization/SKILL.md&quot;,
+        &quot;section&quot;: &quot;To provide convincing answers, add ... to the rationale&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/manufacturing-codebook-normalization/repaired_skill">完整上传修复包</a></p><p>missing。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;manufacturing-codebook-normalization&quot;,
+  &quot;file_count&quot;: 2,
+  &quot;total_bytes&quot;: 12318,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:11ec407caa2b9bdde540f5c0f9cb56843a6921d6ca4e018fc2912d17e79fbeb0&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:11ec407caa2b9bdde540f5c0f9cb56843a6921d6ca4e018fc2912d17e79fbeb0&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/manufacturing-codebook-normalization/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/manufacturing-codebook-normalization/repaired_skill&quot;
+}</pre></details><p>缺少可信原包，不能把无法比较记成“没有修改”。</p></details><details><summary>SkillRevise · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_skill">完整上传修复包</a></p><p>missing。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillrevise_gpt52&quot;,
+  &quot;task_id&quot;: &quot;manufacturing-codebook-normalization&quot;,
+  &quot;file_count&quot;: 2,
+  &quot;total_bytes&quot;: 7199,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:3bb4b3e1363a8b3c349d7cdbb50ceb313b261a778a3f5fa226cb4e58439bec3c&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:3bb4b3e1363a8b3c349d7cdbb50ceb313b261a778a3f5fa226cb4e58439bec3c&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/manufacturing-codebook-normalization/repaired_skill&quot;
+}</pre></details><p>缺少可信原包，不能把无法比较记成“没有修改”。</p><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The skill failed because it is overly long and algorithmic (context pollution, wrong abstraction level) and not aligned to the execution environment/harness constraints (environment mismatch), resulting in brittle or noncompliant tool-driven execution instead of a minimal, environment-grounded procedure to generate and validate /app/output/solution.json. Primary failure cause is environment mismatch compounded by context pollution: the skill’s long, research-like scoring pipeline and confidence calibration guidance does not enforce the harness/tool constraints and does not ground actions in the actual execution interface, leading to noncompliant tool usage and brittle execution rather than reliably producing/validating the required artifact.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;manufacturing-failure-reason-codebook-normalization/SKILL.md&quot;
+      }
+    ]
+  }
+]</pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

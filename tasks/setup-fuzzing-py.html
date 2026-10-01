@@ -1,0 +1,318 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python模糊测试配置 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>Python模糊测试配置</h1><p class="lead">对五个 Python 库列路径、选择目标、建环境并交付可运行 fuzzer。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/setup-fuzzing-py/task.md">原始任务要求</a></div><p class="meta">setup-fuzzing-py · 网络与软件安全 · 3 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>对五个 Python 库列路径、选择目标、建环境并交付可运行 fuzzer。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>discover-important-function</td><td>在代码库中识别适合进一步测试的关键函数。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/setup-fuzzing-py/environment/skills/discover-important-function/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr><tr><td>fuzzing-python</td><td>为 Python 库编写并运行 Atheris/LibFuzzer 模糊测试入口。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/setup-fuzzing-py/environment/skills/fuzzing-python/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr><tr><td>setup-env</td><td>为 Python 项目建立虚拟环境并安装依赖。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/setup-fuzzing-py/environment/skills/setup-env/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.66</td><td>1 项通过 / 2 项检查</td><td>reward=0.66；libraries.txt 按路径列出 /app/arrow 等，verifier 却要求裸名称 arrow，存在格式口径冲突。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.83</td><td>1 项通过 / 2 项检查</td><td>reward=0.83；库发现仍因路径与裸名冲突失败。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.83</td><td>1 项通过 / 2 项检查</td><td>reward=0.83；库发现仍因路径与裸名冲突失败。</td></tr></tbody></table></div><div class="note">SkillRevise 已上传诊断和最终包，但没有选中的修后执行。该方法拒绝了候选修改，最终保留原包；此状态没有被补成一条 after FAIL。<a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/setup-fuzzing-py/provenance.json">原始选择记录</a></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/setup-fuzzing-py/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/setup-fuzzing-py/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>setup-env/SKILL.md</td><td>拒绝下降修改</td><td>0.66</td><td>0.5</td></tr><tr><td>fuzzing-python/SKILL.md</td><td>拒绝下降修改</td><td>0.66</td><td>0.33</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/setup-fuzzing-py/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/setup-fuzzing-py/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/setup-fuzzing-py/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/setup-fuzzing-py/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>reward=0.66；libraries.txt 按路径列出 /app/arrow 等，verifier 却要求裸名称 arrow，存在格式口径冲突。</p><details><summary>::test_discovery</summary><pre>def test_discovery() -&gt; None:
+        &quot;&quot;&quot;test Step 1: discovery
+        In this step,
+        the agent should list all the libraries cloned during setup in `libraries.txt`.
+    
+        The `libraries.txt` file should be created in the `/app` directory,
+        containing a relative path to each library cloned during setup.
+        &quot;&quot;&quot;
+        list_file = BASE_APP_DIR / &quot;libraries.txt&quot;
+        assert list_file.exists(), &quot;The output file libraries.txt does not exist.&quot;
+    
+        with list_file.open(&quot;r&quot;) as f:
+            lines = [line.strip() for line in f.readlines() if line.strip()]
+    
+        for lib in LIBS:
+&gt;           assert lib in lines, f&quot;The library {lib} is not listed in libraries.txt.&quot;
+E           AssertionError: The library arrow is not listed in libraries.txt.
+E           assert &#x27;arrow&#x27; in [&#x27;/app/arrow&#x27;, &#x27;/app/black&#x27;, &#x27;/app/ipython&#x27;, &#x27;/app/minisgl&#x27;, &#x27;/app/ujson&#x27;]
+
+/verifier/test_setup.py:32: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;setup-fuzzing-py-original-skill-v11x-20260903-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:ac70897b525ee19474225247a9132f4beaa9365ad8a4af064305321997147c0d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 32,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:81f88ab1f1d9c56304c26fd09707e862db1a9d0e1f7a3433620d82902cbd329e&quot;
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_skill">上传修复包</a></p><p>reward=0.83；库发现仍因路径与裸名冲突失败。</p><details><summary>::test_discovery</summary><pre>def test_discovery() -&gt; None:
+        &quot;&quot;&quot;test Step 1: discovery
+        In this step,
+        the agent should list all the libraries cloned during setup in `libraries.txt`.
+    
+        The `libraries.txt` file should be created in the `/app` directory,
+        containing a relative path to each library cloned during setup.
+        &quot;&quot;&quot;
+        list_file = BASE_APP_DIR / &quot;libraries.txt&quot;
+        assert list_file.exists(), &quot;The output file libraries.txt does not exist.&quot;
+    
+        with list_file.open(&quot;r&quot;) as f:
+            lines = [line.strip() for line in f.readlines() if line.strip()]
+    
+        for lib in LIBS:
+&gt;           assert lib in lines, f&quot;The library {lib} is not listed in libraries.txt.&quot;
+E           AssertionError: The library arrow is not listed in libraries.txt.
+E           assert &#x27;arrow&#x27; in [&#x27;/app/arrow&#x27;, &#x27;/app/black&#x27;, &#x27;/app/ipython&#x27;, &#x27;/app/minisgl&#x27;, &#x27;/app/ujson&#x27;]
+
+/verifier/test_setup.py:32: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;setup-fuzzing-py-a01&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:ac70897b525ee19474225247a9132f4beaa9365ad8a4af064305321997147c0d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 45,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:df11cc38013fb7ef9a13e585e425e841c8ce8427fc77436010757a078fd266f6&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/setup-fuzzing-py/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/setup-fuzzing-py/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/setup-fuzzing-py/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/setup-fuzzing-py/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/setup-fuzzing-py/repaired_skill">上传修复包</a></p><p>reward=0.83；库发现仍因路径与裸名冲突失败。</p><details><summary>::test_discovery</summary><pre>def test_discovery() -&gt; None:
+        &quot;&quot;&quot;test Step 1: discovery
+        In this step,
+        the agent should list all the libraries cloned during setup in `libraries.txt`.
+    
+        The `libraries.txt` file should be created in the `/app` directory,
+        containing a relative path to each library cloned during setup.
+        &quot;&quot;&quot;
+        list_file = BASE_APP_DIR / &quot;libraries.txt&quot;
+        assert list_file.exists(), &quot;The output file libraries.txt does not exist.&quot;
+    
+        with list_file.open(&quot;r&quot;) as f:
+            lines = [line.strip() for line in f.readlines() if line.strip()]
+    
+        for lib in LIBS:
+&gt;           assert lib in lines, f&quot;The library {lib} is not listed in libraries.txt.&quot;
+E           AssertionError: The library arrow is not listed in libraries.txt.
+E           assert &#x27;arrow&#x27; in [&#x27;/app/arrow&#x27;, &#x27;/app/black&#x27;, &#x27;/app/ipython&#x27;, &#x27;/app/minisgl&#x27;, &#x27;/app/ujson&#x27;]
+
+/verifier/test_setup.py:32: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;setup-fuzzing-py-a01&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:ac70897b525ee19474225247a9132f4beaa9365ad8a4af064305321997147c0d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 49,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:628ce4bf9ac5de47118949d58ca68a21723b0e0901d6a5d183f7bcfcebffff7c&quot;
+}</pre></details></details><h2>人工 Gold 范围</h2><p>该题属于原始失败但排除出人工 Gold 的 8 题之一。“排除”只表示未纳入这一 Gold 评分集合，不表示任务已解决或不值得分析。</p><div class="note warning"><strong>该题为何被排除出人工 Gold</strong><p>任务要求给出库路径，verifier 只接受裸相对名称；minisgl 的检查还绕过任务创建的虚拟环境，且未安装本地包。路径格式与执行环境均有冲突。</p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/exclusions.json">发布者的排除说明</a></div><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;setup-fuzzing-py&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 35151,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:df11cc38013fb7ef9a13e585e425e841c8ce8427fc77436010757a078fd266f6&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:df11cc38013fb7ef9a13e585e425e841c8ce8427fc77436010757a078fd266f6&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_skill&quot;
+}</pre></details><p>字节变化文件 2 个；排除仅空白变化后 2 个。</p><details><summary>fuzzing-python/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/setup-fuzzing-py/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_skill/fuzzing-python/SKILL.md">修改后</a></p><pre>--- original/fuzzing-python/SKILL.md
++++ repaired/fuzzing-python/SKILL.md
+@@ -47,6 +47,48 @@
+ ```
+ 
+ When fuzzing Python, Atheris will report a failure if the Python code under test throws an uncaught exception.
++
++---
++
++## Harness robustness: make imports work in “repo checkout” execution
++
++Many benchmarks and CI setups execute your `fuzz.py` directly from the library directory.
++That means the package under test might **not** be installed into site-packages.
++If your harness assumes `import &lt;pkg&gt;` works only because you installed the project, it may fail under alternative runners.
++
++### Required check
++
++Before considering the driver complete, ensure it can start (import and reach `atheris.Setup`) when executed from the library root in a minimal environment.
++A common pattern is:
++
++- run via `uv run ... fuzz.py -runs=3` (or similar)
++- do **not** rely on activating a shell venv
++
++### Import patterns that survive different layouts
++
++If your repository uses a `src/` layout (e.g., `src/&lt;pkg&gt;/...`) or a custom package dir (e.g., `python/&lt;pkg&gt;/...`), add it to `sys.path` at the top of the harness **before** importing the target package.
++
++```python
++import os
++import sys
++
++REPO_ROOT = os.path.dirname(__file__)
++
++# Common layouts
++for rel in (&quot;src&quot;, &quot;python&quot;):
++  p = os.path.join(REPO_ROOT, rel)
++  if os.path.isdir(p) and p not in sys.path:
++    sys.path.insert(0, p)
++
++# Now imports are more likely to work without installing the project
++```
++
++Notes:
++
++- Prefer this minimal `sys.path` adjustment over `pip install .` when the execution environment may not install the project.
++- Still keep imports inside `with atheris.instrument_imports():` when possible so that coverage is collected.
++
++---
+ 
+ ### Python coverage
+ 
+@@ -438,7 +480,7 @@
+ def ConsumeRegularFloatList(count: int)
+ ```
+ 
+-Consume a list of `count` arbitrary numeric floating-point values; never produces special types like `NaN` or `Inf`.
++Consume a list of `count` arbitrary numeric floating-point values; never produces special types like `NaN` and `Inf`.
+ 
+ ```python
+ def ConsumeProbabilityList(count: int)</pre></details><details><summary>setup-env/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/setup-fuzzing-py/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/setup-fuzzing-py/repaired_skill/setup-env/SKILL.md">修改后</a></p><pre>--- original/setup-env/SKILL.md
++++ repaired/setup-env/SKILL.md
+@@ -46,6 +46,15 @@
+ 
+ - `uv run` executes inside the project environment and ensures it is up-to-date.
+ 
++#### Required validation step (prevents “works in .venv, fails in CI”)
++
++After creating `.venv`, validate that the key entrypoint you generated (e.g., `fuzz.py`) can be executed using the same style as CI/verifiers:
++
++- Prefer: `uv run --with atheris==&lt;pinned&gt; --with . fuzz.py -runs=3`
++- If you cannot or should not install the project into the runner, use `uv run --no-project --with atheris==&lt;pinned&gt; fuzz.py -runs=3` **and** ensure your script adjusts `sys.path` to import the in-repo package.
++
++Rationale: running `.venv/bin/python fuzz.py` can mask packaging/import issues that appear when `uv run` is used.
++
+ ---
+ 
+ ## Pip workflow (requirements.txt)</pre></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;libraries_txt_should_use_relative_paths_not_absolute&quot;,
+    &quot;description&quot;: &quot;Step 1 guidance is missing an explicit requirement to write *relative* library paths (e.g., `arrow`) rather than absolute paths (e.g., `/app/arrow`). The verifier checks membership against bare library names and fails when absolute paths are written.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;discover-important-function/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Outputs / Guardrails (missing Step-1 specific checks)&quot;
+      },
+      {
+        &quot;file&quot;: &quot;setup-env/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Scope / Workflow selection (does not mention task artifact expectations like libraries.txt format)&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;fuzz_driver_must_run_via_uv_run_without_project_install_for_minisgl&quot;,
+    &quot;description&quot;: &quot;Fuzzing guidance does not cover the important execution-mode constraint used by the verifier: fuzz drivers must be runnable via `uv run` in the library directory, and in some cases (e.g., libraries not installed as a project) the driver must add the in-repo source path to `sys.path` or otherwise avoid relying on package installation. The minisgl driver failed because it imported `minisgl` without ensuring importability when executed under `uv run --no-project`.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;fuzzing-python/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Using Atheris / Example (lacks packaging/import robustness guidance)&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;setup_env_skill_assumes_uv_available_but_does_not_link_env_layout_to_verifier_execution&quot;,
+    &quot;description&quot;: &quot;Environment setup guidance focuses on creating `.venv` with `uv sync`/`uv venv` but does not instruct the agent to validate that `fuzz.py` is runnable in the verifier’s invocation style (`uv run` from the repo, sometimes without project install). This missing check allows drivers to pass local `.venv/bin/python fuzz.py` runs yet fail verifier execution.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;setup-env/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Run scripts / commands (preferred)&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/setup-fuzzing-py/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><div class="note warning">上传包与当次执行的包哈希不同。下方“修改前后”的差异描述上传版本，不能全部归因于这次运行。<a href="../protocol.html#bundle-identity">查看 5 题的完整审计</a></div><p>轨迹第 2 行保存了当次预加载的 Skill 正文。替换回该正文后，完整包哈希可重建为日志记录值。<a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/setup-fuzzing-py/repaired_run/trajectory/acp_trajectory.jsonl">预加载正文</a></p><details><summary>运行时正文与上传正文的差异</summary><details><summary>setup-env/SKILL.md</summary><pre>--- runtime_preload/setup-env/SKILL.md
++++ uploaded_bundle/setup-env/SKILL.md
+@@ -28,11 +28,21 @@
+ - Prefer **directory names** (e.g., `arrow`, `black`) or **paths relative to the stated base directory**.
+ - Do **not** write absolute filesystem paths (e.g., `/app/arrow`) unless the consumer explicitly requires absolute paths.
+ 
+-Concrete self-check before proceeding to downstream steps:
++#### Must-pass stage gate (before doing any downstream work)
+ 
+-- Re-read the file you wrote and sanity-check that each non-empty line is a relative identifier (no leading `/`).
+-- If the list is meant to correspond to directories under a base directory (e.g., `/app`), optionally confirm each entry resolves:
+-  - `test -d &quot;/app/&lt;entry&gt;&quot;` for each line.
++Immediately after writing the list/manifest file, re-open it and verify the contract **before** installing deps, generating notes, or running other steps.
++
++Concrete self-check:
++
++- Re-read the file you wrote and assert each non-empty line is a relative identifier:
++  - must **not** start with `/`
++  - must **not** contain a drive prefix / URI scheme (e.g., `C:\...`, `file://...`)
++- If the list is meant to correspond to directories under a base directory (e.g., `/app`), confirm each entry resolves to an existing directory:
++  - `test -d &quot;/app/&lt;entry&gt;&quot;` for each line
++
++If the stage gate fails:
++
++- Stop and rewrite the file to match the required representation (relative identifiers / relative paths), then re-run the checks.
+ 
+ (Do not “fix up” formats automatically—bind to the requirement stated in the task.)
+ 
+@@ -89,4 +99,4 @@
+ ## Minimal sanity checks (optional)
+ 
+ - `test -x .venv/bin/python`
+-- `uv pip list` (verify packages installed)+- `uv pip list` (verify packages installed)
+</pre></details></details><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;setup-fuzzing-py&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 34393,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:e591567bb866aed4467950922a31cd567ee214c74a8e377b4792c46ff98f7dbf&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:628ce4bf9ac5de47118949d58ca68a21723b0e0901d6a5d183f7bcfcebffff7c&quot;,
+  &quot;matches_recorded_hash&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/setup-fuzzing-py/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/setup-fuzzing-py/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>setup-env/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/setup-fuzzing-py/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/setup-fuzzing-py/repaired_skill/setup-env/SKILL.md">修改后</a></p><pre>--- original/setup-env/SKILL.md
++++ repaired/setup-env/SKILL.md
+@@ -20,6 +20,31 @@
+ - If `pyproject.toml` exists: use **project workflow** (`uv sync`, `uv run`)
+ - Else if `requirements.txt` exists: use **pip workflow** (`uv venv`, `uv pip install -r ...`, `.venv/bin/python ...`)
+ - Else: stop with an error (&quot;No pyproject.toml or requirements.txt found.&quot;)
++
++### Output-format guardrail for list / manifest files (relative vs absolute)
++
++When you need to write a *list file* that enumerates subprojects (e.g., `libraries.txt`) and the instruction says it must contain **relative paths**:
++
++- Prefer **directory names** (e.g., `arrow`, `black`) or **paths relative to the stated base directory**.
++- Do **not** write absolute filesystem paths (e.g., `/app/arrow`) unless the consumer explicitly requires absolute paths.
++
++#### Must-pass stage gate (before doing any downstream work)
++
++Immediately after writing the list/manifest file, re-open it and verify the contract **before** installing deps, generating notes, or running other steps.
++
++Concrete self-check:
++
++- Re-read the file you wrote and assert each non-empty line is a relative identifier:
++  - must **not** start with `/`
++  - must **not** contain a drive prefix / URI scheme (e.g., `C:\...`, `file://...`)
++- If the list is meant to correspond to directories under a base directory (e.g., `/app`), confirm each entry resolves to an existing directory:
++  - `test -d &quot;/app/&lt;entry&gt;&quot;` for each line
++
++If the stage gate fails:
++
++- Stop and rewrite the file to match the required representation (relative identifiers / relative paths), then re-run the checks.
++
++(Do not “fix up” formats automatically—bind to the requirement stated in the task.)
+ 
+ ---
+ </pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

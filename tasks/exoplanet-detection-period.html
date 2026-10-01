@@ -1,0 +1,2377 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>系外行星周期检测 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>系外行星周期检测</h1><p class="lead">从 TESS 光变曲线找隐藏行星周期，并将可信值写入 period.txt。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/exoplanet-detection-period/task.md">原始任务要求</a></div><p class="meta">exoplanet-detection-period · 自然科学 · 5 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>从 TESS 光变曲线找隐藏行星周期，并将可信值写入 period.txt。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>box-least-squares</td><td>用 BLS 搜索光变曲线中的周期性盒形下降。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/exoplanet-detection-period/skills/box-least-squares/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr><tr><td>exoplanet-workflows</td><td>组织系外行星搜索流程，选择算法并验证候选周期。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/exoplanet-detection-period/skills/exoplanet-workflows/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr><tr><td>light-curve-preprocessing</td><td>筛选光变质量标记、去异常值并去趋势。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/exoplanet-detection-period/skills/light-curve-preprocessing/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr><tr><td>lomb-scargle-periodogram</td><td>用 Lomb–Scargle 周期谱搜索不等间隔时间序列的周期。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/exoplanet-detection-period/skills/lomb-scargle-periodogram/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr><tr><td>transit-least-squares</td><td>使用 TLS 搜索具有凌星形状的周期信号。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/exoplanet-detection-period/skills/transit-least-squares/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>3 项通过 / 4 项检查</td><td>3/4 项通过；周期 1.39825 天，参考 5.35699 天、容差 0.01，识别到错误周期。</td></tr><tr><td>原始 Opus 4.7</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>4 项通过 / 4 项检查</td><td>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>4 项通过 / 4 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>3 项通过 / 4 项检查</td><td>3/4 项通过；周期 1.39872 天，仍停留在原始错误周期附近。</td></tr><tr><td>SkillGrad · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>4 项通过 / 4 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>SkillOpt · 实际 GPT-5.5</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>0 项通过 / 4 项检查，3 项跳过</td><td>0/4 项通过；缺少 /root/period.txt，未交付所需周期结果。</td></tr><tr><td>MMG2Skill · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>4 项通过 / 4 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>SkillRevise · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>3 项通过 / 4 项检查</td><td>3/4 项通过；预测周期 10.70245 天，参考 5.35699 天、容差 0.01。预测接近两倍周期，仍未完成周期消歧。</td></tr><tr><td>SkillTTA · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>3 项通过 / 4 项检查</td><td>3/4；周期文件已生成，周期数值仍不符合参考容差。</td></tr></tbody></table></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>light-curve-preprocessing/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr><tr><td>box-least-squares/SKILL.md</td><td>拒绝未修改候选</td><td>0.0</td><td>0.0</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>3/4 项通过；周期 1.39825 天，参考 5.35699 天、容差 0.01，识别到错误周期。</p><details><summary>::TestExoplanetPeriod::test_period_value_correct</summary><pre>self = &lt;test_outputs.TestExoplanetPeriod object at 0x71b2c426f590&gt;
+
+    def test_period_value_correct(self):
+        &quot;&quot;&quot;Verify the period value matches the expected result.&quot;&quot;&quot;
+        path = self.get_period_path()
+        if path is None:
+            pytest.skip(&quot;Period file not found&quot;)
+    
+        with open(path) as f:
+            content = f.read().strip()
+    
+        period = float(content)
+    
+        # Check period matches expected value within tolerance
+&gt;       assert abs(period - self.EXPECTED_PERIOD) &lt; self.TOLERANCE, (
+            f&quot;Period {period:.5f} does not match expected {self.EXPECTED_PERIOD:.5f} &quot; f&quot;(tolerance: ±{self.TOLERANCE})&quot;
+        )
+E       AssertionError: Period 1.39825 does not match expected 5.35699 (tolerance: ±0.01)
+E       assert 3.9587399999999997 &lt; 0.01
+E        +  where 3.9587399999999997 = abs((1.39825 - 5.35699))
+E        +    where 5.35699 = &lt;test_outputs.TestExoplanetPeriod object at 0x71b2c426f590&gt;.EXPECTED_PERIOD
+E        +  and   0.01 = &lt;test_outputs.TestExoplanetPeriod object at 0x71b2c426f590&gt;.TOLERANCE
+
+/verifier/test_outputs.py:64: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exoplanet-detection-period-original-skill-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:67bb300e81cee8649477be83aae60b4e145d41c5547694ee93b9bd6a1d6e33b4&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 18,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:dab316dc730df3306bcc69089abc74f6547f22ad2e22f5198161192249c3efa0&quot;
+}</pre></details></details><details><summary>原始 Opus 4.7 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/exoplanet-detection-period-opus47-original-skill-r001/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/exoplanet-detection-period-opus47-original-skill-r001/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/exoplanet-detection-period-opus47-original-skill-r001/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/exoplanet-detection-period-opus47-original-skill-r001/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exoplanet-detection-period-opus47-original-skill-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/anthropic/claude-opus-4.7&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:2f6d6922a19d3a2f55aefffb5f717c16d97d202135b4382fe9590b17dcd4ffe2&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 7,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:dab316dc730df3306bcc69089abc74f6547f22ad2e22f5198161192249c3efa0&quot;
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_skill">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>::TestExoplanetPeriod::test_period_value_correct</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exoplanet-detection-period-a23&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:67bb300e81cee8649477be83aae60b4e145d41c5547694ee93b9bd6a1d6e33b4&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 30,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:68f65ae7c866cdb7c203a1c4f7fb411ffe132e99de648f6cf0f8657effde47bf&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exoplanet-detection-period/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exoplanet-detection-period/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exoplanet-detection-period/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exoplanet-detection-period/repaired_skill">上传修复包</a></p><p>3/4 项通过；周期 1.39872 天，仍停留在原始错误周期附近。</p><details><summary>::TestExoplanetPeriod::test_period_value_correct</summary><pre>self = &lt;test_outputs.TestExoplanetPeriod object at 0xffffa282c170&gt;
+
+    def test_period_value_correct(self):
+        &quot;&quot;&quot;Verify the period value matches the expected result.&quot;&quot;&quot;
+        path = self.get_period_path()
+        if path is None:
+            pytest.skip(&quot;Period file not found&quot;)
+    
+        with open(path) as f:
+            content = f.read().strip()
+    
+        period = float(content)
+    
+        # Check period matches expected value within tolerance
+&gt;       assert abs(period - self.EXPECTED_PERIOD) &lt; self.TOLERANCE, (
+            f&quot;Period {period:.5f} does not match expected {self.EXPECTED_PERIOD:.5f} &quot; f&quot;(tolerance: ±{self.TOLERANCE})&quot;
+        )
+E       AssertionError: Period 1.39872 does not match expected 5.35699 (tolerance: ±0.01)
+E       assert 3.9582699999999997 &lt; 0.01
+E        +  where 3.9582699999999997 = abs((1.39872 - 5.35699))
+E        +    where 5.35699 = &lt;test_outputs.TestExoplanetPeriod object at 0xffffa282c170&gt;.EXPECTED_PERIOD
+E        +  and   0.01 = &lt;test_outputs.TestExoplanetPeriod object at 0xffffa282c170&gt;.TOLERANCE
+
+/verifier/test_outputs.py:64: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exoplanet-detection-period-a02&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:67bb300e81cee8649477be83aae60b4e145d41c5547694ee93b9bd6a1d6e33b4&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 23,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:b4ee796a937d04f3204702faae6f400d063c7374c7566e860a9cb922d9b8d070&quot;
+}</pre></details></details><details><summary>SkillGrad · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exoplanet-detection-period/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exoplanet-detection-period/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exoplanet-detection-period/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exoplanet-detection-period/skills">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>::TestExoplanetPeriod::test_period_value_correct</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exoplanet-detection-period-formal-1-7ff223667ef9&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:67bb300e81cee8649477be83aae60b4e145d41c5547694ee93b9bd6a1d6e33b4&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 15,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:fd3cc5a6ecf16184bc2191657784c9c2471f458bd84adc7834ef059c3c23101a&quot;
+}</pre></details></details><details><summary>SkillOpt · 实际 GPT-5.5 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_skill">上传修复包</a></p><p>0/4 项通过；缺少 /root/period.txt，未交付所需周期结果。</p><details><summary>::TestExoplanetPeriod::test_period_file_exists</summary><pre>self = &lt;test_outputs.TestExoplanetPeriod object at 0xffff897622a0&gt;
+
+    def test_period_file_exists(self):
+        &quot;&quot;&quot;Verify period file was created.&quot;&quot;&quot;
+        path = self.get_period_path()
+&gt;       assert path is not None, &quot;Period file not found. Expected /root/period.txt&quot;
+E       AssertionError: Period file not found. Expected /root/period.txt
+E       assert None is not None
+
+/verifier/test_outputs.py:35: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>::TestExoplanetPeriod::test_period_file_exists</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exoplanet-detection-period-skillopt-20260920T153636Z&quot;,
+  &quot;model&quot;: &quot;tatu/gpt-5.5@CODING_TATU&quot;,
+  &quot;provider_route&quot;: &quot;tatu&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:67bb300e81cee8649477be83aae60b4e145d41c5547694ee93b9bd6a1d6e33b4&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 60,
+  &quot;termination_reason&quot;: &quot;max_iterations&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:12f8a553df852c6730e10b1e39ab7cd19c134c36b2a80943bb2719db4ad685e8&quot;
+}</pre></details></details><details><summary>MMG2Skill · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/exoplanet-detection-period-mmg2skill-gpt52-r001/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/exoplanet-detection-period-mmg2skill-gpt52-r001/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/exoplanet-detection-period-mmg2skill-gpt52-r001/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/exoplanet-detection-period-mmg2skill-gpt52-r001/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exoplanet-detection-period/skills">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exoplanet-detection-period-mmg2skill-gpt52-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:2f6d6922a19d3a2f55aefffb5f717c16d97d202135b4382fe9590b17dcd4ffe2&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 26,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:acaae1e3de6208ee537b4878d7d381567e84353b39b78332c539208b0f667d73&quot;
+}</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_skill">上传修复包</a></p><p>3/4 项通过；预测周期 10.70245 天，参考 5.35699 天、容差 0.01。预测接近两倍周期，仍未完成周期消歧。</p><details><summary>::TestExoplanetPeriod::test_period_value_correct</summary><pre>self = &lt;test_outputs.TestExoplanetPeriod object at 0x7c6aaa553380&gt;
+
+    def test_period_value_correct(self):
+        &quot;&quot;&quot;Verify the period value matches the expected result.&quot;&quot;&quot;
+        path = self.get_period_path()
+        if path is None:
+            pytest.skip(&quot;Period file not found&quot;)
+    
+        with open(path) as f:
+            content = f.read().strip()
+    
+        period = float(content)
+    
+        # Check period matches expected value within tolerance
+&gt;       assert abs(period - self.EXPECTED_PERIOD) &lt; self.TOLERANCE, (
+            f&quot;Period {period:.5f} does not match expected {self.EXPECTED_PERIOD:.5f} &quot; f&quot;(tolerance: ±{self.TOLERANCE})&quot;
+        )
+E       AssertionError: Period 10.70245 does not match expected 5.35699 (tolerance: ±0.01)
+E       assert 5.345460000000001 &lt; 0.01
+E        +  where 5.345460000000001 = abs((10.70245 - 5.35699))
+E        +    where 5.35699 = &lt;test_outputs.TestExoplanetPeriod object at 0x7c6aaa553380&gt;.EXPECTED_PERIOD
+E        +  and   0.01 = &lt;test_outputs.TestExoplanetPeriod object at 0x7c6aaa553380&gt;.TOLERANCE
+
+/verifier/test_outputs.py:64: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exoplanet-detection-period-bundle-1-published-original-revi-56c720bb87a4&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:5d52e5ad6c96f7a98030bc721bde6d7ec4d475c0a0f1a41763fc31751f71548b&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 14,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:26e78f7d9efd38f17570a3384a5bbcf9a51fc03ab5712ca45992d8504afee641&quot;
+}</pre></details></details><details><summary>SkillTTA · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exoplanet-detection-period/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exoplanet-detection-period/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exoplanet-detection-period/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exoplanet-detection-period/repaired_skill">上传修复包</a></p><p>3/4；周期文件已生成，周期数值仍不符合参考容差。</p><details><summary>::TestExoplanetPeriod::test_period_value_correct</summary><pre>self = &lt;test_outputs.TestExoplanetPeriod object at 0x7ca63ddbe240&gt;
+
+    def test_period_value_correct(self):
+        &quot;&quot;&quot;Verify the period value matches the expected result.&quot;&quot;&quot;
+        path = self.get_period_path()
+        if path is None:
+            pytest.skip(&quot;Period file not found&quot;)
+    
+        with open(path) as f:
+            content = f.read().strip()
+    
+        period = float(content)
+    
+        # Check period matches expected value within tolerance
+&gt;       assert abs(period - self.EXPECTED_PERIOD) &lt; self.TOLERANCE, (
+            f&quot;Period {period:.5f} does not match expected {self.EXPECTED_PERIOD:.5f} &quot; f&quot;(tolerance: ±{self.TOLERANCE})&quot;
+        )
+E       AssertionError: Period 2.09520 does not match expected 5.35699 (tolerance: ±0.01)
+E       assert 3.2617899999999995 &lt; 0.01
+E        +  where 3.2617899999999995 = abs((2.0952 - 5.35699))
+E        +    where 5.35699 = &lt;test_outputs.TestExoplanetPeriod object at 0x7ca63ddbe240&gt;.EXPECTED_PERIOD
+E        +  and   0.01 = &lt;test_outputs.TestExoplanetPeriod object at 0x7ca63ddbe240&gt;.TOLERANCE
+
+/verifier/test_outputs.py:64: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exoplanet-detection-period-skilltta-gpt52-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:2f6d6922a19d3a2f55aefffb5f717c16d97d202135b4382fe9590b17dcd4ffe2&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 17,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:ebbf89aa19445caa9cd2409177c62f90793fc2e5afc9ad320e235462ef5f6ee5&quot;
+}</pre></details></details><h2>人工 Gold 要求修哪里</h2><p>人工标注与参考修复用于定位已知缺陷。它们主要针对 GPT 原始失败；换模型后应重新核对这一缺陷是否仍在轨迹中出现。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">编号 / 主类型</th><th scope="col">原始缺陷</th><th scope="col">定位</th><th scope="col">要求的修复</th></tr></thead><tbody><tr><td>D001<br>质量门与独立验收</td><td>参考预处理、transit-first 候选搜索和候选验证要求已分散存在于官方 Skill 中，但没有明确为不可跳过的提交门。Agent 改用自定义窗口和阈值，并在 duration 命中边界、验证代码报错以及 half/double-period、phase-fold、odd/even 不自洽时仍提交错误候选。</td><td>exoplanet-workflows/SKILL.md<br><small>Pipeline Design Principles、Signal Validation 与 Best Practices</small></td><td>把 baseline-first pipeline 与 candidate rejection 提升为不可跳过的 gate：先执行 quality/non-finite filtering → remove_outliers(sigma=3) → default flatten() → 带 flux_err 的 TLS；自定义 sigma、window、duration、BLS 和 Lomb–Scargle 仅可作为 sensitivity check；使用 cadence window 前必须换算物理时间；duration 命中边界、验证失败或候选不自洽时必须拒绝并继续诊断；只有参考流程与完整验证共同支持同一候选时才能提交。</td></tr></tbody></table></div><div class="note warning">参考修复具有 verifier-only diagnostic replay 证据，不能标为正式可比 fresh rollout 通过。</div><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/gold.json">人工 Gold 与参考修复来源</a></p><details><summary>参考修复的实际文件差异</summary><p>缺失文件可能来自打包不完整，不能直接认定为有意删除；修改行数也不代表最小修复量。</p><details><summary>exoplanet-workflows/SKILL.md · modified</summary><pre>--- exoplanet-workflows/SKILL.md
+
++++ exoplanet-workflows/SKILL.md
+
+@@ -16,4 +16,14 @@
+
+ 4. Signal validation and characterization
+ 5. Parameter estimation
++
++## Mandatory Baseline-First Transit Search Gate
++
++For any transit-period task, complete and record the documented reference pipeline before trying custom parameter sweeps or selecting a final period:
++
++1. Apply the stated quality-flag convention and remove non-finite time, flux, and uncertainty values.
++2. Run `remove_outliers(sigma=3)`, then `flatten()` with its documented/default behavior, then TLS with `flux_err`. This reference run is mandatory and must not be replaced by a custom sigma, window, BLS, or Lomb-Scargle search.
++3. Treat custom sigma, flattening-window, duration-range, BLS, and Lomb-Scargle runs only as sensitivity checks. Before using a cadence-based window, convert it to physical time and verify that it preserves transit-scale dips while removing slower stellar variability.
++4. Do not accept a candidate merely because it has the highest periodogram power. Reject it and continue diagnosis when a best-fit duration lies on a search boundary, a validation calculation fails, half/double-period checks are inconsistent, or phase-fold and odd/even evidence are not self-consistent. Fix failed validation code and rerun the check instead of ignoring the failure.
++5. Write the final output only when the mandatory reference result and the completed validation checks support the same candidate. Never submit an unvalidated candidate.
+ 
+ ## Pipeline Design Principles</pre></details></details><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;exoplanet-detection-period&quot;,
+  &quot;file_count&quot;: 5,
+  &quot;total_bytes&quot;: 38032,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:68f65ae7c866cdb7c203a1c4f7fb411ffe132e99de648f6cf0f8657effde47bf&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:68f65ae7c866cdb7c203a1c4f7fb411ffe132e99de648f6cf0f8657effde47bf&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_skill&quot;
+}</pre></details><p>字节变化文件 4 个；排除仅空白变化后 4 个。</p><details><summary>box-least-squares/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_skill/box-least-squares/SKILL.md">修改后</a></p><pre>--- original/box-least-squares/SKILL.md
++++ repaired/box-least-squares/SKILL.md
+@@ -315,6 +315,19 @@
+ - Check `stats[&#x27;depth_odd&#x27;]` vs `stats[&#x27;depth_even&#x27;]`
+ - May not be a transiting planet
+ 
++## Harmonics/Aliases: REQUIRED checks before reporting a BLS period
++
++With strong stellar variability or imperfect detrending, BLS frequently returns a **harmonic** (e.g., P/2) because it can fit alternating transits with a higher apparent SNR.
++
++Before finalizing a period `P0` from a BLS peak:
++
++1. **Inspect multiple peaks**: print/plot the top 5–10 distinct peaks, not just the maximum.
++2. **Score integer multiples**: explicitly evaluate `P0/2`, `P0`, `2P0`, `3P0` (and `4P0` if feasible) using `compute_stats()`.
++3. **Use baseline sanity**: if your time span is `Tspan`, prefer a candidate where `Tspan / P` yields a plausible number of transits (and ≥2 distinct transits for confidence).
++4. **Demand stability**: re-run (or at least re-score the same candidate periods) under 2–3 detrending settings; a real planet period should remain near the top.
++
++These steps reduce wrong-period selection when harmonics dominate the periodogram.
++
+ ## Dependencies
+ 
+ ```bash</pre></details><details><summary>exoplanet-workflows/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_skill/exoplanet-workflows/SKILL.md">修改后</a></p><pre>--- original/exoplanet-workflows/SKILL.md
++++ repaired/exoplanet-workflows/SKILL.md
+@@ -108,6 +108,22 @@
+ - **Visual inspection**: Phase-fold data at candidate period
+ - **Odd-even consistency**: Do odd and even transits have same depth?
+ - **Multiple transits**: More transits = more confidence
++
++## REQUIRED validation step: avoid harmonic/alias periods
++
++Transit-search outputs are often dominated by **harmonics** (P/2, 2P, etc.), especially after detrending strong stellar variability.
++
++Before writing a final orbital period:
++
++1. **Look beyond the best peak**: list/plot the top 5–10 peaks from your periodogram.
++2. **Check integer-multiple families**: if you find a strong peak at `P0`, explicitly evaluate `P0`, `2P0`, and `3P0` (and `P0/2` if relevant) and compare:
++   - transit depth SNR (or TLS SNR/SDE),
++   - odd-even consistency,
++   - and whether the phase-fold produces one consistent transit shape.
++3. **Baseline logic**: using `Tspan = max(time) - min(time)`, require that a reported period yields a sensible number of observed transits (`~Tspan/P`) and ideally **≥2 distinct transits**.
++4. **Detrending robustness**: confirm the same candidate period is recovered under at least two reasonable detrending settings.
++
++This step is essential when stellar variability is large; otherwise, it’s easy to report P/2 instead of P.
+ 
+ ## Multi-Planet Systems
+ </pre></details><details><summary>light-curve-preprocessing/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_skill/light-curve-preprocessing/SKILL.md">修改后</a></p><pre>--- original/light-curve-preprocessing/SKILL.md
++++ repaired/light-curve-preprocessing/SKILL.md
+@@ -64,6 +64,19 @@
+ ```
+ 
+ The `flatten()` method uses a Savitzky-Golay filter to remove trends while preserving transit signals.
++
++#### Transit-preserving detrending: required sanity checks
++
++Detrending is where many wrong periods are introduced (especially harmonics like P/2): if the window is too short or the method absorbs transit structure, it can reshape the transit series and make a harmonic look &quot;best&quot;.
++
++Before committing to a period found after flattening:
++
++1. **Window vs transit duration:** choose `window_length` (in cadences) so the smoothing timescale is **much longer** than the expected transit duration.
++   - Rule of thumb: smoothing window timescale ≥ **5–10×** the transit duration.
++2. **Convert days → cadences explicitly:**
++   - Estimate cadence from `median(np.diff(time))`.
++   - `window_length ≈ (window_days / cadence_days)` and must be an odd integer for Savitzky–Golay.
++3. **Stability across windows:** repeat with 2–3 different windows (e.g., 0.5×, 1×, 2× your chosen window). A real planet period should remain a top candidate; a detrending-induced harmonic often shifts.
+ 
+ ### Iterative Sine Fitting
+ 
+@@ -154,7 +167,7 @@
+ plt.show()
+ ```
+ 
+-**Best practice**: Plot before and after each major step to ensure you&#x27;re improving data quality, not removing real signals.
++**Best practice**: Plot before and after each major step to ensure you&#x27;re improving the data quality, not removing real signals.
+ 
+ ## Dependencies
+ </pre></details><details><summary>transit-least-squares/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exoplanet-detection-period/repaired_skill/transit-least-squares/SKILL.md">修改后</a></p><pre>--- original/transit-least-squares/SKILL.md
++++ repaired/transit-least-squares/SKILL.md
+@@ -168,24 +168,37 @@
+ - Check if `period * 2` also shows a signal
+ - The true period might be longer
+ 
+-## Model Light Curve
+-
+-TLS provides the best-fit transit model:
+-
+-```python
+-# Model over full time range
+-model_time = out_tls.model_lightcurve_time
+-model_flux = out_tls.model_lightcurve_model
+-
+-# Plot with data
+-import matplotlib.pyplot as plt
+-plt.plot(time, flux, &#x27;.&#x27;, label=&#x27;Data&#x27;)
+-plt.plot(model_time, model_flux, &#x27;-&#x27;, label=&#x27;Model&#x27;)
+-plt.xlabel(&#x27;Time [days]&#x27;)
+-plt.ylabel(&#x27;Flux&#x27;)
+-plt.legend()
+-plt.show()
+-```
++## Aliases &amp; Harmonics: REQUIRED checks before finalizing a period
++
++Transit searches often return **harmonics** (e.g., P/2) or **aliases** when the detrending is imperfect, stellar variability is strong, or there are data gaps. To avoid reporting the wrong orbital period:
++
++### 1) Always inspect multiple candidates (not just the max)
++After a broad search, examine the **top-N peaks** (e.g., 5–10 distinct peaks) across the full searched period range.
++
++Why: the strongest peak can be a harmonic that best matches every-other transit.
++
++### 2) Always evaluate integer multiples of the best candidate
++For the best period `P0`, explicitly evaluate at least:
++- `P0/2`, `P0`, `2*P0`, `3*P0`, and (if within your search range/baseline) `4*P0`.
++
++Use the same detrended light curve and comparable oversampling.
++
++Prefer the period that:
++- yields **consistent transit depth** and **duration**,
++- shows **minimal odd/even differences** (when applicable), and
++- yields a plausible number of observed transits given the baseline (see next).
++
++### 3) Baseline sanity check (transit count consistency)
++Let `Tspan = max(time) - min(time)`.
++- Expected number of transits is approximately `Tspan / P`.
++- If you see a good-looking signal at `P0` but `2*P0` (or `3*P0`) produces a cleaner, more physically plausible fold and still has ≥2 distinct transits, the longer period is often the true orbital period.
++
++### 4) Stability check across detrending choices
++Repeat the search (or at least re-score your candidate periods) with **2–3 reasonable detrending window lengths**.
++- A real planet period should remain a top candidate.
++- A harmonic created by detrending often shifts or disappears.
++
++These checks are cheap compared to rerunning a full pipeline and dramatically reduce wrong-period submissions.
+ 
+ ## Workflow Considerations
+ 
+@@ -230,7 +243,7 @@
+ - **Use TLS**: When specifically searching for exoplanet transits
+ - **Use Lomb-Scargle**: For general periodic signals (rotation, pulsation, eclipsing binaries)
+ 
+-TLS is optimized for transit-shaped signals and is typically more sensitive for exoplanet detection.
++TLS is optimized for transit-shaped signals and is typically more sensitive for transit-shaped signals.
+ 
+ ## Common Issues
+ 
+@@ -238,7 +251,8 @@
+ Always pass flux uncertainties to TLS! Without them, TLS cannot properly weight data points.
+ 
+ ### Period is 2x or 0.5x expected
+-Check for period aliasing - the true period might be double or half of what TLS reports. Also check the SDE for both periods.
++Check for period aliasing - the true period might be double or half of what TLS reports.
++Also check **higher multiples (3×, 4×)** when the observing baseline allows: harmonics can be strong in detrended data.
+ 
+ ### Low SDE (&lt;6)
+ - Signal may be too weak</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>exoplanet-workflows/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;bls_tls_alias_half_period_not_checked_against_longer_candidates&quot;,
+    &quot;description&quot;: &quot;Guidance for transit period finding does not require explicit alias/harmonic checks (P, 2P, P/2) or selection criteria when strong stellar variability and detrending can cause BLS/TLS to prefer harmonics. In the run, the agent converged to ~1.39825 d (and related ~2.798 d) but the expected period is 5.35699 d, indicating a harmonic/alias selection failure not prevented by the skills’ instructions.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;transit-least-squares/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Common Warnings / Period is 2x or 0.5x expected&quot;
+      },
+      {
+        &quot;file&quot;: &quot;box-least-squares/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Common Issues / Issue: Period is 2× or 0.5× expected&quot;
+      },
+      {
+        &quot;file&quot;: &quot;exoplanet-workflows/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Signal Validation&quot;
+      },
+      {
+        &quot;file&quot;: &quot;light-curve-preprocessing/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Removing Long-Term Trends / Flattening with Lightkurve&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;detrending_guidance_missing_transit_preservation_and_window_selection_rules&quot;,
+    &quot;description&quot;: &quot;Preprocessing guidance emphasizes flattening but lacks concrete checks to ensure stellar-variability removal does not distort transit signals or create spurious short-period harmonics; it also doesn’t instruct converting window_length from days to cadences and validating against transit duration. The run used large Savitzky-Golay windows and selected by TLS SDE alone, which can favor harmonics under correlated noise.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;light-curve-preprocessing/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Flattening with Lightkurve&quot;
+      },
+      {
+        &quot;file&quot;: &quot;exoplanet-workflows/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Best Practices&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;period_search_range_and_refinement_guidance_inadequate_for_tess_baseline&quot;,
+    &quot;description&quot;: &quot;Workflow docs give generic period ranges but do not explicitly tie maximum searchable period to observation baseline and the need to include longer candidate periods when baseline permits. With ~25.4 days baseline (observed in run), periods up to ~10–12 days can have multiple transits; the agent searched up to 15 days but did not include a step to inspect top-N peaks across the full range and evaluate integer-multiple relationships to pick the fundamental period.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;exoplanet-workflows/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Period Range Guidelines&quot;
+      },
+      {
+        &quot;file&quot;: &quot;transit-least-squares/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Workflow Considerations&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exoplanet-detection-period/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;exoplanet-detection-period&quot;,
+  &quot;file_count&quot;: 5,
+  &quot;total_bytes&quot;: 35606,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:b4ee796a937d04f3204702faae6f400d063c7374c7566e860a9cb922d9b8d070&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:b4ee796a937d04f3204702faae6f400d063c7374c7566e860a9cb922d9b8d070&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exoplanet-detection-period/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>exoplanet-workflows/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exoplanet-detection-period/repaired_skill/exoplanet-workflows/SKILL.md">修改后</a></p><pre>--- original/exoplanet-workflows/SKILL.md
++++ repaired/exoplanet-workflows/SKILL.md
+@@ -134,10 +134,28 @@
+ - Period aliasing from data gaps
+ - Missing alternate transits
+ 
+-**Solutions:**
+-- Check both periods manually
+-- Look at phase-folded light curves
+-- Check if one shows odd-even mismatch
++**Solutions (required before final writeback):**
++- Treat the top periodogram peak as a *hypothesis*, not the final period.
++- **Explicitly test harmonics** of the candidate period on the *same detrended light curve*: evaluate **P**, **2P**, and **P/2**.
++
++**Required decision gate (prevents alias lock-in):**
++1. **Assemble a candidate set, not just one peak.** Evaluate:
++   - the top candidate period **P**
++   - its simple harmonics (**P/2**, **2P**)
++   - **plus** a small set of alternative strong peaks from the same search output (e.g., top-N TLS/BLS peaks) and each of their harmonics.
++2. For each tested period, compute comparable diagnostics and prefer the period that is most transit-consistent:
++   - **Odd-even consistency** (odd-even mismatch small relative to depth uncertainty)
++   - **Transit count consistency** (several distinct events across the time span; avoid solutions driven by a single alignment)
++   - **Phase-folded shape** looks transit-like and does not show alternating depths at P (a common sign the true period is 2P)
++   - **Duration plausibility** (avoid solutions that only work with implausibly long/short durations or that hit your duration grid bounds)
++3. **Decision rule (must be applied explicitly):**
++   - If **P** is the strongest peak but **fails** transit-consistency checks (notably odd/even mismatch or alternating-depth behavior) while **2P** (or **P/2**) improves those checks, adopt the harmonic with better consistency.
++   - If **P** passes but **2P** (or an alternative peak) is comparable in strength, prefer the period with more self-consistent folded transits and more plausible fitted duration.
++4. **Fallback when harmonics are still ambiguous:**
++   - Re-run a **narrow refinement search** around each competing hypothesis (around P, 2P, P/2, and any close-by alternative peak) and re-evaluate the same diagnostics.
++   - Do not write back a final period until one hypothesis is favored by the diagnostics above.
++
++This gate is especially important when cadence, data gaps, or preprocessing can create strong aliases, and when the strongest peak’s harmonic does *not* appear as an exact 2×/½ match.
+ 
+ ### Issue: flux_err required error
+ **Solution:**</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>exoplanet-workflows/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;wml-1-period-alias-adjudication-harmonics&quot;,
+    &quot;description&quot;: &quot;When period search returns a strong candidate, the highest peak can correspond to an alias (half/double period) due to sampling, transit shape symmetry, or detrending artifacts. A robust workflow must explicitly test harmonics (P/2, 2P) and select based on physical/diagnostic consistency (odd-even, transit count consistency, phase-fold shape), not just maximum power.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;exoplanet-workflows/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Common Issues and Solutions / Issue: Period is 2x or 0.5x expected&quot;
+      }
+    ],
+    &quot;evidence&quot;: &quot;Verifier expected 5.35699 d but output was 1.39825 d. In-run evidence shows multiple strong candidates: TLS broad best at 2.798475 d (SDE~6.54) and also peaks near 1.394978 d; BLS global best at ~1.39823 d with 2P~2.79862 d having lower but still substantial power. The run explicitly computed half/double neighborhoods yet did not use them to override the final choice.&quot;
+  },
+  {
+    &quot;prediction_id&quot;: &quot;wml-2-detrending-parameter-selection-by-timescale-and-stability&quot;,
+    &quot;description&quot;: &quot;Flattening/detrending choices (window length, polynomial order, break handling) can distort transit shapes and relative depths, amplifying aliases or suppressing the true period. A workflow should select detrending parameters based on cadence, expected transit duration, and stellar variability timescale, and confirm that candidate periods are stable across reasonable detrending settings.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;light-curve-preprocessing/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Removing Long-Term Trends / Flattening with Lightkurve&quot;
+      }
+    ],
+    &quot;evidence&quot;: &quot;Run shows flatten window_length sweeps and that BLS period near 1.398 d is extremely stable across window lengths (1201–3001), while TLS reported a longer duration (~0.3086 d) and BLS refinement often maxed at duration=0.45 d (upper bound). This suggests duration grid and detrending may be absorbing variability and favoring certain periods; no stability test comparing candidate periods (including longer-period possibilities like 5.35699 d) across detrending was performed.&quot;
+  },
+  {
+    &quot;prediction_id&quot;: &quot;wml-3-baseline-informed-period-bounds-and-transit-count-gating&quot;,
+    &quot;description&quot;: &quot;Period searches must set bounds informed by observation baseline and expected planet periods. If the true period is near a significant fraction of the baseline, missing or underweighting that region can yield spurious shorter-period detections. Workflows should set period_min/max and resolution based on baseline, and verify that multiple transits are expected/observed.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;exoplanet-workflows/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Period Range Guidelines&quot;
+      }
+    ],
+    &quot;evidence&quot;: &quot;Data baseline printed as ~25.43 days. Output period was 1.398 d; verifier expected 5.35699 d (still within 15 d, so not excluded), but the workflow did not explicitly ensure candidates correspond to plausible transit counts and did not present transit_count-based gating before writeback.&quot;
+  }
+]</pre></details></details><details><summary>SkillGrad · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exoplanet-detection-period/skills">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillgrad_gpt52&quot;,
+  &quot;task_id&quot;: &quot;exoplanet-detection-period&quot;,
+  &quot;file_count&quot;: 5,
+  &quot;total_bytes&quot;: 34376,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:fd3cc5a6ecf16184bc2191657784c9c2471f458bd84adc7834ef059c3c23101a&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:fd3cc5a6ecf16184bc2191657784c9c2471f458bd84adc7834ef059c3c23101a&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exoplanet-detection-period/skills&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>exoplanet-workflows/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exoplanet-detection-period/skills/exoplanet-workflows/SKILL.md">修改后</a></p><pre>--- original/exoplanet-workflows/SKILL.md
++++ repaired/exoplanet-workflows/SKILL.md
+@@ -1,6 +1,6 @@
+ ---
+ name: exoplanet-workflows
+-description: General workflows and best practices for exoplanet detection and characterization from light curve data. Use when planning an exoplanet analysis pipeline, understanding when to use different methods, or troubleshooting detection issues.
++description: Workflow checklist for detecting exoplanet periods from light curves and reliably producing the grader-required output artifact.
+ ---
+ 
+ # Exoplanet Detection Workflows
+@@ -49,6 +49,30 @@
+ - After finding promising candidate
+ - Narrow search around candidate period
+ - Improves precision for final measurement
++
++## Finalize the Deliverable (Required Output Artifact)
++
++Before ending a run, persist the final scalar answer to the exact grader-required artifact path(s) and format.
++
++1. Identify the required output path(s) and formatting constraints.
++2. Write exactly the required value(s) to the required path(s) (no extra text).
++3. Read back the file(s) and confirm they exist and parse as expected.
++
++```python
++from pathlib import Path
++
++out_path = Path(&quot;/root/period.txt&quot;)
++value = float(result_value)
++
++out_path.write_text(f&quot;{value:.5f}&quot;)
++
++# verification: must exist and contain exactly one parseable float
++text = out_path.read_text().strip()
++float(text)  # raises if unparseable
++assert &quot;\n&quot; not in text, &quot;artifact must be a single scalar on one line&quot;
++```
++
++Decision rule: if the required output inventory is empty (or you have not read back the artifact), do not terminate—perform the write + read-back check first.
+ 
+ ## Choosing the Right Method
+ </pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>exoplanet-workflows/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P001&quot;,
+    &quot;description&quot;: &quot;Missing required output file: /root/period.txt was absent and the output inventory was empty. The run ended without writing the computed period to the required path and format or verifying that the file contained one parseable value rounded to five decimals.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;exoplanet-workflows/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Finalize the Deliverable (Required Output Artifact)&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>SkillOpt · 实际 GPT-5.5 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillopt_gpt55&quot;,
+  &quot;task_id&quot;: &quot;exoplanet-detection-period&quot;,
+  &quot;file_count&quot;: 5,
+  &quot;total_bytes&quot;: 46149,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:12f8a553df852c6730e10b1e39ab7cd19c134c36b2a80943bb2719db4ad685e8&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:12f8a553df852c6730e10b1e39ab7cd19c134c36b2a80943bb2719db4ad685e8&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_skill&quot;
+}</pre></details><p>字节变化文件 4 个；排除仅空白变化后 4 个。</p><details><summary>box-least-squares/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_skill/box-least-squares/SKILL.md">修改后</a></p><pre>--- original/box-least-squares/SKILL.md
++++ repaired/box-least-squares/SKILL.md
+@@ -38,8 +38,12 @@
+ y = flux
+ dy = flux_err  # Optional but recommended
+ 
+-# Create BLS object
+-model = BoxLeastSquares(t, y, dy=dy)
++# `y_search` must be the quality-filtered, outlier-cleaned, detrended residual
++# flux, not the raw oscillatory flux. Apply the identical row mask to `dy`.
++# Normalize the residual baseline consistently before constructing the model.
++y_search = detrended_flux / np.nanmedian(detrended_flux)
++dy_search = aligned_flux_err / np.nanmedian(detrended_flux)
++model = BoxLeastSquares(t_clean, y_search, dy=dy_search)
+ 
+ # Automatic period search with specified duration
+ duration = 0.2 * u.day  # Expected transit duration
+@@ -54,7 +58,7 @@
+ 
+ ### autopower: Automatic Period Grid
+ 
+-Recommended for initial searches. Automatically determines appropriate period grid:
++Useful for exploration, but do not treat its default grid or its strongest peak as sufficient. For activity-dominated data, first quality-filter nonzero flags, nonfinite values, and clearly instrumental outliers, then detrend the retained flux with a transit-preserving baseline whose timescale is longer than plausible transit durations. Keep time, residual flux, and uncertainty arrays aligned. Prefer an explicitly bounded period and duration search supported by the observation baseline and cadence:
+ 
+ ```python
+ # Specify duration (or multiple durations)
+@@ -176,6 +180,14 @@
+ 
+ ## Period Grid Sensitivity
+ 
++
++
++### Choosing bounded period and duration grids
++
++Let `baseline = max(t_clean) - min(t_clean)` and choose `minimum_period` and `maximum_period` from the target&#x27;s plausible orbital range, cadence, and the number of events that can actually be observed. Avoid periods so long that only one event is present unless performing a deliberate single-transit search; also exclude periods implausibly short for the sampling. Use `autoperiod()` only after supplying these bounds, or construct a custom grid with sufficient frequency resolution that a transit does not move substantially through a duration during one grid step. Refine the grid around promising peaks.
++
++Search a duration array rather than one arbitrary duration. It should be resolved by the cadence and span the plausible transit-duration range for the searched periods, while excluding durations shorter than the effective sampling or implausibly large fractions of the period. When using `power()`, confirm that the returned duration is the best member of this grid rather than assuming the first duration is representative.
++
+ The BLS periodogram is sensitive to period grid spacing. The `autoperiod()` method provides a conservative grid:
+ 
+ ```python
+@@ -357,3 +369,11 @@
+ - Initial exploration of periodicity
+ 
+ For exoplanet detection, both BLS and TLS are valid choices. Try both and compare results!
++
++
++
++## Robust candidate validation for active light curves
++
++Treat each BLS peak as a candidate, not a detection. Examine several independent local peaks and their phase-folded cleaned residuals, and use `compute_stats()` to inspect depth, depth uncertainty/SNR, duration, and transit count. Require repeated, phase-coherent events with plausible and reasonably consistent depths and durations; a single event or a peak driven by a few points is insufficient. Check odd/even event depths and explicitly compare `P`, `P/2`, and `2P` to identify eclipsing-binary and harmonic aliases. Also compare candidate periods with stellar-activity periods or their harmonics, since residual activity can produce large BLS power.
++
++Repeat the search with reasonable alternative detrending windows or methods and verify that the candidate&#x27;s period and event locations persist. Agreement with TLS on the same cleaned residuals is useful supporting evidence, but neither TLS agreement nor raw BLS power replaces phase-folded morphology, event-count, alias, and detrending checks. Report the validated orbital period, not the transit epoch or an activity period.</pre></details><details><summary>exoplanet-workflows/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_skill/exoplanet-workflows/SKILL.md">修改后</a></p><pre>--- original/exoplanet-workflows/SKILL.md
++++ repaired/exoplanet-workflows/SKILL.md
+@@ -201,3 +201,22 @@
+ ```bash
+ pip install lightkurve transitleastsquares numpy matplotlib scipy
+ ```
++
++
++
++## Validated Workflow for the Activity-Dominated Four-Column TESS Task
++
++For `/root/data/tess_lc.txt`, interpret the four whitespace-separated columns as MJD time, normalized flux, quality flag, and flux uncertainty. Load all columns together, discard rows with non-finite values, retain only rows with `quality == 0`, and require finite positive uncertainties. Sort by time and apply every subsequent row mask identically to time, flux, and uncertainty; never independently filter or reorder the uncertainty column. Record the median cadence, the distribution of time gaps, and the total baseline before choosing search limits. Large gaps or separate observing segments should be treated explicitly when estimating trends and transit coverage.
++
++Remove isolated instrumental outliers conservatively, using a robust residual criterion that does not clip coherent multi-point dips. Estimate and remove smooth stellar variability with a robust spline, rolling median, or low-order baseline whose timescale is substantially longer than a plausible transit duration. Iteratively mask candidate transit-like points while fitting the baseline, or otherwise use a transit-preserving detrend; do not smooth the raw flux with a scale short enough to absorb transits. Normalize the detrended flux consistently and propagate the aligned uncertainties through the normalization. Repeat the analysis with several reasonable detrending timescales rather than trusting one preprocessing choice.
++
++Use Transit Least Squares (TLS) as the primary search on the cleaned, detrended arrays, passing the uncertainty array. Set the period interval from the measured cadence and baseline: exclude periods implausibly short for the sampling, and keep the upper bound low enough that a credible candidate produces multiple separated observed events. Search a duration grid resolved by the cadence and spanning physically plausible transit durations rather than using one arbitrary duration. Use Box Least Squares (BLS) on the same arrays as a cross-check, with uncertainties and a compatible period range. Refine promising TLS/BLS peaks on a denser local period grid.
++
++Treat the strongest periodogram peak only as a candidate. For each leading candidate, inspect the signal-to-noise/significance, fitted depth and duration, number and locations of distinct events, and the phase-folded detrended light curve and residuals. Reject a candidate caused by smooth stellar activity or its harmonic, a cadence/window-function sampling alias, an implausibly short or long duration, or only one observed event. Explicitly compare `P`, `P/2`, `2P`, and other prominent aliases; the accepted period should give repeated transit-shaped events with coherent timing and depth. Check odd and even events separately for depth and morphology; a strong odd/even mismatch is evidence for an eclipsing binary or a half-period alias, not a validated planetary period. Require reasonable agreement between TLS and BLS and persistence of the candidate period, event locations, and morphology across the alternative detrending choices.
++
++After validation, write only the orbital period in days to `/root/period.txt`, with no label or explanatory text and exactly five digits after the decimal point, for example:
++
++```python
++with open(&#x27;/root/period.txt&#x27;, &#x27;w&#x27;, encoding=&#x27;ascii&#x27;) as f:
++    f.write(f&#x27;{validated_period:.5f}\n&#x27;)
++```</pre></details><details><summary>light-curve-preprocessing/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_skill/light-curve-preprocessing/SKILL.md">修改后</a></p><pre>--- original/light-curve-preprocessing/SKILL.md
++++ repaired/light-curve-preprocessing/SKILL.md
+@@ -52,18 +52,9 @@
+ 
+ ### Flattening with Lightkurve
+ 
+-```python
+-# Flatten to remove low-frequency variability
+-# window_length: number of cadences to use for smoothing
+-lc_flat = lc_clean.flatten(window_length=500)
++A fixed `window_length` is not generally safe because its physical timescale depends on cadence and transit duration. Estimate the cadence from sorted time differences and choose several baseline timescales that are comfortably longer than plausible transit durations; test the result rather than assuming that a particular number of cadences preserves transits. Prefer a robust rolling baseline, spline, or comparable low-frequency model, and divide (or subtract, consistently) the flux by that baseline. Fit the baseline after masking candidate negative dips, or iteratively refit: make an initial robust baseline, identify candidate transit windows, exclude those windows from the baseline fit, and refit. This prevents shallow repeated transits from being absorbed into the activity model.
+ 
+-# Common window lengths:
+-# 100-200: Remove short-term trends
+-# 300-500: Remove medium-term trends (typical for TESS)
+-# 500-1000: Remove long-term trends
+-```
+-
+-The `flatten()` method uses a Savitzky-Golay filter to remove trends while preserving transit signals.
++Transform uncertainties with the same operations. For multiplicative flattening, `flux_flat = flux / baseline` and `error_flat = flux_err / abs(baseline)`; renormalizing by a scalar requires dividing both arrays by that scalar. Do not use a smoothing scale so short that it follows transit ingress/egress or so long that strong stellar oscillations remain. Compare multiple physically plausible scales and retain only transit-like signals that persist while low-frequency residual power decreases.
+ 
+ ### Iterative Sine Fitting
+ 
+@@ -88,27 +79,7 @@
+ 
+ ## Handling Data Quality Flags
+ 
+-**IMPORTANT**: Quality flag conventions vary by data source!
+-
+-### Standard TESS format
+-```python
+-# For standard TESS files (flag=0 is GOOD):
+-good = flag == 0
+-time_clean = time[good]
+-flux_clean = flux[good]
+-error_clean = error[good]
+-```
+-
+-### Alternative formats
+-```python
+-# For some exported files (flag=0 is BAD):
+-good = flag != 0
+-time_clean = time[good]
+-flux_clean = flux[good]
+-error_clean = error[good]
+-```
+-
+-**Always verify your data format!** Check which approach gives cleaner results.
++Parse and validate the columns together. For the standard TESS convention, quality flag `0` means usable data, so retain `flag == 0`; do not invert this rule merely because the alternative looks visually cleaner. Remove rows with nonfinite MJD, flux, flag, or uncertainty, and require finite strictly positive uncertainties. Validate that the time values are in MJD days, sort all columns by time, and remove duplicate or non-increasing timestamps if the downstream method requires strictly increasing time. Every mask, gap split, normalization, and detrending operation must be applied to the uncertainty array as well as the flux array.
+ 
+ ## Preprocessing Pipeline Considerations
+ 
+@@ -174,3 +145,13 @@
+ 3. **Choose appropriate window length**: Too short = doesn&#x27;t remove trends, too long = removes transits
+ 4. **Visualize each step**: Make sure preprocessing improves the data
+ 5. **Don&#x27;t over-process**: More preprocessing isn&#x27;t always better
++
++
++
++## Reproducible Activity-Dominated Transit Preprocessing
++
++For a four-column TESS text file containing MJD, normalized flux, quality flag, and flux uncertainty, use this order: load and validate exactly four numeric columns; retain finite rows with `quality == 0` and `flux_err &gt; 0`; sort by MJD; and apply any isolated-outlier mask to all columns. Estimate the cadence from robust central time differences and identify gaps substantially larger than the cadence. Treat separated segments independently when a gap or sector boundary makes a single baseline inappropriate, normalizing each segment by a robust median while scaling its uncertainty by the same factor.
++
++Estimate stellar activity with a robust low-frequency model such as a spline or rolling median/LOWESS. Its physical timescale must be longer than plausible transit durations, and it should be evaluated at several scales rather than selected from cadence alone. Before fitting, mask provisional negative transit-like points; then refit the activity baseline and repeat once or twice. Alternatively, use iterative sigma-clipped robust fitting that clips only baseline residuals and does not discard coherent, repeated dips. Divide flux and uncertainty by the fitted baseline for multiplicative flattening. Preserve the original time and row mapping so candidate events can be inspected in the unflattened data.
++
++Run the transit search on each detrending variant with the corresponding uncertainty array. Compare residual low-frequency power or RMS before and after detrending, and compare the candidate&#x27;s search significance, depth, duration, number of distinct events, and phase-folded morphology across baseline timescales. A useful preprocessing choice reduces the oscillatory residuals without erasing repeated transit-shaped dips; a peak that appears only for one aggressive window, or disappears when candidate dips are masked during baseline fitting, is not robust. Save or plot the masks, segment boundaries, baselines, uncertainties, and residual light curves for verification.</pre></details><details><summary>transit-least-squares/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exoplanet-detection-period/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exoplanet-detection-period/repaired_skill/transit-least-squares/SKILL.md">修改后</a></p><pre>--- original/transit-least-squares/SKILL.md
++++ repaired/transit-least-squares/SKILL.md
+@@ -244,3 +244,21 @@
+ - Signal may be too weak
+ - Try different preprocessing (less aggressive flattening)
+ - Check if there&#x27;s a data gap during transits
++
++
++
++## Robust TESS Input and Activity-Removal Workflow
++
++For an activity-dominated TESS light curve, never run TLS on the raw oscillatory flux. Read the four columns as MJD time, normalized flux, quality flag, and flux uncertainty. Sort by time, retain only quality==0 rows with finite time/flux/uncertainty and strictly positive finite uncertainties, and apply the identical retained-row mask to all three arrays. MJD differences are in days: either pass the MJD values consistently or subtract one reference MJD from time before TLS; do not mix time units or confuse the returned `T0` with the orbital period.
++
++Remove isolated instrumental outliers conservatively, then detrend the flux with a robust, transit-preserving baseline whose timescale is longer than the expected transit duration. Do not use a filter so short that it removes transit dips, and avoid fitting obvious candidate dips into the baseline; iterative masking of candidate transit windows is useful. Normalize the detrended flux and propagate the baseline consistently to `flux_err`. Repeat TLS with several modestly different detrending windows or robust baseline methods, since a stellar-activity peak may disappear or move while a transit period remains stable.
++
++Derive `period_min` and `period_max` from the post-filter cadence and observing baseline rather than relying blindly on defaults. The lower bound must be compatible with the sampling and not be implausibly short; the upper bound should generally allow multiple possible events within the baseline. Search a physically plausible duration grid resolved by the cadence and broad enough for the target and searched periods; reject durations shorter than the effective sampling or implausibly large relative to the period. Use a broad search followed by a denser refinement around each promising period.
++
++
++
++## Candidate Selection and Validation for Active Stars
++
++Treat the highest TLS peak as a candidate, not as an accepted period. Inspect the top several distinct peaks or rerun/refine neighborhoods around them, recording `period`, `SDE`, `snr`, `depth`, `duration`, and `T0`. For each candidate, count separated observed transit events and verify that they have consistent depths, durations, and timing in the unmasked detrended light curve. Phase-fold the data and inspect the morphology and residuals: a valid candidate should show repeated coherent dips rather than a smooth activity waveform, a single edge event, or a gap artifact.
++
++Explicitly compare the candidate with `P/2` and `2P` (and relevant nearby harmonics), checking odd/even event depths and the number of covered events. Check whether the period is close to a stellar-activity period or its harmonic. Repeat the search under the modest detrending alternatives described above and, when justified, after masking the candidate transit windows; accept only a period whose repeated dips and approximate depth/duration remain stable. Refine the surviving period with a narrow TLS interval, and write that validated orbital period in days rounded to exactly five decimal places, not the transit epoch or an activity period.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>exoplanet-workflows/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P001&quot;,
+    &quot;description&quot;: &quot;The general workflow is relevant but too broad for an activity-dominated benchmark requiring one validated period in a specific output file. It does not sufficiently prescribe input-column handling, separation of stellar variability from transit signals, period-range selection, alias rejection, or final output formatting.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;exoplanet-workflows/SKILL.md&quot;,
+        &quot;section&quot;: &quot;exoplanet-workflows&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P002&quot;,
+    &quot;description&quot;: &quot;Preprocessing is central because generic sigma clipping or a fixed flattening window can leave strong stellar oscillations in the data or remove shallow transit events. The guidance needs explicit treatment of quality flags, uncertainties, cadence, gaps, robust outlier rejection, and iterative transit-preserving activity modeling.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;light-curve-preprocessing/SKILL.md&quot;,
+        &quot;section&quot;: &quot;light-curve-preprocessing&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P003&quot;,
+    &quot;description&quot;: &quot;TLS is the best primary detector for transit-shaped signals, but it can return stellar variability, harmonics, or edge artifacts when run on raw or inadequately detrended data. Existing guidance also needs task-specific handling of manually loaded MJD data, finite uncertainties, search bounds, duration coverage, and candidate validation.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;transit-least-squares/SKILL.md&quot;,
+        &quot;section&quot;: &quot;transit-least-squares&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P004&quot;,
+    &quot;description&quot;: &quot;BLS is a useful independent fallback and cross-check for box-shaped transits, but a basic autopower call is vulnerable to residual stellar activity, poor duration grids, insufficient frequency resolution, harmonics, and sparse or single-event candidates.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;box-least-squares/SKILL.md&quot;,
+        &quot;section&quot;: &quot;box-least-squares&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>MMG2Skill · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exoplanet-detection-period/skills">完整上传修复包</a></p><p>以同任务其他归档保存的原始包为对照，完整包哈希已与共享原始运行核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;mmg2skill_gpt52&quot;,
+  &quot;task_id&quot;: &quot;exoplanet-detection-period&quot;,
+  &quot;file_count&quot;: 5,
+  &quot;total_bytes&quot;: 6781,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:acaae1e3de6208ee537b4878d7d381567e84353b39b78332c539208b0f667d73&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:acaae1e3de6208ee537b4878d7d381567e84353b39b78332c539208b0f667d73&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/exoplanet-detection-period-mmg2skill-gpt52-r001/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exoplanet-detection-period/skills&quot;
+}</pre></details><p>字节变化文件 5 个；排除仅空白变化后 5 个。</p><details><summary>box-least-squares/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/exoplanet-detection-period/skills/box-least-squares/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exoplanet-detection-period/skills/box-least-squares/SKILL.md">修改后</a></p><pre>--- original/box-least-squares/SKILL.md
++++ repaired/box-least-squares/SKILL.md
+@@ -1,359 +1,29 @@
+ ---
+ name: box-least-squares
+-description: Box Least Squares (BLS) periodogram for detecting transiting exoplanets and eclipsing binaries. Use when searching for periodic box-shaped dips in light curves. Alternative to Transit Least Squares, available in astropy.timeseries. Based on Kovács et al. (2002).
++description: Run an Astropy Box Least Squares (BLS) search for transit-like signals
++  and **resolve half/double-period aliases** before finalizing and refining the orbital
++  period.
+ ---
+ 
+-# Box Least Squares (BLS) Periodogram
+-
+-The Box Least Squares (BLS) periodogram is a statistical tool for detecting transiting exoplanets and eclipsing binaries in photometric time series data. BLS models a transit as a periodic upside-down top hat (box shape) and finds the period, duration, depth, and reference time that best fit the data.
+-
+-## Overview
+-
+-BLS is built into Astropy and provides an alternative to Transit Least Squares (TLS). Both search for transits, but with different implementations and performance characteristics.
+-
+-**Key parameters BLS searches for:**
+-- Period (orbital period)
+-- Duration (transit duration)
+-- Depth (how much flux drops during transit)
+-- Reference time (mid-transit time of first transit)
+-
+-## Installation
+-
+-BLS is part of Astropy:
+-
+-```bash
+-pip install astropy
+-```
+-
+-## Basic Usage
+-
+-```python
+-import numpy as np
+-import astropy.units as u
+-from astropy.timeseries import BoxLeastSquares
+-
+-# Prepare data
+-# time, flux, and flux_err should be numpy arrays or Quantities
+-t = time * u.day  # Add units if not already present
+-y = flux
+-dy = flux_err  # Optional but recommended
+-
+-# Create BLS object
+-model = BoxLeastSquares(t, y, dy=dy)
+-
+-# Automatic period search with specified duration
+-duration = 0.2 * u.day  # Expected transit duration
+-periodogram = model.autopower(duration)
+-
+-# Extract results
+-best_period = periodogram.period[np.argmax(periodogram.power)]
+-print(f&quot;Best period: {best_period:.5f}&quot;)
+-```
+-
+-## Using autopower vs power
+-
+-### autopower: Automatic Period Grid
+-
+-Recommended for initial searches. Automatically determines appropriate period grid:
+-
+-```python
+-# Specify duration (or multiple durations)
+-duration = 0.2 * u.day
+-periodogram = model.autopower(duration)
+-
+-# Or search multiple durations
+-durations = [0.1, 0.15, 0.2, 0.25] * u.day
+-periodogram = model.autopower(durations)
+-```
+-
+-### power: Custom Period Grid
+-
+-For more control over the search:
+-
+-```python
+-# Define custom period grid
+-periods = np.linspace(2.0, 10.0, 1000) * u.day
+-duration = 0.2 * u.day
+-
+-periodogram = model.power(periods, duration)
+-```
+-
+-**Warning**: Period grid quality matters! Too coarse and you&#x27;ll miss the true period.
+-
+-## Objective Functions
+-
+-BLS supports two objective functions:
+-
+-### 1. Log Likelihood (default)
+-
+-Maximizes the statistical likelihood of the model fit:
+-
+-```python
+-periodogram = model.autopower(0.2 * u.day, objective=&#x27;likelihood&#x27;)
+-```
+-
+-### 2. Signal-to-Noise Ratio (SNR)
+-
+-Uses the SNR with which the transit depth is measured:
+-
+-```python
+-periodogram = model.autopower(0.2 * u.day, objective=&#x27;snr&#x27;)
+-```
+-
+-The SNR objective can improve reliability in the presence of correlated noise.
+-
+-## Complete Example
+-
+-```python
+-import numpy as np
+-import matplotlib.pyplot as plt
+-import astropy.units as u
+-from astropy.timeseries import BoxLeastSquares
+-
+-# Load and prepare data
+-data = np.loadtxt(&#x27;light_curve.txt&#x27;)
+-time = data[:, 0] * u.day
+-flux = data[:, 1]
+-flux_err = data[:, 3]
+-
+-# Create BLS model
+-model = BoxLeastSquares(time, flux, dy=flux_err)
+-
+-# Run BLS with automatic period grid
+-# Try multiple durations to find best fit
+-durations = np.linspace(0.05, 0.3, 10) * u.day
+-periodogram = model.autopower(durations, objective=&#x27;likelihood&#x27;)
+-
+-# Find peak
+-max_power_idx = np.argmax(periodogram.power)
+-best_period = periodogram.period[max_power_idx]
+-best_duration = periodogram.duration[max_power_idx]
+-best_t0 = periodogram.transit_time[max_power_idx]
+-max_power = periodogram.power[max_power_idx]
+-
+-print(f&quot;Period: {best_period:.5f}&quot;)
+-print(f&quot;Duration: {best_duration:.5f}&quot;)
+-print(f&quot;T0: {best_t0:.5f}&quot;)
+-print(f&quot;Power: {max_power:.2f}&quot;)
+-
+-# Plot periodogram
+-import matplotlib.pyplot as plt
+-plt.plot(periodogram.period, periodogram.power)
+-plt.xlabel(&#x27;Period [days]&#x27;)
+-plt.ylabel(&#x27;BLS Power&#x27;)
+-plt.show()
+-```
+-
+-## Peak Statistics for Validation
+-
+-Use `compute_stats()` to calculate detailed statistics about a candidate transit:
+-
+-```python
+-# Get statistics for the best period
+-stats = model.compute_stats(
+-    periodogram.period[max_power_idx],
+-    periodogram.duration[max_power_idx],
+-    periodogram.transit_time[max_power_idx]
+-)
+-
+-# Key statistics for validation
+-print(f&quot;Depth: {stats[&#x27;depth&#x27;]:.6f}&quot;)
+-print(f&quot;Depth uncertainty: {stats[&#x27;depth_err&#x27;]:.6f}&quot;)
+-print(f&quot;SNR: {stats[&#x27;depth_snr&#x27;]:.2f}&quot;)
+-print(f&quot;Odd/Even mismatch: {stats[&#x27;depth_odd&#x27;] - stats[&#x27;depth_even&#x27;]:.6f}&quot;)
+-print(f&quot;Number of transits: {stats[&#x27;transit_count&#x27;]}&quot;)
+-
+-# Check for false positives
+-if abs(stats[&#x27;depth_odd&#x27;] - stats[&#x27;depth_even&#x27;]) &gt; 3 * stats[&#x27;depth_err&#x27;]:
+-    print(&quot;Warning: Significant odd-even mismatch - may not be planetary&quot;)
+-```
+-
+-**Validation criteria:**
+-- **High depth SNR (&gt;7)**: Strong signal
+-- **Low odd-even mismatch**: Consistent transit depth
+-- **Multiple transits observed**: More reliable
+-- **Reasonable duration**: Not too long or too short for orbit
+-
+-## Period Grid Sensitivity
+-
+-The BLS periodogram is sensitive to period grid spacing. The `autoperiod()` method provides a conservative grid:
+-
+-```python
+-# Get automatic period grid
+-periods = model.autoperiod(durations, minimum_period=1*u.day, maximum_period=10*u.day)
+-print(f&quot;Period grid has {len(periods)} points&quot;)
+-
+-# Use this grid with power()
+-periodogram = model.power(periods, durations)
+-```
+-
+-**Tips:**
+-- Use `autopower()` for initial searches
+-- Use finer grids around promising candidates
+-- Period grid quality matters more for BLS than for Lomb-Scargle
+-
+-## Comparing BLS Results
+-
+-To compare multiple peaks:
+-
+-```python
+-# Find top 5 peaks
+-sorted_idx = np.argsort(periodogram.power)[::-1]
+-top_5 = sorted_idx[:5]
+-
+-print(&quot;Top 5 candidates:&quot;)
+-for i, idx in enumerate(top_5):
+-    period = periodogram.period[idx]
+-    power = periodogram.power[idx]
+-    duration = periodogram.duration[idx]
+-
+-    stats = model.compute_stats(period, duration, periodogram.transit_time[idx])
+-
+-    print(f&quot;\n{i+1}. Period: {period:.5f}&quot;)
+-    print(f&quot;   Power: {power:.2f}&quot;)
+-    print(f&quot;   Duration: {duration:.5f}&quot;)
+-    print(f&quot;   SNR: {stats[&#x27;depth_snr&#x27;]:.2f}&quot;)
+-    print(f&quot;   Transits: {stats[&#x27;transit_count&#x27;]}&quot;)
+-```
+-
+-## Phase-Folded Light Curve
+-
+-After finding a candidate, phase-fold to visualize the transit:
+-
+-```python
+-# Fold the light curve at the best period
+-phase = ((time.value - best_t0.value) % best_period.value) / best_period.value
+-
+-# Plot to verify transit shape
+-import matplotlib.pyplot as plt
+-plt.plot(phase, flux, &#x27;.&#x27;)
+-plt.xlabel(&#x27;Phase&#x27;)
+-plt.ylabel(&#x27;Flux&#x27;)
+-plt.show()
+-```
+-
+-## BLS vs Transit Least Squares (TLS)
+-
+-Both methods search for transits, but differ in implementation:
+-
+-### Box Least Squares (BLS)
+-**Pros:**
+-- Built into Astropy (no extra install)
+-- Fast for targeted searches
+-- Good statistical framework
+-- compute_stats() provides detailed validation
+-
+-**Cons:**
+-- Simpler transit model (box shape)
+-- Requires careful period grid setup
+-- May be less sensitive to grazing transits
+-
+-### Transit Least Squares (TLS)
+-**Pros:**
+-- More sophisticated transit models
+-- Generally more sensitive
+-- Better handles grazing transits
+-- Automatic period grid is more robust
+-
+-**Cons:**
+-- Requires separate package
+-- Slower for very long time series
+-- Less control over transit shape
+-
+-**Recommendation**: Try both! TLS is often more sensitive, but BLS is faster and built-in.
+-
+-## Integration with Preprocessing
+-
+-BLS works best with preprocessed data. Consider this pipeline:
+-
+-1. **Quality filtering**: Remove flagged data points
+-2. **Outlier removal**: Clean obvious artifacts
+-3. **Detrending**: Remove stellar variability (rotation, trends)
+-4. **BLS search**: Run period search on cleaned data
+-5. **Validation**: Use `compute_stats()` to check candidate quality
+-
+-### Key Considerations
+-
+-- Preprocessing should **preserve transit shapes** (use gentle methods like `flatten()`)
+-- Don&#x27;t over-process - too aggressive cleaning removes real signals
+-- BLS needs reasonable period and duration ranges
+-- Always validate with multiple metrics (power, SNR, odd-even)
+-
+-## Common Issues
+-
+-### Issue: No clear peak
+-**Causes:**
+-- Transits too shallow
+-- Wrong duration range
+-- Period outside search range
+-- Over-aggressive preprocessing
+-
+-**Solutions:**
+-- Try wider duration range
+-- Extend period search range
+-- Use less aggressive `flatten()` window
+-- Check raw data for transits
+-
+-### Issue: Period is 2× or 0.5× expected
+-**Causes:**
+-- Missing alternating transits
+-- Data gaps
+-- Period aliasing
+-
+-**Solutions:**
+-- Check both periods manually
+-- Examine odd-even statistics
+-- Look at phase-folded plots for both periods
+-
+-### Issue: High odd-even mismatch
+-**Cause:**
+-- Not a planetary transit
+-- Eclipsing binary
+-- Instrumental artifact
+-
+-**Solution:**
+-- Check `stats[&#x27;depth_odd&#x27;]` vs `stats[&#x27;depth_even&#x27;]`
+-- May not be a transiting planet
+-
+-## Dependencies
+-
+-```bash
+-pip install astropy numpy matplotlib
+-# Optional: lightkurve for preprocessing
+-pip install lightkurve
+-```
+-
+-## References
+-
+-### Official Documentation
+-- [Astropy BLS Documentation](https://docs.astropy.org/en/stable/timeseries/bls.html)
+-- [Astropy Time Series Guide](https://docs.astropy.org/en/stable/timeseries/)
+-
+-### Key Papers
+-- **Kovács, Zucker, &amp; Mazeh (2002)**: Original BLS paper - [A&amp;A 391, 369](https://arxiv.org/abs/astro-ph/0206099)
+-- **Hartman &amp; Bakos (2016)**: VARTOOLS implementation - [A&amp;C 17, 1](https://arxiv.org/abs/1605.06811)
+-
+-### Related Resources
+-- [Lightkurve Tutorials](https://lightkurve.github.io/lightkurve/tutorials/)
+-- [TLS GitHub](https://github.com/hippke/tls) - Alternative transit detection method
+-
+-## When to Use BLS
+-
+-**Use BLS when:**
+-- You want a fast, built-in solution
+-- You need detailed validation statistics (`compute_stats`)
+-- Working within the Astropy ecosystem
+-- You want fine control over period grid
+-
+-**Use TLS when:**
+-- Maximum sensitivity is critical
+-- Dealing with grazing or partial transits
+-- Want automatic robust period grid
+-- Prefer more sophisticated transit models
+-
+-**Use Lomb-Scargle when:**
+-- Searching for general periodic signals (not specifically transits)
+-- Detecting stellar rotation, pulsation
+-- Initial exploration of periodicity
+-
+-For exoplanet detection, both BLS and TLS are valid choices. Try both and compare results!
++## Steps
++1. Prepare arrays `time` (days), `flux`, and (ideally) `flux_err`; remove NaNs and pre-detrend the light curve (e.g., with `lightkurve.flatten`) so stellar variability doesn’t dominate.
++2. Build the BLS model:
++   - `model = BoxLeastSquares(time * u.day, flux, dy=flux_err)`
++3. Do a **broad** BLS search over a sensible duration grid:
++   - `durations = np.linspace(0.01, 0.3, N) * u.day`
++   - `pg = model.autopower(durations, objective=&quot;likelihood&quot;)` (or `&quot;snr&quot;` if correlated noise dominates)
++4. Collect the strongest candidates (not just the top one):
++   - Sort indices by `pg.power` descending; take top `k` periods.
++5. For each candidate period `P`, **explicitly test harmonics** before choosing a “true” period:
++   - Evaluate `P` and `2P` (and optionally `P/2`) using `compute_stats(period, duration, transit_time)` with matching `(duration, t0)` from the periodogram peak.
++   - Prefer the period that yields:
++     - higher `stats[&quot;depth_snr&quot;]` (or better objective), **and**
++     - **odd/even consistency**: `abs(stats[&quot;depth_odd&quot;] - stats[&quot;depth_even&quot;])` small compared to `stats[&quot;depth_err&quot;]`, **and**
++     - a plausible `stats[&quot;transit_count&quot;]` (not spuriously inflated by a half-period fold).
++6. After selecting the alias-resolved period `P_true`, **refine around both `P_true` and its nearest harmonic** (if applicable) on a dense grid, then re-apply the same alias check:
++   - Example: `periods = np.linspace(P_true*(1-0.002), P_true*(1+0.002), 20000) * u.day`
++   - `pg_ref = model.power(periods, duration_best, objective=&quot;likelihood&quot;)`
++   - If the refined peak lands near `P/2` or `2P`, repeat Step 5 and keep the physically consistent choice.
++7. Phase-fold at the final period (and optionally at `P/2` and `2P`) as a sanity check that a single transit event repeats cleanly at the chosen period.
++## Expected Result
++A best-fit orbital period that is **not a harmonic/alias** (e.g., avoids incorrectly reporting `P/2` when odd/even statistics favor `2P`) and is ready to be written (rounded) to the required output file.</pre></details><details><summary>exoplanet-workflows/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/exoplanet-detection-period/skills/exoplanet-workflows/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exoplanet-detection-period/skills/exoplanet-workflows/SKILL.md">修改后</a></p><pre>--- original/exoplanet-workflows/SKILL.md
++++ repaired/exoplanet-workflows/SKILL.md
+@@ -1,203 +1,20 @@
+ ---
+ name: exoplanet-workflows
+-description: General workflows and best practices for exoplanet detection and characterization from light curve data. Use when planning an exoplanet analysis pipeline, understanding when to use different methods, or troubleshooting detection issues.
++description: End-to-end workflow for detecting a transiting exoplanet in a stellar-variability-dominated
++  light curve, including final period selection rules to avoid half/double-period
++  aliases.
+ ---
+ 
+-# Exoplanet Detection Workflows
+-
+-This skill provides general guidance on exoplanet detection workflows, helping you choose the right approach for your data and goals.
+-
+-## Overview
+-
+-Exoplanet detection from light curves typically involves:
+-1. Data loading and quality control
+-2. Preprocessing to remove instrumental and stellar noise
+-3. Period search using appropriate algorithms
+-4. Signal validation and characterization
+-5. Parameter estimation
+-
+-## Pipeline Design Principles
+-
+-### Key Stages
+-
+-1. **Data Loading**: Understand your data format, columns, time system
+-2. **Quality Control**: Filter bad data points using quality flags
+-3. **Preprocessing**: Remove noise while preserving planetary signals
+-4. **Period Search**: Choose appropriate algorithm for signal type
+-5. **Validation**: Verify candidate is real, not artifact
+-6. **Refinement**: Improve period precision if candidate is strong
+-
+-### Critical Decisions
+-
+-**What to preprocess?**
+-- Remove outliers? Yes, but not too aggressively
+-- Remove trends? Yes, stellar rotation masks transits
+-- How much? Balance noise removal vs. signal preservation
+-
+-**Which period search algorithm?**
+-- **TLS**: Best for transit-shaped signals (box-like dips)
+-- **Lomb-Scargle**: Good for any periodic signal, fast exploration
+-- **BLS**: Alternative to TLS, built into Astropy
+-
+-**What period range to search?**
+-- Consider target star type and expected planet types
+-- Hot Jupiters: short periods (0.5-10 days)
+-- Habitable zone: longer periods (depends on star)
+-- Balance: wider range = more complete, but slower
+-
+-**When to refine?**
+-- After finding promising candidate
+-- Narrow search around candidate period
+-- Improves precision for final measurement
+-
+-## Choosing the Right Method
+-
+-### Transit Least Squares (TLS)
+-**Use when:**
+-- Searching for transiting exoplanets
+-- Signal has transit-like shape (box-shaped dips)
+-- You have flux uncertainties
+-
+-**Advantages:**
+-- Most sensitive for transits
+-- Handles grazing transits
+-- Provides transit parameters
+-
+-**Disadvantages:**
+-- Slower than Lomb-Scargle
+-- Only detects transits (not RV planets, eclipsing binaries with non-box shapes)
+-
+-### Lomb-Scargle Periodogram
+-**Use when:**
+-- Exploring data for any periodic signal
+-- Detecting stellar rotation
+-- Finding pulsation periods
+-- Quick period search
+-
+-**Advantages:**
+-- Fast
+-- Works for any periodic signal
+-- Good for initial exploration
+-
+-**Disadvantages:**
+-- Less sensitive to shallow transits
+-- May confuse harmonics with true period
+-
+-### Box Least Squares (BLS)
+-**Use when:**
+-- Alternative to TLS for transits
+-- Available in astropy
+-
+-**Note**: TLS generally performs better than BLS for exoplanet detection.
+-
+-## Signal Validation
+-
+-### Strong Candidate (TLS)
+-- **SDE &gt; 9**: Very strong candidate
+-- **SDE &gt; 6**: Strong candidate
+-- **SNR &gt; 7**: Reliable signal
+-
+-### Warning Signs
+-- **Low SDE (&lt;6)**: Weak signal, may be false positive
+-- **Period exactly half/double expected**: Check for aliasing
+-- **High odd-even mismatch**: May not be planetary transit
+-
+-### How to Validate
+-
+-- **Signal strength metrics**: Check SDE, SNR against thresholds
+-- **Visual inspection**: Phase-fold data at candidate period
+-- **Odd-even consistency**: Do odd and even transits have same depth?
+-- **Multiple transits**: More transits = more confidence
+-
+-## Multi-Planet Systems
+-
+-Some systems have multiple transiting planets. Strategy:
+-
+-1. Find first candidate
+-2. Mask out first planet&#x27;s transits
+-3. Search remaining data for additional periods
+-4. Repeat until no more significant signals
+-
+-See Transit Least Squares documentation for `transit_mask` function.
+-
+-## Common Issues and Solutions
+-
+-### Issue: No significant detection (low SDE)
+-**Solutions:**
+-- Check preprocessing - may be removing signal
+-- Try less aggressive outlier removal
+-- Check for data gaps during transits
+-- Signal may be too shallow for detection
+-
+-### Issue: Period is 2x or 0.5x expected
+-**Causes:**
+-- Period aliasing from data gaps
+-- Missing alternate transits
+-
+-**Solutions:**
+-- Check both periods manually
+-- Look at phase-folded light curves
+-- Check if one shows odd-even mismatch
+-
+-### Issue: flux_err required error
+-**Solution:**
+-TLS requires flux uncertainties as the third argument - they&#x27;re not optional!
+-
+-### Issue: Results vary with preprocessing
+-**Diagnosis:**
+-- Compare results with different preprocessing
+-- Plot each preprocessing step
+-- Ensure you&#x27;re not over-smoothing
+-
+-## Expected Transit Depths
+-
+-For context:
+-- **Hot Jupiters**: 0.01-0.03 (1-3% dip)
+-- **Super-Earths**: 0.001-0.003 (0.1-0.3% dip)
+-- **Earth-sized**: 0.0001-0.001 (0.01-0.1% dip)
+-
+-Detection difficulty increases dramatically for smaller planets.
+-
+-## Period Range Guidelines
+-
+-Based on target characteristics:
+-- **Hot Jupiters**: 0.5-10 days
+-- **Warm planets**: 10-100 days
+-- **Habitable zone**:
+-  - Sun-like star: 200-400 days
+-  - M-dwarf: 10-50 days
+-
+-Adjust search ranges based on mission duration and expected planet types.
+-
+-## Best Practices
+-
+-1. **Always include flux uncertainties** - critical for proper weighting
+-2. **Visualize each preprocessing step** - ensure you&#x27;re improving data quality
+-3. **Check quality flags** - verify convention (flag=0 may mean good OR bad)
+-4. **Use appropriate sigma** - 3 for initial outliers, 5 after flattening
+-5. **Refine promising candidates** - narrow period search for precision
+-6. **Validate detections** - check SDE, SNR, phase-folded plots
+-7. **Consider data gaps** - may cause period aliasing
+-8. **Document your workflow** - reproducibility is key
+-
+-## References
+-
+-### Official Documentation
+-- [Lightkurve Tutorials](https://lightkurve.github.io/lightkurve/tutorials/index.html)
+-- [TLS GitHub](https://github.com/hippke/tls)
+-- [TLS Tutorials](https://github.com/hippke/tls/tree/master/tutorials)
+-
+-### Key Papers
+-- Hippke &amp; Heller (2019) - Transit Least Squares paper
+-- Kovács et al. (2002) - BLS algorithm
+-
+-### Lightkurve Tutorial Sections
+-- Section 3.1: Identifying transiting exoplanet signals
+-- Section 2.3: Removing instrumental noise
+-- Section 3.2: Creating periodograms
+-
+-## Dependencies
+-
+-```bash
+-pip install lightkurve transitleastsquares numpy matplotlib scipy
+-```
++## Steps
++1. Load data and confirm column meanings (time system, normalized flux, quality flag convention, flux uncertainty).
++2. Filter on quality flags (typically `flag == 0` for TESS-like exports) and remove NaNs/infs.
++3. Remove outliers conservatively (sigma-clip), then detrend stellar variability with a method that preserves short transits (e.g., `lightkurve.flatten` with window length longer than the transit duration).
++4. Run a transit-focused period search (TLS preferred; BLS acceptable) over a broad period range.
++5. Identify top candidate periods and **always check common harmonics** (`P`, `2P`, sometimes `P/2`) using:
++   - odd/even transit-depth consistency,
++   - folded-transit shape clarity,
++   - SNR/SDE (or BLS depth SNR).
++6. Only after alias resolution, do a narrow, dense-grid refinement around the chosen period to reach the precision needed for reporting.
++7. Write the final period to `/root/period.txt` as a single value in days rounded to 5 decimals.
++## Expected Result
++A reproducible pipeline that detrends stellar activity, detects the transit period, and **finalizes the orbital period after harmonic/odd-even validation**, producing correctly formatted output.</pre></details><details><summary>light-curve-preprocessing/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/exoplanet-detection-period/skills/light-curve-preprocessing/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exoplanet-detection-period/skills/light-curve-preprocessing/SKILL.md">修改后</a></p><pre>--- original/light-curve-preprocessing/SKILL.md
++++ repaired/light-curve-preprocessing/SKILL.md
+@@ -1,176 +1,16 @@
+ ---
+ name: light-curve-preprocessing
+-description: Preprocessing and cleaning techniques for astronomical light curves. Use when preparing light curve data for period analysis, including outlier removal, trend removal, flattening, and handling data quality flags. Works with lightkurve and general time series data.
++description: Clean and detrend a TESS-like light curve (quality filtering, outlier
++  removal, flattening) while preserving transit signals.
+ ---
+ 
+-# Light Curve Preprocessing
+-
+-Preprocessing is essential before period analysis. Raw light curves often contain outliers, long-term trends, and instrumental effects that can mask or create false periodic signals.
+-
+-## Overview
+-
+-Common preprocessing steps:
+-1. Remove outliers
+-2. Remove long-term trends
+-3. Handle data quality flags
+-4. Remove stellar variability (optional)
+-
+-## Outlier Removal
+-
+-### Using Lightkurve
+-
+-```python
+-import lightkurve as lk
+-
+-# Remove outliers using sigma clipping
+-lc_clean, mask = lc.remove_outliers(sigma=3, return_mask=True)
+-outliers = lc[mask]  # Points that were removed
+-
+-# Common sigma values:
+-# sigma=3: Standard (removes ~0.3% of data)
+-# sigma=5: Conservative (removes fewer points)
+-# sigma=2: Aggressive (removes more points)
+-```
+-
+-### Manual Outlier Removal
+-
+-```python
+-import numpy as np
+-
+-# Calculate median and standard deviation
+-median = np.median(flux)
+-std = np.std(flux)
+-
+-# Remove points beyond 3 sigma
+-good = np.abs(flux - median) &lt; 3 * std
+-time_clean = time[good]
+-flux_clean = flux[good]
+-error_clean = error[good]
+-```
+-
+-## Removing Long-Term Trends
+-
+-### Flattening with Lightkurve
+-
+-```python
+-# Flatten to remove low-frequency variability
+-# window_length: number of cadences to use for smoothing
+-lc_flat = lc_clean.flatten(window_length=500)
+-
+-# Common window lengths:
+-# 100-200: Remove short-term trends
+-# 300-500: Remove medium-term trends (typical for TESS)
+-# 500-1000: Remove long-term trends
+-```
+-
+-The `flatten()` method uses a Savitzky-Golay filter to remove trends while preserving transit signals.
+-
+-### Iterative Sine Fitting
+-
+-For removing high-frequency stellar variability (rotation, pulsation):
+-
+-```python
+-def sine_fitting(lc):
+-    &quot;&quot;&quot;Remove dominant periodic signal by fitting sine wave.&quot;&quot;&quot;
+-    pg = lc.to_periodogram()
+-    model = pg.model(time=lc.time, frequency=pg.frequency_at_max_power)
+-    lc_new = lc.copy()
+-    lc_new.flux = lc_new.flux / model.flux
+-    return lc_new, model
+-
+-# Iterate multiple times to remove multiple periodic components
+-lc_processed = lc_clean.copy()
+-for i in range(50):  # Number of iterations
+-    lc_processed, model = sine_fitting(lc_processed)
+-```
+-
+-**Warning**: This removes periodic signals, so use carefully if you&#x27;re searching for periodic transits.
+-
+-## Handling Data Quality Flags
+-
+-**IMPORTANT**: Quality flag conventions vary by data source!
+-
+-### Standard TESS format
+-```python
+-# For standard TESS files (flag=0 is GOOD):
+-good = flag == 0
+-time_clean = time[good]
+-flux_clean = flux[good]
+-error_clean = error[good]
+-```
+-
+-### Alternative formats
+-```python
+-# For some exported files (flag=0 is BAD):
+-good = flag != 0
+-time_clean = time[good]
+-flux_clean = flux[good]
+-error_clean = error[good]
+-```
+-
+-**Always verify your data format!** Check which approach gives cleaner results.
+-
+-## Preprocessing Pipeline Considerations
+-
+-When building a preprocessing pipeline for exoplanet detection:
+-
+-### Key Steps (Order Matters!)
+-
+-1. **Quality filtering**: Apply data quality flags first
+-2. **Outlier removal**: Remove bad data points (flares, cosmic rays)
+-3. **Trend removal**: Remove long-term variations (stellar rotation, instrumental drift)
+-4. **Optional second pass**: Additional outlier removal after detrending
+-
+-### Important Principles
+-
+-- **Always include flux_err**: Critical for proper weighting in period search algorithms
+-- **Preserve transit shapes**: Use methods like `flatten()` that preserve short-duration dips
+-- **Don&#x27;t over-process**: Too aggressive preprocessing can remove real signals
+-- **Verify visually**: Plot each step to ensure quality
+-
+-### Parameter Selection
+-
+-- **Outlier removal sigma**: Lower sigma (2-3) is aggressive, higher (5-7) is conservative
+-- **Flattening window**: Should be longer than transit duration but shorter than stellar rotation period
+-- **When to do two passes**: Remove obvious outliers before detrending, then remove residual outliers after
+-
+-## Preprocessing for Exoplanet Detection
+-
+-For transit detection, be careful not to remove the transit signal:
+-
+-1. **Remove outliers first**: Use sigma=3 or sigma=5
+-2. **Flatten trends**: Use window_length appropriate for your data
+-3. **Don&#x27;t over-process**: Too much smoothing can remove shallow transits
+-
+-## Visualizing Results
+-
+-Always plot your light curve to verify preprocessing quality:
+-
+-```python
+-import matplotlib.pyplot as plt
+-
+-# Use .plot() method on LightCurve objects
+-lc.plot()
+-plt.show()
+-```
+-
+-**Best practice**: Plot before and after each major step to ensure you&#x27;re improving data quality, not removing real signals.
+-
+-## Dependencies
+-
+-```bash
+-pip install lightkurve numpy matplotlib
+-```
+-
+-## References
+-
+-- [Lightkurve Preprocessing Tutorials](https://lightkurve.github.io/lightkurve/tutorials/index.html)
+-- [Removing Instrumental Noise](https://lightkurve.github.io/lightkurve/tutorials/2.3-removing-noise.html)
+-
+-## Best Practices
+-
+-1. **Always check quality flags first**: Remove bad data before processing
+-2. **Remove outliers before flattening**: Outliers can affect trend removal
+-3. **Choose appropriate window length**: Too short = doesn&#x27;t remove trends, too long = removes transits
+-4. **Visualize each step**: Make sure preprocessing improves the data
+-5. **Don&#x27;t over-process**: More preprocessing isn&#x27;t always better
++## Steps
++1. Load the columns: time (MJD), normalized flux, quality flag, flux uncertainty.
++2. Apply quality filtering first (commonly `quality == 0` for good data); drop NaNs/infs.
++3. Remove gross outliers (sigma clipping); use a conservative threshold if transits are shallow (e.g., `sigma≈5–10`).
++4. Detrend stellar/instrumental variability with `lightkurve.LightCurve.flatten(window_length=...)`:
++   - Choose `window_length` long compared to transit duration but short enough to remove rotation/spot modulation.
++5. Optionally run a second outlier removal pass on the detrended light curve (often slightly tighter than the first).
++6. Inspect before/after plots to ensure transits are not over-smoothed or removed.
++## Expected Result
++A cleaned, detrended light curve where stellar activity is largely removed and transit-like dips are preserved for TLS/BLS searches.</pre></details><details><summary>lomb-scargle-periodogram/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/exoplanet-detection-period/skills/lomb-scargle-periodogram/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exoplanet-detection-period/skills/lomb-scargle-periodogram/SKILL.md">修改后</a></p><pre>--- original/lomb-scargle-periodogram/SKILL.md
++++ repaired/lomb-scargle-periodogram/SKILL.md
+@@ -1,112 +1,15 @@
+ ---
+ name: lomb-scargle-periodogram
+-description: Lomb-Scargle periodogram for finding periodic signals in unevenly sampled time series data. Use when analyzing light curves, radial velocity data, or any astronomical time series to detect periodic variations. Works for stellar rotation, pulsation, eclipsing binaries, and general periodic phenomena. Based on lightkurve library.
++description: Use Lomb–Scargle (via Lightkurve) to characterize strong sinusoidal/quasi-sinusoidal
++  variability (e.g., stellar rotation) that may need to be detrended before transit
++  searches.
+ ---
+ 
+-# Lomb-Scargle Periodogram
+-
+-The Lomb-Scargle periodogram is the standard tool for finding periods in unevenly sampled astronomical time series data. It&#x27;s particularly useful for detecting periodic signals in light curves from space missions like Kepler, K2, and TESS.
+-
+-## Overview
+-
+-The Lomb-Scargle periodogram extends the classical periodogram to handle unevenly sampled data, which is common in astronomy due to observing constraints, data gaps, and variable cadences.
+-
+-## Basic Usage with Lightkurve
+-
+-```python
+-import lightkurve as lk
+-import numpy as np
+-
+-# Create a light curve object
+-lc = lk.LightCurve(time=time, flux=flux, flux_err=error)
+-
+-# Create periodogram (specify maximum period to search)
+-pg = lc.to_periodogram(maximum_period=15)  # Search up to 15 days
+-
+-# Find strongest period
+-strongest_period = pg.period_at_max_power
+-max_power = pg.max_power
+-
+-print(f&quot;Strongest period: {strongest_period:.5f} days&quot;)
+-print(f&quot;Power: {max_power:.5f}&quot;)
+-```
+-
+-## Plotting Periodograms
+-
+-```python
+-import matplotlib.pyplot as plt
+-
+-pg.plot(view=&#x27;period&#x27;)  # View vs period (not frequency)
+-plt.xlabel(&#x27;Period [days]&#x27;)
+-plt.ylabel(&#x27;Power&#x27;)
+-plt.show()
+-```
+-
+-**Important**: Use `view=&#x27;period&#x27;` to see periods directly, not frequencies. The default `view=&#x27;frequency&#x27;` shows frequency (1/period).
+-
+-## Period Range Selection
+-
+-Choose appropriate period ranges based on your science case:
+-
+-- **Stellar rotation**: 0.1 - 100 days
+-- **Exoplanet transits**: 0.5 - 50 days (most common)
+-- **Eclipsing binaries**: 0.1 - 100 days
+-- **Stellar pulsations**: 0.001 - 1 day
+-
+-```python
+-# Search specific period range
+-pg = lc.to_periodogram(minimum_period=2.0, maximum_period=7.0)
+-```
+-
+-## Interpreting Results
+-
+-### Power Significance
+-
+-Higher power indicates stronger periodic signal, but be cautious:
+-- **High power**: Likely real periodic signal
+-- **Multiple peaks**: Could indicate harmonics (period/2, period*2)
+-- **Aliasing**: Very short periods may be aliases of longer periods
+-
+-### Common Patterns
+-
+-1. **Single strong peak**: Likely the true period
+-2. **Harmonics**: Peaks at period/2, period*2 suggest the fundamental period
+-3. **Aliases**: Check if period*2 or period/2 also show signals
+-
+-## Model Fitting
+-
+-Once you find a period, you can fit a model:
+-
+-```python
+-# Get the frequency at maximum power
+-frequency = pg.frequency_at_max_power
+-
+-# Create a model light curve
+-model = pg.model(time=lc.time, frequency=frequency)
+-
+-# Plot data and model
+-import matplotlib.pyplot as plt
+-lc.plot(label=&#x27;Data&#x27;)
+-model.plot(label=&#x27;Model&#x27;)
+-plt.legend()
+-plt.show()
+-```
+-
+-## Dependencies
+-
+-```bash
+-pip install lightkurve numpy matplotlib
+-```
+-
+-## References
+-
+-- [Lightkurve Tutorials](https://lightkurve.github.io/lightkurve/tutorials/index.html)
+-- [Lightkurve Periodogram Documentation](https://docs.lightkurve.org/)
+-
+-## When to Use This vs. Other Methods
+-
+-- **Lomb-Scargle**: General periodic signals (rotation, pulsation, eclipsing binaries)
+-- **Transit Least Squares (TLS)**: Specifically for exoplanet transits (more sensitive)
+-- **Box Least Squares (BLS)**: Alternative transit detection method
+-
+-For exoplanet detection, consider using TLS after Lomb-Scargle for initial period search.
++## Steps
++1. Create a `lightkurve.LightCurve(time=..., flux=..., flux_err=...)` from filtered data.
++2. Compute a periodogram over a rotation-relevant range:
++   - `pg = lc.to_periodogram(minimum_period=..., maximum_period=...)`
++3. Read off the dominant period: `pg.period_at_max_power`.
++4. Use the LS model (`pg.model(...)`) to visualize/confirm the modulation; use this insight to pick an appropriate detrending window length or variability-removal approach.
++## Expected Result
++An estimated stellar-variability timescale (often rotation) that informs detrending choices prior to transit detection.</pre></details><details><summary>transit-least-squares/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/exoplanet-detection-period/skills/transit-least-squares/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exoplanet-detection-period/skills/transit-least-squares/SKILL.md">修改后</a></p><pre>--- original/transit-least-squares/SKILL.md
++++ repaired/transit-least-squares/SKILL.md
+@@ -1,246 +1,17 @@
+ ---
+ name: transit-least-squares
+-description: Transit Least Squares (TLS) algorithm for detecting exoplanet transits in light curves. Use when searching for transiting exoplanets specifically, as TLS is more sensitive than Lomb-Scargle for transit-shaped signals. Based on the transitleastsquares Python package.
++description: Detect transiting exoplanets using Transit Least Squares (TLS) and validate
++  against common period aliases (especially 2×/0.5×) before final reporting.
+ ---
+ 
+-# Transit Least Squares (TLS)
+-
+-Transit Least Squares is a specialized algorithm optimized for detecting exoplanet transits in light curves. It&#x27;s more sensitive than Lomb-Scargle for transit-shaped signals because it fits actual transit models.
+-
+-## Overview
+-
+-TLS searches for periodic transit-like dips in brightness by fitting transit models at different periods, durations, and epochs. It&#x27;s the preferred method for exoplanet transit detection.
+-
+-## Installation
+-
+-```bash
+-pip install transitleastsquares
+-```
+-
+-## Basic Usage
+-
+-**CRITICAL**: Always include `flux_err` (flux uncertainties) for best results!
+-
+-```python
+-import transitleastsquares as tls
+-import lightkurve as lk
+-import numpy as np
+-
+-# Example 1: Using Lightkurve (recommended)
+-lc = lk.LightCurve(time=time, flux=flux, flux_err=error)
+-lc_clean = lc.remove_outliers(sigma=3)
+-lc_flat = lc_clean.flatten()
+-
+-# Create TLS object - MUST include flux_err!
+-pg_tls = tls.transitleastsquares(
+-    lc_flat.time.value,      # Time array
+-    lc_flat.flux.value,      # Flux array
+-    lc_flat.flux_err.value   # Flux uncertainties (REQUIRED!)
+-)
+-
+-# Search for transits (uses default period range if not specified)
+-out_tls = pg_tls.power(
+-    show_progress_bar=False,  # Set True for progress tracking
+-    verbose=False
+-)
+-
+-# Extract results
+-best_period = out_tls.period
+-period_uncertainty = out_tls.period_uncertainty
+-t0 = out_tls.T0                    # Transit epoch
+-depth = out_tls.depth               # Transit depth
+-snr = out_tls.snr                   # Signal-to-noise ratio
+-sde = out_tls.SDE                   # Signal Detection Efficiency
+-
+-print(f&quot;Best period: {best_period:.5f} ± {period_uncertainty:.5f} days&quot;)
+-print(f&quot;Transit epoch (T0): {t0:.5f}&quot;)
+-print(f&quot;Depth: {depth:.5f}&quot;)
+-print(f&quot;SNR: {snr:.2f}&quot;)
+-print(f&quot;SDE: {sde:.2f}&quot;)
+-```
+-
+-### Example 2: With explicit period range
+-```python
+-# Search specific period range
+-out_tls = pg_tls.power(
+-    period_min=2.0,      # Minimum period (days)
+-    period_max=7.0,      # Maximum period (days)
+-    show_progress_bar=True,
+-    verbose=True
+-)
+-```
+-
+-## Period Refinement Strategy
+-
+-**Best Practice**: Broad search first, then refine for precision.
+-
+-**Example workflow:**
+-1. Initial search finds candidate at ~3.2 days
+-2. Refine by searching narrower range (e.g., 3.0-3.4 days)
+-3. Narrower range → finer grid → better precision
+-
+-**Why?** Initial searches use coarse grids (fast). Refinement uses dense grid in small range (precise).
+-
+-```python
+-# After initial search finds a candidate, narrow the search:
+-results_refined = pg_tls.power(
+-    period_min=X,  # e.g., 90% of candidate
+-    period_max=Y   # e.g., 110% of candidate
+-)
+-```
+-
+-**Typical refinement window**: ±2% to ±10% around candidate period.
+-
+-### Advanced Options
+-
+-For very precise measurements, you can adjust:
+-- `oversampling_factor`: Finer period grid (default: 1, higher = slower but more precise)
+-- `duration_grid_step`: Transit duration sampling (default: 1.1)
+-- `T0_fit_margin`: Mid-transit time fitting margin (default: 5)
+-
+-### Advanced Parameters
+-
+-- `oversampling_factor`: Higher values give finer period resolution (slower)
+-- `duration_grid_step`: Step size for transit duration grid (1.01 = 1% steps)
+-- `T0_fit_margin`: Margin for fitting transit epoch (0 = no margin, faster)
+-
+-## Phase-Folding
+-
+-Once you have a period, TLS automatically computes phase-folded data:
+-
+-```python
+-# Phase-folded data is automatically computed
+-folded_phase = out_tls.folded_phase      # Phase (0-1)
+-folded_y = out_tls.folded_y              # Flux values
+-model_phase = out_tls.model_folded_phase # Model phase
+-model_flux = out_tls.model_folded_model # Model flux
+-
+-# Plot phase-folded light curve
+-import matplotlib.pyplot as plt
+-plt.plot(folded_phase, folded_y, &#x27;.&#x27;, label=&#x27;Data&#x27;)
+-plt.plot(model_phase, model_flux, &#x27;-&#x27;, label=&#x27;Model&#x27;)
+-plt.xlabel(&#x27;Phase&#x27;)
+-plt.ylabel(&#x27;Flux&#x27;)
+-plt.legend()
+-plt.show()
+-```
+-
+-## Transit Masking
+-
+-After finding a transit, mask it to search for additional planets:
+-
+-```python
+-from transitleastsquares import transit_mask
+-
+-# Create transit mask
+-mask = transit_mask(time, period, duration, t0)
+-lc_masked = lc[~mask]  # Remove transit points
+-
+-# Search for second planet
+-pg_tls2 = tls.transitleastsquares(
+-    lc_masked.time,
+-    lc_masked.flux,
+-    lc_masked.flux_err
+-)
+-out_tls2 = pg_tls2.power(period_min=2, period_max=7)
+-```
+-
+-## Interpreting Results
+-
+-### Signal Detection Efficiency (SDE)
+-
+-SDE is TLS&#x27;s measure of signal strength:
+-- **SDE &gt; 6**: Strong candidate
+-- **SDE &gt; 9**: Very strong candidate
+-- **SDE &lt; 6**: Weak signal, may be false positive
+-
+-### Signal-to-Noise Ratio (SNR)
+-
+-- **SNR &gt; 7**: Generally considered reliable
+-- **SNR &lt; 7**: May need additional validation
+-
+-### Common Warnings
+-
+-TLS may warn: &quot;X of Y transits without data. The true period may be twice the given period.&quot;
+-
+-This suggests:
+-- Data gaps may cause period aliasing
+-- Check if `period * 2` also shows a signal
+-- The true period might be longer
+-
+-## Model Light Curve
+-
+-TLS provides the best-fit transit model:
+-
+-```python
+-# Model over full time range
+-model_time = out_tls.model_lightcurve_time
+-model_flux = out_tls.model_lightcurve_model
+-
+-# Plot with data
+-import matplotlib.pyplot as plt
+-plt.plot(time, flux, &#x27;.&#x27;, label=&#x27;Data&#x27;)
+-plt.plot(model_time, model_flux, &#x27;-&#x27;, label=&#x27;Model&#x27;)
+-plt.xlabel(&#x27;Time [days]&#x27;)
+-plt.ylabel(&#x27;Flux&#x27;)
+-plt.legend()
+-plt.show()
+-```
+-
+-## Workflow Considerations
+-
+-When designing a transit detection pipeline, consider:
+-
+-1. **Data quality**: Filter by quality flags before analysis
+-2. **Preprocessing order**: Remove outliers → flatten/detrend → search for transits
+-3. **Initial search**: Use broad period range to find candidates
+-4. **Refinement**: Narrow search around candidates for better precision
+-5. **Validation**: Check SDE, SNR, and visual inspection of phase-folded data
+-
+-### Typical Parameter Ranges
+-
+-- **Outlier removal**: sigma=3-5 (lower = more aggressive)
+-- **Period search**: Match expected orbital periods for your target
+-- **Refinement window**: ±2-10% around candidate period
+-- **SDE threshold**: &gt;6 for candidates, &gt;9 for strong detections
+-
+-## Multiple Planet Search Strategy
+-
+-1. **Initial broad search**: Use TLS with default or wide period range
+-2. **Identify candidate**: Find period with highest SDE
+-3. **Refine period**: Narrow search around candidate period (±5%)
+-4. **Mask transits**: Remove data points during transits
+-5. **Search for additional planets**: Repeat TLS on masked data
+-
+-## Dependencies
+-
+-```bash
+-pip install transitleastsquares lightkurve numpy matplotlib
+-```
+-
+-## References
+-
+-- [TLS GitHub Repository](https://github.com/hippke/tls)
+-- [TLS Tutorials](https://github.com/hippke/tls/tree/master/tutorials)
+-- [Lightkurve Tutorials](https://lightkurve.github.io/lightkurve/tutorials/index.html)
+-- [Lightkurve Exoplanet Examples](https://lightkurve.github.io/lightkurve/tutorials/3.1-identifying-transiting-exoplanets.html)
+-
+-## When to Use TLS vs. Lomb-Scargle
+-
+-- **Use TLS**: When specifically searching for exoplanet transits
+-- **Use Lomb-Scargle**: For general periodic signals (rotation, pulsation, eclipsing binaries)
+-
+-TLS is optimized for transit-shaped signals and is typically more sensitive for exoplanet detection.
+-
+-## Common Issues
+-
+-### &quot;flux_err is required&quot;
+-Always pass flux uncertainties to TLS! Without them, TLS cannot properly weight data points.
+-
+-### Period is 2x or 0.5x expected
+-Check for period aliasing - the true period might be double or half of what TLS reports. Also check the SDE for both periods.
+-
+-### Low SDE (&lt;6)
+-- Signal may be too weak
+-- Try different preprocessing (less aggressive flattening)
+-- Check if there&#x27;s a data gap during transits
++## Steps
++1. Preprocess: quality-filter → outlier removal → detrend/flatten (preserve transit shapes).
++2. Run TLS **with flux uncertainties**:
++   - `pg = transitleastsquares(t, y, yerr)`
++   - `res = pg.power(period_min=..., period_max=..., show_progress_bar=False, verbose=False)`
++3. Record the candidate period and metrics (e.g., `res.period`, `res.SDE`, `res.snr`, `res.T0`, `res.duration`).
++4. If TLS warnings or diagnostics suggest aliasing (or if a strong harmonic is plausible), compare `P` vs `2P` (and optionally `P/2`) by re-running TLS in a narrow window around each and/or comparing folded transits:
++   - Prefer the period with cleaner, consistent transit events and better detection metrics.
++5. Refine period precision by re-running TLS with a narrower period window around the selected (alias-resolved) period.
++## Expected Result
++A TLS-derived orbital period that has been checked against common harmonics (notably `2P`) so the reported value reflects the true orbit rather than an alias.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>exoplanet-workflows/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;MMG-001&quot;,
+    &quot;description&quot;: &quot;The agent failed to carry forward its own validation that the ~1.398 d peak was a half-period alias and instead selected the highest BLS peak (which can prefer the half-period when primary/secondary or odd/even effects exist) without reapplying the odd/even consistency criterion at the final selection step.\nEvidence: Turn 13: the agent’s own BLS odd/even test favored ~2P: \&quot;at ~2P=2.79879348 d ... odd-even fraction ~-0.00384 (consistent odd/even depths), favoring the ~2.799 d interpretation as the true orbital period.\&quot; Yet Turn 16 refined and Turn 17/18 reported and wrote \&quot;1.39825\&quot; as the final orbital period.\nTrajectory location: turns 13 vs 16-18&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;MMG-002&quot;,
+    &quot;description&quot;: &quot;Narrow refinement around the strongest peak can lock in an alias if the global optimum corresponds to a harmonic; a robust approach would also test 2P (and possibly P/2) with consistency checks (odd/even, secondary eclipse, transit shape) before finalizing.\nEvidence: The refinement explicitly optimized only around the single best coarse BLS peak: \&quot;coarse best (likelihood) 1.3982309087784257\&quot; then refined within +/-0.2% of that value, never evaluating the corresponding doubled period (~2.7965–2.7988 d) under the same objective.\nTrajectory location: turn 16&quot;,
+    &quot;locations&quot;: []
+  }
+]</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_skill">完整上传修复包</a></p><p>以同任务其他归档保存的原始包为对照，完整包哈希已与共享原始运行核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillrevise_gpt52&quot;,
+  &quot;task_id&quot;: &quot;exoplanet-detection-period&quot;,
+  &quot;file_count&quot;: 5,
+  &quot;total_bytes&quot;: 34862,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:26e78f7d9efd38f17570a3384a5bbcf9a51fc03ab5712ca45992d8504afee641&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:26e78f7d9efd38f17570a3384a5bbcf9a51fc03ab5712ca45992d8504afee641&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>light-curve-preprocessing/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/exoplanet-detection-period/skills/light-curve-preprocessing/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exoplanet-detection-period/repaired_skill/light-curve-preprocessing/SKILL.md">修改后</a></p><pre>--- original/light-curve-preprocessing/SKILL.md
++++ repaired/light-curve-preprocessing/SKILL.md
+@@ -1,176 +1,60 @@
+----
+-name: light-curve-preprocessing
+-description: Preprocessing and cleaning techniques for astronomical light curves. Use when preparing light curve data for period analysis, including outlier removal, trend removal, flattening, and handling data quality flags. Works with lightkurve and general time series data.
+----
++# transit-period-determination-from-lightcurves
+ 
+-# Light Curve Preprocessing
++## Purpose
++Determine an exoplanet orbital period from a photometric light curve by applying minimal, transit-preserving cleaning and detrending, running a transit-specific period search (TLS/BLS), validating against common aliases (P/2 and 2P), and writing a verifier-aligned period artifact.
+ 
+-Preprocessing is essential before period analysis. Raw light curves often contain outliers, long-term trends, and instrumental effects that can mask or create false periodic signals.
++## When to Use
++Use when the task requires selecting a single best orbital period (in days) from time-series flux data that may contain outliers, gaps, quality flags, and stellar/instrument trends, and when you must justify the selected period against half/double-period aliases before writing it to a specified output path.
+ 
+-## Overview
++## Procedure
++- 1) Discover inputs, tools, and task contract (no assumptions)
++- Identify: where the light curve comes from (file, table, API), which columns exist (time/flux/flux_err/quality), and the required output path and formatting (eg 5 decimals).
++- Check available libraries at runtime (prefer: lightkurve for LC handling; TLS if installed; otherwise astropy.timeseries.BoxLeastSquares for BLS).
++- Checkpoint evidence: you can print/inspect a small schema summary (column names, dtypes, n_rows) and confirm the output path string from the task.
++- 2) Validate and standardize the light curve (before any filtering)
++- Ensure time is strictly increasing; if not, sort by time.
++- Mask invalid rows: finite(time, flux) and (if present) finite(flux_err) and flux_err &gt; 0.
++- If a quality/flag column exists, discover its convention:
++- If documentation/metadata states &quot;0 means good&quot;, filter quality == 0.
++- If unknown, do not guess; instead compare basic diagnostics (fraction removed, RMS of remaining flux, and presence of obvious artifacts) for common conventions and choose the one that yields fewer obvious discontinuities without removing most data. If still ambiguous, keep all points and proceed with robust outlier handling.
++- Checkpoint evidence: report n_points before/after masks and the inferred/used quality rule (or &quot;unknown, not applied&quot;).
++- 3) Transit-preserving cleaning and detrending (avoid destroying the signal)
++- Outliers: apply robust clipping that minimizes transit suppression:
++- Prefer a running-median residual clip or library outlier removal that operates on detrended residuals (two-pass approach: light clip -&gt; detrend -&gt; clip).
++- Use conservative thresholds first; only tighten if diagnostics show clear non-astrophysical spikes.
++- Detrending: remove long-timescale variability while preserving short transits:
++- Choose a detrend scale based on discovered cadence and expected transit duration scale; enforce that detrend window &gt;&gt; expected transit duration and &lt;&lt; overall baseline.
++- If using lightkurve flatten/SG or spline, avoid fixed window literals; derive window length from cadence and a target timescale.
++- If you already have candidate transit times from a search, re-detrend with transit masking around those events and re-run the search once (single refinement pass).
++- Checkpoint evidence: report detrend parameters (derived window/timescale) and a before/after robust scatter metric (eg MAD or RMS) to show cleaning did not collapse variability unrealistically.
++- 4) Run a transit-specific period search with environment-grounded bounds
++- Set search period bounds from data, not guesses:
++- max_period: at most ~1/2 to 2/3 of the time baseline (to ensure multiple transits), unless the task explicitly allows single-transit inference.
++- min_period: at least a few cadences and above the effective time resolution; avoid searching below what cadence can support.
++- Execute TLS if available; else run BLS (astropy) with an appropriate duration grid derived from cadence and typical transit fractions (do not hard-code a single duration).
++- Extract top candidate periods (at least the best and a few runners-up) for validation.
++- Checkpoint evidence: store/print the best periods and their objective scores (TLS SDE or BLS power/SNR) and confirm the search grid bounds used.
++- 5) Validate candidates and select the final orbital period (explicit decision rule)
++- For the top candidate period P0, evaluate alias/harmonic set: {P0/2, P0, 2*P0} (and optionally nearby peaks if scores are close).
++- For each candidate Pc in the set:
++- Fold and bin the light curve; compute:
++- Odd-even transit depth difference (split transits by epoch parity). Prefer small odd-even differences relative to depth uncertainty.
++- Number of distinct transits observed across the baseline (prefer &gt;= 2 when possible and consistent spacing).
++- Consistency of transit shape and depth across events (no single-event dominance unless baseline only allows it).
++- Search score at/near Pc (compare TLS/BLS metric across candidates, not just visual impression).
++- Decision rule:
++- Choose the Pc with (a) strong search score and (b) best odd-even consistency and (c) the most plausible transit count/spacing given the baseline.
++- If P and 2P are close in score, prefer the one where the folded curve shows a single distinct transit per orbit (2P) rather than alternating unequal depths at P (indicative of eclipsing-binary-like odd/even effects).
++- If ambiguity remains after metrics are computed, do not invent precision; report the ambiguity in logs and select the candidate with the most stable metrics across a small range of detrend windows (sensitivity check).
++- Checkpoint evidence (execution anchor): produce a small table for P/2, P, 2P with (score, odd_even_diff, n_transits) and clearly state chosen_period and why.
++- 6) Write the required artifact and verify it (no silent path changes)
++- Write exactly one numeric value (days) to the task-specified output path. Apply 5-decimal formatting only if the task requests it; otherwise write full precision reasonably.
++- Immediately verify:
++- File exists at that exact path.
++- Reading the file yields exactly one parseable float and an optional trailing newline.
++- If writing fails, investigate permissions, working directory, and mount availability; do not redirect to a different path unless the task explicitly allows it.
++- Checkpoint evidence (execution anchor): existence/read-back checks pass and the parsed float equals the intended chosen_period within formatting tolerance.
+ 
+-Common preprocessing steps:
+-1. Remove outliers
+-2. Remove long-term trends
+-3. Handle data quality flags
+-4. Remove stellar variability (optional)
+-
+-## Outlier Removal
+-
+-### Using Lightkurve
+-
+-```python
+-import lightkurve as lk
+-
+-# Remove outliers using sigma clipping
+-lc_clean, mask = lc.remove_outliers(sigma=3, return_mask=True)
+-outliers = lc[mask]  # Points that were removed
+-
+-# Common sigma values:
+-# sigma=3: Standard (removes ~0.3% of data)
+-# sigma=5: Conservative (removes fewer points)
+-# sigma=2: Aggressive (removes more points)
+-```
+-
+-### Manual Outlier Removal
+-
+-```python
+-import numpy as np
+-
+-# Calculate median and standard deviation
+-median = np.median(flux)
+-std = np.std(flux)
+-
+-# Remove points beyond 3 sigma
+-good = np.abs(flux - median) &lt; 3 * std
+-time_clean = time[good]
+-flux_clean = flux[good]
+-error_clean = error[good]
+-```
+-
+-## Removing Long-Term Trends
+-
+-### Flattening with Lightkurve
+-
+-```python
+-# Flatten to remove low-frequency variability
+-# window_length: number of cadences to use for smoothing
+-lc_flat = lc_clean.flatten(window_length=500)
+-
+-# Common window lengths:
+-# 100-200: Remove short-term trends
+-# 300-500: Remove medium-term trends (typical for TESS)
+-# 500-1000: Remove long-term trends
+-```
+-
+-The `flatten()` method uses a Savitzky-Golay filter to remove trends while preserving transit signals.
+-
+-### Iterative Sine Fitting
+-
+-For removing high-frequency stellar variability (rotation, pulsation):
+-
+-```python
+-def sine_fitting(lc):
+-    &quot;&quot;&quot;Remove dominant periodic signal by fitting sine wave.&quot;&quot;&quot;
+-    pg = lc.to_periodogram()
+-    model = pg.model(time=lc.time, frequency=pg.frequency_at_max_power)
+-    lc_new = lc.copy()
+-    lc_new.flux = lc_new.flux / model.flux
+-    return lc_new, model
+-
+-# Iterate multiple times to remove multiple periodic components
+-lc_processed = lc_clean.copy()
+-for i in range(50):  # Number of iterations
+-    lc_processed, model = sine_fitting(lc_processed)
+-```
+-
+-**Warning**: This removes periodic signals, so use carefully if you&#x27;re searching for periodic transits.
+-
+-## Handling Data Quality Flags
+-
+-**IMPORTANT**: Quality flag conventions vary by data source!
+-
+-### Standard TESS format
+-```python
+-# For standard TESS files (flag=0 is GOOD):
+-good = flag == 0
+-time_clean = time[good]
+-flux_clean = flux[good]
+-error_clean = error[good]
+-```
+-
+-### Alternative formats
+-```python
+-# For some exported files (flag=0 is BAD):
+-good = flag != 0
+-time_clean = time[good]
+-flux_clean = flux[good]
+-error_clean = error[good]
+-```
+-
+-**Always verify your data format!** Check which approach gives cleaner results.
+-
+-## Preprocessing Pipeline Considerations
+-
+-When building a preprocessing pipeline for exoplanet detection:
+-
+-### Key Steps (Order Matters!)
+-
+-1. **Quality filtering**: Apply data quality flags first
+-2. **Outlier removal**: Remove bad data points (flares, cosmic rays)
+-3. **Trend removal**: Remove long-term variations (stellar rotation, instrumental drift)
+-4. **Optional second pass**: Additional outlier removal after detrending
+-
+-### Important Principles
+-
+-- **Always include flux_err**: Critical for proper weighting in period search algorithms
+-- **Preserve transit shapes**: Use methods like `flatten()` that preserve short-duration dips
+-- **Don&#x27;t over-process**: Too aggressive preprocessing can remove real signals
+-- **Verify visually**: Plot each step to ensure quality
+-
+-### Parameter Selection
+-
+-- **Outlier removal sigma**: Lower sigma (2-3) is aggressive, higher (5-7) is conservative
+-- **Flattening window**: Should be longer than transit duration but shorter than stellar rotation period
+-- **When to do two passes**: Remove obvious outliers before detrending, then remove residual outliers after
+-
+-## Preprocessing for Exoplanet Detection
+-
+-For transit detection, be careful not to remove the transit signal:
+-
+-1. **Remove outliers first**: Use sigma=3 or sigma=5
+-2. **Flatten trends**: Use window_length appropriate for your data
+-3. **Don&#x27;t over-process**: Too much smoothing can remove shallow transits
+-
+-## Visualizing Results
+-
+-Always plot your light curve to verify preprocessing quality:
+-
+-```python
+-import matplotlib.pyplot as plt
+-
+-# Use .plot() method on LightCurve objects
+-lc.plot()
+-plt.show()
+-```
+-
+-**Best practice**: Plot before and after each major step to ensure you&#x27;re improving data quality, not removing real signals.
+-
+-## Dependencies
+-
+-```bash
+-pip install lightkurve numpy matplotlib
+-```
+-
+-## References
+-
+-- [Lightkurve Preprocessing Tutorials](https://lightkurve.github.io/lightkurve/tutorials/index.html)
+-- [Removing Instrumental Noise](https://lightkurve.github.io/lightkurve/tutorials/2.3-removing-noise.html)
+-
+-## Best Practices
+-
+-1. **Always check quality flags first**: Remove bad data before processing
+-2. **Remove outliers before flattening**: Outliers can affect trend removal
+-3. **Choose appropriate window length**: Too short = doesn&#x27;t remove trends, too long = removes transits
+-4. **Visualize each step**: Make sure preprocessing improves the data
+-5. **Don&#x27;t over-process**: More preprocessing isn&#x27;t always better
++## Constraints / Pitfalls
++- Do not use aggressive iterative sine fitting / multi-iteration harmonic removal when searching for transits; it can remove the planetary signal and create false confidence. Only consider periodic stellar-variability modeling if it is strictly masked away from transits and validated by re-detecting the same period afterward.
++- Do not hard-code detrend window lengths, period bounds, durations, or output paths. Derive bounds from cadence and baseline; use the exact output path provided by the task/verifier and confirm by read-back before finishing.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 0 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>exoplanet-workflows/SKILL.md</td><td>未修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The skill is too generic and verbose for a transit-period recovery task: it lacks a concrete end-to-end workflow and, critically, lacks decision criteria to validate the true orbital period vs common aliases. This led to a hard-coded, overconfident final period selection without skill-enforced validation checkpoints, and encouraged long exploratory execution. The skill failed by not providing an explicit, decision-oriented workflow that connects preprocessing/detrending to a validated period determination. As a result, the agent produced a single precise period value without a clear, skill-driven validation criterion to rule out common transit-search failure modes (aliases, half/double periods, residual stellar-variability artifacts). The skill’s broad, verbose content (including risky sine-removal) encourages exploratory, unfocused execution and does not enforce the task’s key acceptance behavior: confidently selecting the true orbital period and writing it.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;light-curve-preprocessing/SKILL.md&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P2&quot;,
+    &quot;description&quot;: &quot;The skill failed mainly because it assumed a specific astropy `compute_stats()` schema (`depth_err`, `depth_snr`, `transit_count`) that did not exist in the execution environment, causing a KeyError. Its overly long, tutorial-like content also lacked a strict, end-to-end workflow for detrending + period finding, prompting extensive trial-and-error and off-skill improvisation. Primary cause: environment_mismatch. The skill hard-codes `compute_stats()` access patterns (e.g., `stats[&#x27;depth_err&#x27;]`, `stats[&#x27;depth_snr&#x27;]`, `stats[&#x27;transit_count&#x27;]`) that were incompatible with the astropy version in the execution, producing a KeyError and derailing the planned validation/alias-check logic. Contributing causes: context_pollution and wrong_abstraction_level—the skill is a broad tutorial rather than a constrained, executable procedure for this task (filter → detrend → BLS search → alias check → write period), which led to ad-hoc experimentation and reliance on other packages (TLS) not governed by the skill. Over_generality also contributed by presenting many options without decision rules tied to the task’s constraints.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;box-least-squares/SKILL.md&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>SkillTTA · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exoplanet-detection-period/repaired_skill">完整上传修复包</a></p><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The bundle incorrectly states that Transit Least Squares (TLS) requires flux uncertainties (`flux_err`) as a mandatory third argument. In `transitleastsquares`, uncertainties are optional (recommended for weighting), so presenting them as required can mislead users and cause unnecessary failures when uncertainties are missing or unusable.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;transit-least-squares/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Basic Usage (\&quot;CRITICAL: Always include flux_err ... REQUIRED!\&quot;)&quot;
+      },
+      {
+        &quot;file&quot;: &quot;transit-least-squares/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Common Issues (\&quot;flux_err is required\&quot;)&quot;
+      },
+      {
+        &quot;file&quot;: &quot;exoplanet-workflows/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Common Issues and Solutions -&gt; \&quot;Issue: flux_err required error\&quot;&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P2&quot;,
+    &quot;description&quot;: &quot;The preprocessing skill recommends a basic symmetric 3-sigma clip using mean/standard deviation around the median. For transit searches, symmetric clipping (especially based on std) can preferentially remove real transit dips as &#x27;negative outliers&#x27; and is not transit-safe; this advice is presented without a caution or a transit-preserving alternative in that section.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;light-curve-preprocessing/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Manual Outlier Removal&quot;
+      }
+    ]
+  }
+]</pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

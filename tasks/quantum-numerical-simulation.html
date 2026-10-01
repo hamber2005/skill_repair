@@ -1,0 +1,439 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>量子稳态数值模拟 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>量子稳态数值模拟</h1><p class="lead">按题面耦合常数算四种损耗情形的 1000×1000 Wigner CSV。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/quantum-numerical-simulation/task.md">原始任务要求</a></div><p class="meta">quantum-numerical-simulation · 自然科学 · 1 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>按题面耦合常数算四种损耗情形的 1000×1000 Wigner CSV。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>qutip</td><td>构建量子算符，求稳态、时间演化及 Wigner 等量。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/quantum-numerical-simulation/environment/skills/qutip/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>4 项通过 / 7 项检查</td><td>4/7 项通过；CSV 数值和约 0.09184，偏离归一化 1；Wigner 两项参考比对也失败。题面与参考代码的耦合定义另有冲突。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>0 项通过 / 7 项检查</td><td>找不到第 1 个 CSV，7 项均未通过，尚未进入数值准确性验证。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>4 项通过 / 7 项检查</td><td>4/7 项通过；归一化与 Wigner 参考比对仍失败，数值基本重现原始结果。</td></tr></tbody></table></div><div class="note">SkillRevise 已上传诊断和最终包，但没有选中的修后执行。该方法拒绝了候选修改，最终保留原包；此状态没有被补成一条 after FAIL。<a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/quantum-numerical-simulation/provenance.json">原始选择记录</a></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/quantum-numerical-simulation/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/quantum-numerical-simulation/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>qutip/SKILL.md</td><td>拒绝未修改候选</td><td>0.0</td><td>0.0</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/quantum-numerical-simulation/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/quantum-numerical-simulation/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/quantum-numerical-simulation/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/quantum-numerical-simulation/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>4/7 项通过；CSV 数值和约 0.09184，偏离归一化 1；Wigner 两项参考比对也失败。题面与参考代码的耦合定义另有冲突。</p><details><summary>::test_csv_sums_to_one</summary><pre>loaded_csvs = [array([[ 1.45163074e-06,  1.56610952e-06, -1.62976050e-06, ...,
+        -1.66658447e-06,  1.53201790e-06,  1.45163074... [ 2.61018886e-06,  2.77184859e-06, -2.98040459e-06, ...,
+        -2.91141055e-06,  2.83493341e-06,  2.61018886e-06]])]
+
+    def test_csv_sums_to_one(loaded_csvs):
+        &quot;&quot;&quot;Check that each CSV&#x27;s entries sum to 1 within a 0.001 tolerance.&quot;&quot;&quot;
+        tolerance = 1e-3
+        errors = []
+        for idx, arr in enumerate(loaded_csvs, start=1):
+            # Wigner arrays are probability densities; integrate with the grid cell area.
+            cell_area = (GRID_SPAN / (arr.shape[0] - 1)) ** 2
+            total = float(arr.sum() * cell_area)
+            if not np.isclose(total, 1.0, rtol=0, atol=tolerance):
+                errors.append(f&quot;CSV {idx} sum={total:.6f} (|diff|={abs(total - 1):.6f})&quot;)
+&gt;       assert not errors, &quot;CSV sums deviate from 1:\n&quot; + &quot;\n&quot;.join(errors)
+E       AssertionError: CSV sums deviate from 1:
+E         CSV 1 sum=0.091845 (|diff|=0.908155)
+E         CSV 2 sum=0.091836 (|diff|=0.908164)
+E         CSV 3 sum=0.091840 (|diff|=0.908160)
+E         CSV 4 sum=0.091836 (|diff|=0.908164)
+E       assert not [&#x27;CSV 1 sum=0.091845 (|diff|=0.908155)&#x27;, &#x27;CSV 2 sum=0.091836 (|diff|=0.908164)&#x27;, &#x27;CSV 3 sum=0.091840 (|diff|=0.908160)&#x27;, &#x27;CSV 4 sum=0.091836 (|diff|=0.908164)&#x27;]
+
+/verifier/test_outputs.py:199: AssertionError</pre></details><details><summary>::test_wigner_diagonal_sum_matches_reference</summary><pre>loaded_csvs = [array([[ 1.45163074e-06,  1.56610952e-06, -1.62976050e-06, ...,
+        -1.66658447e-06,  1.53201790e-06,  1.45163074... [ 2.61018886e-06,  2.77184859e-06, -2.98040459e-06, ...,
+        -2.91141055e-06,  2.83493341e-06,  2.61018886e-06]])]
+reference_wigners = [array([[2.57556474e-18, 2.88162190e-18, 3.22308651e-18, ...,
+        7.99042999e-19, 7.16603635e-19, 6.42477211e-19],...       [2.33194461e-19, 2.60012261e-19, 2.89827163e-19, ...,
+        1.50099378e-18, 1.34227846e-18, 1.19998141e-18]])]
+
+    def test_wigner_diagonal_sum_matches_reference(loaded_csvs, reference_wigners):
+        &quot;&quot;&quot;
+        Check that each CSV&#x27;s main diagonal sum matches the oracle Wigner diagonal sum.
+        Uses a modest tolerance because diagonal entries are a small subset of the grid.
+        &quot;&quot;&quot;
+        expected_diagonals = [float(np.trace(w)) for w in reference_wigners]
+        actual_diagonals = [float(np.trace(w)) for w in loaded_csvs]
+        for idx, (actual, expected) in enumerate(zip(actual_diagonals, expected_diagonals), start=1):
+&gt;           assert np.isclose(actual, expected, rtol=1e-3, atol=1e-4), f&quot;Diagonal sum mismatch for case {idx}&quot;
+E           AssertionError: Diagonal sum mismatch for case 1
+E           assert False
+E            +  where False = &lt;function isclose at 0x79811e7889f0&gt;(1.0526132082675068, 25.428864382125624, rtol=0.001, atol=0.0001)
+E            +    where &lt;function isclose at 0x79811e7889f0&gt; = np.isclose
+
+/verifier/test_outputs.py:218: AssertionError</pre></details><details><summary>::test_wigner_values_match_reference</summary><pre>loaded_csvs = [array([[ 1.45163074e-06,  1.56610952e-06, -1.62976050e-06, ...,
+        -1.66658447e-06,  1.53201790e-06,  1.45163074... [ 2.61018886e-06,  2.77184859e-06, -2.98040459e-06, ...,
+        -2.91141055e-06,  2.83493341e-06,  2.61018886e-06]])]
+reference_wigners = [array([[2.57556474e-18, 2.88162190e-18, 3.22308651e-18, ...,
+        7.99042999e-19, 7.16603635e-19, 6.42477211e-19],...       [2.33194461e-19, 2.60012261e-19, 2.89827163e-19, ...,
+        1.50099378e-18, 1.34227846e-18, 1.19998141e-18]])]
+
+    def test_wigner_values_match_reference(loaded_csvs, reference_wigners):
+        &quot;&quot;&quot;
+        Confirm each CSV&#x27;s values match the oracle Wigner functions within ~1% tolerance.
+        Use a tight absolute tolerance to accommodate entries near machine precision.
+        &quot;&quot;&quot;
+        assert len(loaded_csvs) == len(reference_wigners) == 4
+        for idx, (actual, expected) in enumerate(zip(loaded_csvs, reference_wigners), start=1):
+&gt;           assert np.allclose(actual, expected, rtol=1e-2, atol=1e-12), f&quot;Wigner data mismatch for case {idx}&quot;
+E           AssertionError: Wigner data mismatch for case 1
+E           assert False
+E            +  where False = &lt;function allclose at 0x79811e7898b0&gt;(array([[ 1.45163074e-06,  1.56610952e-06, -1.62976050e-06, ...,\n        -1.66658447e-06,  1.53201790e-06,  1.45163074e-06],\n       [ 1.45163074e-06,  1.57583952e-06, -1.61908656e-06, ...,\n        -1.65637277e-06,  1.54174813e-06,  1.45163074e-06],\n       [ 1.45163074e-06,  1.58556929e-06, -1.60828256e-06, ...,\n        -1.64603057e-06,  1.55147836e-06,  1.45163074e-06],\n       ...,\n       [ 1.45163074e-06,  1.56120859e-06, -1.63555819e-06, ...,\n        -1.59734873e-06,  1.59529873e-06,  1.45163074e-06],\n       [ 1.45163074e-06,  1.55147836e-06, -1.64603057e-06, ...,\n        -1.60828256e-06,  1.58556929e-06,  1.45163074e-06],\n       [ 1.45163074e-06,  1.54174813e-06, -1.65637277e-06, ...,\n        -1.61908656e-06,  1.57583952e-06,  1.45163074e-06]]), array([[2.57556474e-18, 2.88162190e-18, 3.22308651e-18, ...,\n        7.99042999e-19, 7.16603635e-19, 6.42477211e-19],\n       [2.88564633e-18, 3.22835574e-18, 3.61068871e-18, ...,\n        8.91867556e-19, 7.99917196e-19, 7.17231679e-19],\n       [3.23212828e-18, 3.61576826e-18, 4.04373706e-18, ...,\n        9.95181156e-19, 8.92653101e-19, 8.00447688e-19],\n       ...,\n       [8.00447688e-19, 8.92653101e-19, 9.95181156e-19, ...,\n        4.04373706e-18, 3.61576826e-18, 3.23212828e-18],\n       [7.17231679e-19, 7.99917196e-19, 8.91867556e-19, ...,\n        3.61068871e-18, 3.22835574e-18, 2.88564633e-18],\n       [6.42477211e-19, 7.16603635e-19, 7.99042999e-19, ...,\n        3.22308651e-18, 2.88162190e-18, 2.57556474e-18]]), rtol=0.01, atol=1e-12)
+E            +    where &lt;function allclose at 0x79811e7898b0&gt; = np.allclose
+
+/verifier/test_outputs.py:228: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;quantum-numerical-simulation-original-skill-v11x-20260908-guarddiag-infra-r003&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:434e1ac9ffe67525341b8f90d16657dcdaa3a21cf4e56466ef15e754df10e659&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 41,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:484a445bbdb065b7a28cdd54c73c2552424b53de8e811f23ff5742cbb665b514&quot;
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/quantum-numerical-simulation/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/quantum-numerical-simulation/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/quantum-numerical-simulation/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/quantum-numerical-simulation/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/quantum-numerical-simulation/repaired_skill">上传修复包</a></p><p>找不到第 1 个 CSV，7 项均未通过，尚未进入数值准确性验证。</p><details><summary>::test_all_files_exist</summary><pre>@pytest.fixture(scope=&quot;session&quot;)
+    def csv_paths():
+        &quot;&quot;&quot;Collect paths to all four CSV files from common output directories.&quot;&quot;&quot;
+        paths = []
+        for idx in range(1, 5):
+            path = locate_csv(idx)
+            if path is None:
+                searched = &quot;, &quot;.join(str(p) for p in SEARCH_DIRS)
+&gt;               pytest.fail(f&quot;Missing CSV for case {idx}. Searched: {searched}&quot;)
+E               Failed: Missing CSV for case 1. Searched: /root, /root, /app
+
+/verifier/test_outputs.py:135: Failed</pre></details><details><summary>::test_grid_dimensions</summary><pre>@pytest.fixture(scope=&quot;session&quot;)
+    def csv_paths():
+        &quot;&quot;&quot;Collect paths to all four CSV files from common output directories.&quot;&quot;&quot;
+        paths = []
+        for idx in range(1, 5):
+            path = locate_csv(idx)
+            if path is None:
+                searched = &quot;, &quot;.join(str(p) for p in SEARCH_DIRS)
+&gt;               pytest.fail(f&quot;Missing CSV for case {idx}. Searched: {searched}&quot;)
+E               Failed: Missing CSV for case 1. Searched: /root, /root, /app
+
+/verifier/test_outputs.py:135: Failed</pre></details><details><summary>::test_values_are_real_and_finite</summary><pre>@pytest.fixture(scope=&quot;session&quot;)
+    def csv_paths():
+        &quot;&quot;&quot;Collect paths to all four CSV files from common output directories.&quot;&quot;&quot;
+        paths = []
+        for idx in range(1, 5):
+            path = locate_csv(idx)
+            if path is None:
+                searched = &quot;, &quot;.join(str(p) for p in SEARCH_DIRS)
+&gt;               pytest.fail(f&quot;Missing CSV for case {idx}. Searched: {searched}&quot;)
+E               Failed: Missing CSV for case 1. Searched: /root, /root, /app
+
+/verifier/test_outputs.py:135: Failed</pre></details><details><summary>::test_csv_sums_to_one</summary><pre>@pytest.fixture(scope=&quot;session&quot;)
+    def csv_paths():
+        &quot;&quot;&quot;Collect paths to all four CSV files from common output directories.&quot;&quot;&quot;
+        paths = []
+        for idx in range(1, 5):
+            path = locate_csv(idx)
+            if path is None:
+                searched = &quot;, &quot;.join(str(p) for p in SEARCH_DIRS)
+&gt;               pytest.fail(f&quot;Missing CSV for case {idx}. Searched: {searched}&quot;)
+E               Failed: Missing CSV for case 1. Searched: /root, /root, /app
+
+/verifier/test_outputs.py:135: Failed</pre></details><details><summary>::test_cases_are_distinct</summary><pre>@pytest.fixture(scope=&quot;session&quot;)
+    def csv_paths():
+        &quot;&quot;&quot;Collect paths to all four CSV files from common output directories.&quot;&quot;&quot;
+        paths = []
+        for idx in range(1, 5):
+            path = locate_csv(idx)
+            if path is None:
+                searched = &quot;, &quot;.join(str(p) for p in SEARCH_DIRS)
+&gt;               pytest.fail(f&quot;Missing CSV for case {idx}. Searched: {searched}&quot;)
+E               Failed: Missing CSV for case 1. Searched: /root, /root, /app
+
+/verifier/test_outputs.py:135: Failed</pre></details><details><summary>::test_wigner_diagonal_sum_matches_reference</summary><pre>@pytest.fixture(scope=&quot;session&quot;)
+    def csv_paths():
+        &quot;&quot;&quot;Collect paths to all four CSV files from common output directories.&quot;&quot;&quot;
+        paths = []
+        for idx in range(1, 5):
+            path = locate_csv(idx)
+            if path is None:
+                searched = &quot;, &quot;.join(str(p) for p in SEARCH_DIRS)
+&gt;               pytest.fail(f&quot;Missing CSV for case {idx}. Searched: {searched}&quot;)
+E               Failed: Missing CSV for case 1. Searched: /root, /root, /app
+
+/verifier/test_outputs.py:135: Failed</pre></details><details><summary>::test_wigner_values_match_reference</summary><pre>@pytest.fixture(scope=&quot;session&quot;)
+    def csv_paths():
+        &quot;&quot;&quot;Collect paths to all four CSV files from common output directories.&quot;&quot;&quot;
+        paths = []
+        for idx in range(1, 5):
+            path = locate_csv(idx)
+            if path is None:
+                searched = &quot;, &quot;.join(str(p) for p in SEARCH_DIRS)
+&gt;               pytest.fail(f&quot;Missing CSV for case {idx}. Searched: {searched}&quot;)
+E               Failed: Missing CSV for case 1. Searched: /root, /root, /app
+
+/verifier/test_outputs.py:135: Failed</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>::test_all_files_exist<br>::test_cases_are_distinct<br>::test_grid_dimensions<br>::test_values_are_real_and_finite</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;quantum-numerical-simulation-a01&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:434e1ac9ffe67525341b8f90d16657dcdaa3a21cf4e56466ef15e754df10e659&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 5,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:13b9131e24304155032ca3166cf489be388c5f8974f05a74e64771d767e8f8f7&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/quantum-numerical-simulation/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/quantum-numerical-simulation/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/quantum-numerical-simulation/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/quantum-numerical-simulation/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/quantum-numerical-simulation/repaired_skill">上传修复包</a></p><p>4/7 项通过；归一化与 Wigner 参考比对仍失败，数值基本重现原始结果。</p><details><summary>::test_csv_sums_to_one</summary><pre>loaded_csvs = [array([[ 1.45163075e-06,  1.56610955e-06, -1.62976053e-06, ...,
+        -1.66658451e-06,  1.53201790e-06,  1.45163075... [ 2.61018876e-06,  2.77184857e-06, -2.98040457e-06, ...,
+        -2.91141052e-06,  2.83493350e-06,  2.61018876e-06]])]
+
+    def test_csv_sums_to_one(loaded_csvs):
+        &quot;&quot;&quot;Check that each CSV&#x27;s entries sum to 1 within a 0.001 tolerance.&quot;&quot;&quot;
+        tolerance = 1e-3
+        errors = []
+        for idx, arr in enumerate(loaded_csvs, start=1):
+            # Wigner arrays are probability densities; integrate with the grid cell area.
+            cell_area = (GRID_SPAN / (arr.shape[0] - 1)) ** 2
+            total = float(arr.sum() * cell_area)
+            if not np.isclose(total, 1.0, rtol=0, atol=tolerance):
+                errors.append(f&quot;CSV {idx} sum={total:.6f} (|diff|={abs(total - 1):.6f})&quot;)
+&gt;       assert not errors, &quot;CSV sums deviate from 1:\n&quot; + &quot;\n&quot;.join(errors)
+E       AssertionError: CSV sums deviate from 1:
+E         CSV 1 sum=0.091845 (|diff|=0.908155)
+E         CSV 2 sum=0.091836 (|diff|=0.908164)
+E         CSV 3 sum=0.091840 (|diff|=0.908160)
+E         CSV 4 sum=0.091836 (|diff|=0.908164)
+E       assert not [&#x27;CSV 1 sum=0.091845 (|diff|=0.908155)&#x27;, &#x27;CSV 2 sum=0.091836 (|diff|=0.908164)&#x27;, &#x27;CSV 3 sum=0.091840 (|diff|=0.908160)&#x27;, &#x27;CSV 4 sum=0.091836 (|diff|=0.908164)&#x27;]
+
+/verifier/test_outputs.py:199: AssertionError</pre></details><details><summary>::test_wigner_diagonal_sum_matches_reference</summary><pre>loaded_csvs = [array([[ 1.45163075e-06,  1.56610955e-06, -1.62976053e-06, ...,
+        -1.66658451e-06,  1.53201790e-06,  1.45163075... [ 2.61018876e-06,  2.77184857e-06, -2.98040457e-06, ...,
+        -2.91141052e-06,  2.83493350e-06,  2.61018876e-06]])]
+reference_wigners = [array([[2.57556474e-18, 2.88162190e-18, 3.22308651e-18, ...,
+        7.99042999e-19, 7.16603635e-19, 6.42477211e-19],...       [2.33194461e-19, 2.60012261e-19, 2.89827163e-19, ...,
+        1.50099378e-18, 1.34227846e-18, 1.19998141e-18]])]
+
+    def test_wigner_diagonal_sum_matches_reference(loaded_csvs, reference_wigners):
+        &quot;&quot;&quot;
+        Check that each CSV&#x27;s main diagonal sum matches the oracle Wigner diagonal sum.
+        Uses a modest tolerance because diagonal entries are a small subset of the grid.
+        &quot;&quot;&quot;
+        expected_diagonals = [float(np.trace(w)) for w in reference_wigners]
+        actual_diagonals = [float(np.trace(w)) for w in loaded_csvs]
+        for idx, (actual, expected) in enumerate(zip(actual_diagonals, expected_diagonals), start=1):
+&gt;           assert np.isclose(actual, expected, rtol=1e-3, atol=1e-4), f&quot;Diagonal sum mismatch for case {idx}&quot;
+E           AssertionError: Diagonal sum mismatch for case 1
+E           assert False
+E            +  where False = &lt;function isclose at 0xffff884b6030&gt;(1.0526132075230596, 25.428864382125603, rtol=0.001, atol=0.0001)
+E            +    where &lt;function isclose at 0xffff884b6030&gt; = np.isclose
+
+/verifier/test_outputs.py:218: AssertionError</pre></details><details><summary>::test_wigner_values_match_reference</summary><pre>loaded_csvs = [array([[ 1.45163075e-06,  1.56610955e-06, -1.62976053e-06, ...,
+        -1.66658451e-06,  1.53201790e-06,  1.45163075... [ 2.61018876e-06,  2.77184857e-06, -2.98040457e-06, ...,
+        -2.91141052e-06,  2.83493350e-06,  2.61018876e-06]])]
+reference_wigners = [array([[2.57556474e-18, 2.88162190e-18, 3.22308651e-18, ...,
+        7.99042999e-19, 7.16603635e-19, 6.42477211e-19],...       [2.33194461e-19, 2.60012261e-19, 2.89827163e-19, ...,
+        1.50099378e-18, 1.34227846e-18, 1.19998141e-18]])]
+
+    def test_wigner_values_match_reference(loaded_csvs, reference_wigners):
+        &quot;&quot;&quot;
+        Confirm each CSV&#x27;s values match the oracle Wigner functions within ~1% tolerance.
+        Use a tight absolute tolerance to accommodate entries near machine precision.
+        &quot;&quot;&quot;
+        assert len(loaded_csvs) == len(reference_wigners) == 4
+        for idx, (actual, expected) in enumerate(zip(loaded_csvs, reference_wigners), start=1):
+&gt;           assert np.allclose(actual, expected, rtol=1e-2, atol=1e-12), f&quot;Wigner data mismatch for case {idx}&quot;
+E           AssertionError: Wigner data mismatch for case 1
+E           assert False
+E            +  where False = &lt;function allclose at 0xffff884b4db0&gt;(array([[ 1.45163075e-06,  1.56610955e-06, -1.62976053e-06, ...,\n        -1.66658451e-06,  1.53201790e-06,  1.45163075e-06],\n       [ 1.45163075e-06,  1.57583958e-06, -1.61908656e-06, ...,\n        -1.65637275e-06,  1.54174809e-06,  1.45163075e-06],\n       [ 1.45163075e-06,  1.58556934e-06, -1.60828259e-06, ...,\n        -1.64603062e-06,  1.55147836e-06,  1.45163075e-06],\n       ...,\n       [ 1.45163075e-06,  1.56120860e-06, -1.63555821e-06, ...,\n        -1.59734874e-06,  1.59529874e-06,  1.45163075e-06],\n       [ 1.45163075e-06,  1.55147836e-06, -1.64603062e-06, ...,\n        -1.60828259e-06,  1.58556934e-06,  1.45163075e-06],\n       [ 1.45163075e-06,  1.54174809e-06, -1.65637275e-06, ...,\n        -1.61908656e-06,  1.57583958e-06,  1.45163075e-06]]), array([[2.57556474e-18, 2.88162190e-18, 3.22308651e-18, ...,\n        7.99042999e-19, 7.16603635e-19, 6.42477211e-19],\n       [2.88564633e-18, 3.22835574e-18, 3.61068871e-18, ...,\n        8.91867556e-19, 7.99917196e-19, 7.17231679e-19],\n       [3.23212828e-18, 3.61576826e-18, 4.04373706e-18, ...,\n        9.95181156e-19, 8.92653101e-19, 8.00447688e-19],\n       ...,\n       [8.00447688e-19, 8.92653101e-19, 9.95181156e-19, ...,\n        4.04373706e-18, 3.61576826e-18, 3.23212828e-18],\n       [7.17231679e-19, 7.99917196e-19, 8.91867556e-19, ...,\n        3.61068871e-18, 3.22835574e-18, 2.88564633e-18],\n       [6.42477211e-19, 7.16603635e-19, 7.99042999e-19, ...,\n        3.22308651e-18, 2.88162190e-18, 2.57556474e-18]]), rtol=0.01, atol=1e-12)
+E            +    where &lt;function allclose at 0xffff884b4db0&gt; = np.allclose
+
+/verifier/test_outputs.py:228: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;quantum-numerical-simulation-a06&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:1d65b9d63516cc91993cd415953ce053a67d29d2590218d6edefe9e2a955b5d2&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 24,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:cfbbc74204853055694ccf7624e662769be21788dbabfebdb3d2b6f5222d4fab&quot;
+}</pre></details></details><h2>人工 Gold 范围</h2><p>该题属于原始失败但排除出人工 Gold 的 8 题之一。“排除”只表示未纳入这一 Gold 评分集合，不表示任务已解决或不值得分析。</p><div class="note warning"><strong>该题为何被排除出人工 Gold</strong><p>任务 Hamiltonian 使用 g(a†+a)(J+ + J−)，参考实现使用 g(a†+a)Jx；Jx=(J+ + J−)/2，参考耦合强度只有题面的一半。</p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/exclusions.json">发布者的排除说明</a></div><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/quantum-numerical-simulation/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;quantum-numerical-simulation&quot;,
+  &quot;file_count&quot;: 6,
+  &quot;total_bytes&quot;: 54622,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:13b9131e24304155032ca3166cf489be388c5f8974f05a74e64771d767e8f8f7&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:13b9131e24304155032ca3166cf489be388c5f8974f05a74e64771d767e8f8f7&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/quantum-numerical-simulation/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/quantum-numerical-simulation/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>qutip/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/quantum-numerical-simulation/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/quantum-numerical-simulation/repaired_skill/qutip/SKILL.md">修改后</a></p><pre>--- original/qutip/SKILL.md
++++ repaired/qutip/SKILL.md
+@@ -145,6 +145,55 @@
+ hinton(rho)  # Hinton diagram
+ matrix_histogram(H.full())  # 3D bars
+ ```
++
++#### Wigner function: conventions, return types, and normalization checks (important)
++
++When producing Wigner grids for downstream evaluation, the most common failure mode is a **convention/scaling mismatch**.
++
++1) **Be explicit about the phase-space convention (`g` / `hbar`)**
++
++QuTiP’s `wigner` uses a scaling parameter `g` where `hbar = 2/g^2` (docstring). If your reference/verification expects the default `hbar=1` convention, you must keep `g=np.sqrt(2)` (QuTiP default). If a reference uses a different convention (e.g., `hbar=1/2`), you must adjust `g` accordingly.
++
++```python
++xvec = np.linspace(-6, 6, 1000)
++pvec = np.linspace(-6, 6, 1000)
++
++# Default QuTiP convention: g=sqrt(2) =&gt; hbar=1
++W = wigner(rho, xvec, pvec, g=np.sqrt(2), method=&#x27;clenshaw&#x27;)
++```
++
++2) **Handle `method=&#x27;fft&#x27;` return type differences**
++
++In some QuTiP versions, `wigner(..., method=&#x27;fft&#x27;)` may return a **tuple** (e.g., `(W, something)`), not just an array. Always guard this before further NumPy operations or saving.
++
++```python
++W = wigner(rho, xvec, pvec, method=&#x27;fft&#x27;)
++if isinstance(W, tuple):
++    W = W[0]
++```
++
++3) **Verify normalization by numerical integration on your grid**
++
++Many verifiers treat the Wigner grid as a density over phase space and check:
++
++\[\int W(x,p)\,dx\,dp \approx 1.\]
++
++On a uniform grid, check via the cell area:
++
++```python
++# For linspace endpoints included:
++dx = (xvec[-1] - xvec[0]) / (len(xvec) - 1)
++dp = (pvec[-1] - pvec[0]) / (len(pvec) - 1)
++
++W = np.real(W)
++Z = float(W.sum() * dx * dp)
++
++# If Z is far from 1, you likely have a convention mismatch (g/hbar) or
++# you computed a different quasi-probability distribution.
++print(&#x27;∬W dx dp =&#x27;, Z)
++```
++
++If you must match a specific convention used by a benchmark, do **not** “renormalize by force” unless the benchmark explicitly wants that—fix the underlying convention instead (commonly `g` / `hbar` or axis definitions).
+ 
+ **See** `references/visualization.md` for Bloch sphere animations, Wigner functions, Q-functions, and matrix visualizations.
+ 
+@@ -283,6 +332,9 @@
+ 5. **Adjust tolerances**: Balance accuracy with computation time via `Options`
+ 6. **Parallel trajectories**: `mcsolve` automatically uses multiple CPUs
+ 7. **Check convergence**: Vary `ntraj`, Hilbert space size, and tolerances
++8. **For steady-state + Wigner deliverables**: add a cheap end-to-end self-check:
++   - `rho_ss.tr()` is ~1 and `rho_ss.isherm` is True
++   - Wigner grid integrates to expected normalization on your chosen convention
+ 
+ ## Troubleshooting
+ 
+@@ -291,6 +343,12 @@
+ **Slow simulations**: Use string-based time-dependence, increase tolerances slightly, or try `method=&#x27;bdf&#x27;` for stiff problems
+ 
+ **Numerical instabilities**: Decrease time steps (`nsteps` option), increase tolerances, or check Hamiltonian/operators are properly defined
++
++**Wigner output fails normalization / doesn’t match a reference**:
++- First check you are computing the intended object (Wigner vs Q/P functions).
++- Then check `wigner(..., g=...)` convention (`hbar=2/g^2`). A wrong `g` yields a systematic scale mismatch.
++- Confirm your integration uses the correct `dx*dp` for the grid you saved.
++- If using `method=&#x27;fft&#x27;`, ensure you extracted the array from a `(W, ...)` tuple before saving.
+ 
+ **Import errors**: Ensure QuTiP is installed correctly; quantum gates require `qutip-qip` package
+ 
+@@ -301,7 +359,7 @@
+ - **`references/core_concepts.md`**: Quantum objects, states, operators, tensor products, composite systems
+ - **`references/time_evolution.md`**: All solvers (sesolve, mesolve, mcsolve, brmesolve, etc.), time-dependent Hamiltonians, solver options
+ - **`references/visualization.md`**: Bloch sphere, Wigner functions, Q-functions, Fock distributions, matrix plots
+-- **`references/analysis.md`**: Expectation values, entropy, fidelity, entanglement measures, correlation functions, steady states
++- **`references/analysis.md`**: Expectation values, entropy, fidelity, entanglement measures, correlation functions, steady state calculations
+ - **`references/advanced.md`**: Floquet theory, HEOM, permutational invariance, stochastic methods, superoperators, performance tips
+ 
+ ## External Resources</pre></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;QI-1-wigner-scaling-normalization-mismatch&quot;,
+    &quot;description&quot;: &quot;Wigner output scaling (and thus normalization) is wrong: the generated Wigner grids integrate to ~0.0918 instead of ~1, and overall values differ by many orders of magnitude from the reference.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;qutip/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Visualization&quot;
+      },
+      {
+        &quot;file&quot;: &quot;qutip/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Common Workflows&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;IC-1-fft-wigner-returns-tuple-needs-handling&quot;,
+    &quot;description&quot;: &quot;QuTiP wigner(..., method=&#x27;fft&#x27;) can return a tuple, so guidance should require handling (W, vec) return forms to avoid downstream type/shape errors.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;qutip/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Visualization&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;SP-1-open-system-steady-state-validation-missing&quot;,
+    &quot;description&quot;: &quot;Skill lacks explicit checks for steady-state validity and phase-space normalization when producing Wigner outputs for verifiers that expect correct integral normalization.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;qutip/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Troubleshooting&quot;
+      },
+      {
+        &quot;file&quot;: &quot;qutip/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Tips for Efficient Simulations&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/quantum-numerical-simulation/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;quantum-numerical-simulation&quot;,
+  &quot;file_count&quot;: 6,
+  &quot;total_bytes&quot;: 53295,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:cfbbc74204853055694ccf7624e662769be21788dbabfebdb3d2b6f5222d4fab&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:cfbbc74204853055694ccf7624e662769be21788dbabfebdb3d2b6f5222d4fab&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/quantum-numerical-simulation/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/quantum-numerical-simulation/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>qutip/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/quantum-numerical-simulation/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/quantum-numerical-simulation/repaired_skill/qutip/SKILL.md">修改后</a></p><pre>--- original/qutip/SKILL.md
++++ repaired/qutip/SKILL.md
+@@ -146,7 +146,21 @@
+ matrix_histogram(H.full())  # 3D bars
+ ```
+ 
+-**See** `references/visualization.md` for Bloch sphere animations, Wigner functions, Q-functions, and matrix visualizations.
++**Wigner convention &amp; normalization (important when exporting numeric grids):**
++
++- **QuTiP’s Wigner has an explicit phase-space scaling `g`.** The mapping is
++  `a = 0.5 * g * (x + i y)` and QuTiP relates this to an implied commutator
++  `[x, y] = i * ħ` via `ħ = 2 / g^2` (default `g = sqrt(2)` gives `ħ = 1`).
++  External references/evaluators may use a different convention (e.g., different `ħ` or different definitions of “x,p”), which will cause **systematic global scaling and value mismatch**.
++
++- **Calibrate the convention before large runs.** Pick a known reference state
++  (vacuum or a coherent state), compute `W` on your target `xvec,pvec`, and verify the numerical integral using the grid cell area:
++  `total = W.sum() * dx * dp` (with `dx = xvec[1]-xvec[0]`, `dp = pvec[1]-pvec[0]`).
++  If `total` is not near the expected value under your downstream convention, adjust **`g` and/or coordinate scaling** until it is.
++
++- **Be careful with `method=&#x27;fft&#x27;`.** In some QuTiP versions the FFT method returns a tuple (e.g., containing the Wigner array plus auxiliary vectors). Ensure you are exporting the **Wigner array** itself, and confirm which axis corresponds to `xvec` vs `pvec`.
++
++**See** `references/visualization.md` for Bloch sphere animations, Wigner functions, Q-functions, Fock distributions, and matrix visualizations.
+ 
+ ### 5. Advanced Methods
+ </pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

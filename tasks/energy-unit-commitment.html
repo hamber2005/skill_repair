@@ -1,0 +1,2504 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>电力机组组合 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>电力机组组合</h1><p class="lead">交付逐时机组启停／出力计划，满足硬约束且成本接近基准。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/energy-unit-commitment/task.md">原始任务要求</a></div><p class="meta">energy-unit-commitment · 工业与物理系统 · 3 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>交付逐时机组启停／出力计划，满足硬约束且成本接近基准。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>milp-solver-workflow</td><td>构建和求解 MILP，检查变量索引、约束、求解界及结果质量。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/energy-unit-commitment/skills/milp-solver-workflow/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr><tr><td>unit-commitment-data-modeling</td><td>整理机组、时段、初始状态、负荷和备用输入。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/energy-unit-commitment/skills/unit-commitment-data-modeling/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr><tr><td>unit-commitment-operating-rules</td><td>实现机组启停、爬坡、最短开停机时间、备用及成本规则。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/energy-unit-commitment/skills/unit-commitment-operating-rules/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>13 项通过 / 14 项检查</td><td>13/14 项通过；总成本 2638051.519，参考 1298833.699，超过允许的 10% 偏差。</td></tr><tr><td>原始 Opus 4.7</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>14 项通过 / 14 项检查</td><td>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>13 项通过 / 14 项检查</td><td>13/14 项通过；成本检查已通过，但 101_CT_1 在第 19 小时违反停机前约束，左侧 7.0321 大于允许 0.001。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>14 项通过 / 14 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>SkillGrad · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>14 项通过 / 14 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>SkillOpt · 实际 GPT-5.5</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>13 项通过 / 14 项检查</td><td>13/14 项通过；成本仍约 2638051.519，参考约 1302915.916，超过 10% 偏差。</td></tr><tr><td>MMG2Skill · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>14 项通过 / 14 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>SkillRevise · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>13 项通过 / 14 项检查</td><td>13/14 项通过；成本检查已通过，但 101_CT_1 在第 19 小时违反停机前容量约束，实际 12.0 MW，允许上限为 0.001 MW。原始失败在总成本，修后失败位置改变。</td></tr><tr><td>SkillTTA · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>0 项通过 / 14 项检查</td><td>0/14；/root/report.json 缺失，检查在加载报告时全部失败。本次尚未进入成本或容量约束验收。</td></tr></tbody></table></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>unit-commitment-operating-rules/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr><tr><td>milp-solver-workflow/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>13/14 项通过；总成本 2638051.519，参考 1298833.699，超过允许的 10% 偏差。</p><details><summary>::TestCostAndQuality::test_cost_within_benchmark_gap</summary><pre>self = &lt;test_outputs.TestCostAndQuality object at 0x740d0d9a5d00&gt;
+case_data = {&#x27;demand&#x27;: [3262.31, 3215.96, 3220.9, 3274.01, 3435.74, 3779.83, ...], &#x27;renewable_generators&#x27;: {&#x27;101_PV_1&#x27;: {&#x27;name&#x27;: &#x27;... 45.33}, {&#x27;cost&#x27;: 1319.47, &#x27;mw&#x27;: 60.67}, {&#x27;cost&#x27;: 1596.52, &#x27;mw&#x27;: 76.0}], &#x27;power_output_maximum&#x27;: 76.0, ...}, ...}, ...}
+recomputed_cost = 2638051.519458347
+
+    def test_cost_within_benchmark_gap(self, case_data, recomputed_cost):
+        benchmark_cost = _solve_uc_benchmark_cost(case_data)
+&gt;       assert recomputed_cost &lt;= benchmark_cost * (1.0 + TOL_OPTIMALITY_GAP_REL) + TOL_COST_ABS, (
+            f&quot;recomputed cost {recomputed_cost} exceeds benchmark {benchmark_cost} by more than &quot;
+            f&quot;{TOL_OPTIMALITY_GAP_REL:.0%}&quot;
+        )
+E       AssertionError: recomputed cost 2638051.519458347 exceeds benchmark 1298833.6987722353 by more than 10%
+E       assert 2638051.519458347 &lt;= ((1298833.6987722353 * (1.0 + 0.1)) + 0.01)
+
+/verifier/test_outputs.py:724: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;energy-unit-commitment-original-skill-v11x-20260903-r002&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:cc22e69edc77c65ebda13671a98718c09085e55f3a88087d3cf6ae1cf095b61a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 29,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:88d8e2fe2ec17eca159782998a2c173ba449996ed02e1aeecfcc67106689eb26&quot;
+}</pre></details></details><details><summary>原始 Opus 4.7 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/energy-unit-commitment-opus47-original-skill-r001/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/energy-unit-commitment-opus47-original-skill-r001/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/energy-unit-commitment-opus47-original-skill-r001/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/energy-unit-commitment-opus47-original-skill-r001/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;energy-unit-commitment-opus47-original-skill-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/anthropic/claude-opus-4.7&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:cc22e69edc77c65ebda13671a98718c09085e55f3a88087d3cf6ae1cf095b61a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 17,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:88d8e2fe2ec17eca159782998a2c173ba449996ed02e1aeecfcc67106689eb26&quot;
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_skill">上传修复包</a></p><p>13/14 项通过；成本检查已通过，但 101_CT_1 在第 19 小时违反停机前约束，左侧 7.0321 大于允许 0.001。</p><details><summary>::TestThermalFeasibility::test_deliverable_reserve_and_ramping</summary><pre>self = &lt;test_outputs.TestThermalFeasibility object at 0xffff851e00e0&gt;
+arrays = {&#x27;commitment&#x27;: array([[0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0],
+       ... 0],
+       ...,
+       [0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0]]), ...}
+parsed_case = {&#x27;T&#x27;: 48, &#x27;demand&#x27;: array([3262.31, 3215.96, 3220.9 , 3274.01, 3435.74, 3779.83, 4116.21,
+       4094.34, 4076.64, 406...0.])}, ...], &#x27;renewable_names&#x27;: [&#x27;118_RTPV_9&#x27;, &#x27;101_PV_3&#x27;, &#x27;314_PV_2&#x27;, &#x27;215_PV_1&#x27;, &#x27;118_RTPV_4&#x27;, &#x27;324_PV_2&#x27;, ...], ...}
+
+    def test_deliverable_reserve_and_ramping(self, arrays, parsed_case):
+        u = arrays[&quot;commitment&quot;]
+        v = arrays[&quot;startup&quot;]
+        w = arrays[&quot;shutdown&quot;]
+        production = arrays[&quot;thermal_production&quot;]
+        reserve = arrays[&quot;thermal_reserve&quot;]
+        T = parsed_case[&quot;T&quot;]
+        for g, gen in enumerate(parsed_case[&quot;thermal&quot;]):
+            p_above_min = production[g] - gen[&quot;pmin&quot;] * u[g]
+            p0 = gen[&quot;u0&quot;] * (gen[&quot;p0&quot;] - gen[&quot;pmin&quot;])
+            cap = gen[&quot;cap&quot;]
+            startup_reduction = max(gen[&quot;pmax&quot;] - gen[&quot;su&quot;], 0.0)
+            shutdown_reduction = max(gen[&quot;pmax&quot;] - gen[&quot;sd&quot;], 0.0)
+            assert np.all(p_above_min &gt;= -TOL_GENERATOR_MW), f&quot;{gen[&#x27;name&#x27;]} production above-min is negative&quot;
+            for t in range(T):
+                lhs = p_above_min[t] + reserve[g, t]
+                cap_rhs = cap * u[g, t] - startup_reduction * v[g, t]
+                assert lhs &lt;= cap_rhs + TOL_GENERATOR_MW, f&quot;{gen[&#x27;name&#x27;]} violates startup capacity at hour {t + 1}&quot;
+                if t &lt; T - 1:
+                    shut_rhs = cap * u[g, t] - shutdown_reduction * w[g, t + 1]
+&gt;                   assert lhs &lt;= shut_rhs + TOL_GENERATOR_MW, (
+                        f&quot;{gen[&#x27;name&#x27;]} violates pre-shutdown capacity at hour {t + 1}&quot;
+                    )
+E                   AssertionError: 101_CT_1 violates pre-shutdown capacity at hour 19
+E                   assert 7.032100000000309 &lt;= (0.0 + 0.001)
+
+/verifier/test_outputs.py:632: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>::TestCostAndQuality::test_cost_within_benchmark_gap</td></tr><tr><td>通过 → 未通过</td><td>::TestThermalFeasibility::test_deliverable_reserve_and_ramping</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;energy-unit-commitment-a01&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:cc22e69edc77c65ebda13671a98718c09085e55f3a88087d3cf6ae1cf095b61a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 13,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:716d3691044a187741aef10e37f4196f536d3f1e0ffd14b0376b21f8c46e32ce&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/energy-unit-commitment/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/energy-unit-commitment/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/energy-unit-commitment/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/energy-unit-commitment/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/energy-unit-commitment/repaired_skill">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;energy-unit-commitment-a06&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:be41a72229df2fe083a9e7494c4d3a67498af3069bbc2a28064c2a0198a5573d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 21,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:bcfee563c8bc6a8bf3ac29535b18bdf3da849cfb42f227e4fa3b8b0a0598711e&quot;
+}</pre></details></details><details><summary>SkillGrad · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/energy-unit-commitment/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/energy-unit-commitment/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/energy-unit-commitment/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/energy-unit-commitment/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/energy-unit-commitment/skills">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>::TestCostAndQuality::test_cost_within_benchmark_gap</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;energy-unit-commitment-formal-2-9f00434ae30d&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:cc22e69edc77c65ebda13671a98718c09085e55f3a88087d3cf6ae1cf095b61a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 37,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:a2f347002b6a0f4b8169adb51630efd1242d317c09ea0f3480146c3775a7ee84&quot;
+}</pre></details></details><details><summary>SkillOpt · 实际 GPT-5.5 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_skill">上传修复包</a></p><p>13/14 项通过；成本仍约 2638051.519，参考约 1302915.916，超过 10% 偏差。</p><details><summary>::TestCostAndQuality::test_cost_within_benchmark_gap</summary><pre>self = &lt;test_outputs.TestCostAndQuality object at 0xffffa8ac1580&gt;
+case_data = {&#x27;demand&#x27;: [3262.31, 3215.96, 3220.9, 3274.01, 3435.74, 3779.83, ...], &#x27;renewable_generators&#x27;: {&#x27;101_PV_1&#x27;: {&#x27;name&#x27;: &#x27;... 45.33}, {&#x27;cost&#x27;: 1319.47, &#x27;mw&#x27;: 60.67}, {&#x27;cost&#x27;: 1596.52, &#x27;mw&#x27;: 76.0}], &#x27;power_output_maximum&#x27;: 76.0, ...}, ...}, ...}
+recomputed_cost = 2638051.519458347
+
+    def test_cost_within_benchmark_gap(self, case_data, recomputed_cost):
+        benchmark_cost = _solve_uc_benchmark_cost(case_data)
+&gt;       assert recomputed_cost &lt;= benchmark_cost * (1.0 + TOL_OPTIMALITY_GAP_REL) + TOL_COST_ABS, (
+            f&quot;recomputed cost {recomputed_cost} exceeds benchmark {benchmark_cost} by more than &quot;
+            f&quot;{TOL_OPTIMALITY_GAP_REL:.0%}&quot;
+        )
+E       AssertionError: recomputed cost 2638051.519458347 exceeds benchmark 1302915.91550799 by more than 10%
+E       assert 2638051.519458347 &lt;= ((1302915.91550799 * (1.0 + 0.1)) + 0.01)
+
+/verifier/test_outputs.py:724: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;energy-unit-commitment-skillopt-20260920T234748Z&quot;,
+  &quot;model&quot;: &quot;tatu/gpt-5.5@CODING_TATU&quot;,
+  &quot;provider_route&quot;: &quot;tatu&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:cc22e69edc77c65ebda13671a98718c09085e55f3a88087d3cf6ae1cf095b61a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 20,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:e17c745a1c1f2e7f620ed7c2545f9093a9ff7784fe2f4ec7a72d92d572454b8a&quot;
+}</pre></details></details><details><summary>MMG2Skill · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/energy-unit-commitment-mmg2skill-gpt52-r001/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/energy-unit-commitment-mmg2skill-gpt52-r001/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/energy-unit-commitment-mmg2skill-gpt52-r001/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/energy-unit-commitment-mmg2skill-gpt52-r001/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/energy-unit-commitment/skills">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>::TestCostAndQuality::test_cost_within_benchmark_gap</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;energy-unit-commitment-mmg2skill-gpt52-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:cc22e69edc77c65ebda13671a98718c09085e55f3a88087d3cf6ae1cf095b61a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 26,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:b320acd10c47555bac9253a8156219bddbd034fb4da1fd1dacb9af941b26e728&quot;
+}</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_skill">上传修复包</a></p><p>13/14 项通过；成本检查已通过，但 101_CT_1 在第 19 小时违反停机前容量约束，实际 12.0 MW，允许上限为 0.001 MW。原始失败在总成本，修后失败位置改变。</p><details><summary>::TestThermalFeasibility::test_deliverable_reserve_and_ramping</summary><pre>self = &lt;test_outputs.TestThermalFeasibility object at 0x7055646402f0&gt;
+arrays = {&#x27;commitment&#x27;: array([[0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0],
+       ... 0],
+       ...,
+       [0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0]]), ...}
+parsed_case = {&#x27;T&#x27;: 48, &#x27;demand&#x27;: array([3262.31, 3215.96, 3220.9 , 3274.01, 3435.74, 3779.83, 4116.21,
+       4094.34, 4076.64, 406...0.])}, ...], &#x27;renewable_names&#x27;: [&#x27;118_RTPV_9&#x27;, &#x27;101_PV_3&#x27;, &#x27;314_PV_2&#x27;, &#x27;215_PV_1&#x27;, &#x27;118_RTPV_4&#x27;, &#x27;324_PV_2&#x27;, ...], ...}
+
+    def test_deliverable_reserve_and_ramping(self, arrays, parsed_case):
+        u = arrays[&quot;commitment&quot;]
+        v = arrays[&quot;startup&quot;]
+        w = arrays[&quot;shutdown&quot;]
+        production = arrays[&quot;thermal_production&quot;]
+        reserve = arrays[&quot;thermal_reserve&quot;]
+        T = parsed_case[&quot;T&quot;]
+        for g, gen in enumerate(parsed_case[&quot;thermal&quot;]):
+            p_above_min = production[g] - gen[&quot;pmin&quot;] * u[g]
+            p0 = gen[&quot;u0&quot;] * (gen[&quot;p0&quot;] - gen[&quot;pmin&quot;])
+            cap = gen[&quot;cap&quot;]
+            startup_reduction = max(gen[&quot;pmax&quot;] - gen[&quot;su&quot;], 0.0)
+            shutdown_reduction = max(gen[&quot;pmax&quot;] - gen[&quot;sd&quot;], 0.0)
+            assert np.all(p_above_min &gt;= -TOL_GENERATOR_MW), f&quot;{gen[&#x27;name&#x27;]} production above-min is negative&quot;
+            for t in range(T):
+                lhs = p_above_min[t] + reserve[g, t]
+                cap_rhs = cap * u[g, t] - startup_reduction * v[g, t]
+                assert lhs &lt;= cap_rhs + TOL_GENERATOR_MW, f&quot;{gen[&#x27;name&#x27;]} violates startup capacity at hour {t + 1}&quot;
+                if t &lt; T - 1:
+                    shut_rhs = cap * u[g, t] - shutdown_reduction * w[g, t + 1]
+&gt;                   assert lhs &lt;= shut_rhs + TOL_GENERATOR_MW, (
+                        f&quot;{gen[&#x27;name&#x27;]} violates pre-shutdown capacity at hour {t + 1}&quot;
+                    )
+E                   AssertionError: 101_CT_1 violates pre-shutdown capacity at hour 19
+E                   assert 12.0 &lt;= (0.0 + 0.001)
+
+/verifier/test_outputs.py:632: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;energy-unit-commitment-bundle-2-published-original-revi-c56f42f6a9c2&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:e7e454c47c8a961527c69e77a4e95cbd46d96de4dc653dd48dedb2bb93a05c92&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 28,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:15b735e732b0fa6f838757e214d52069ef737785a3f52ce5bec0d80345a06616&quot;
+}</pre></details></details><details><summary>SkillTTA · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/energy-unit-commitment/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/energy-unit-commitment/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/energy-unit-commitment/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/energy-unit-commitment/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/energy-unit-commitment/repaired_skill">上传修复包</a></p><p>0/14；/root/report.json 缺失，检查在加载报告时全部失败。本次尚未进入成本或容量约束验收。</p><details><summary>::TestSchema::test_required_schema</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestSchema::test_arrays_align_with_case</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestBinaryLogic::test_startup_shutdown_match_commitment</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestBinaryLogic::test_no_simultaneous_startup_shutdown</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestBinaryLogic::test_reported_transition_counts</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestThermalFeasibility::test_must_run_units_online</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestThermalFeasibility::test_output_limits_and_offline_zeroes</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestThermalFeasibility::test_deliverable_reserve_and_ramping</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestSystemFeasibility::test_demand_and_reserve</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestSystemFeasibility::test_renewable_limits</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestSystemFeasibility::test_hourly_summary_matches_schedule</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestMinimumUpDown::test_initial_and_in_horizon_obligations</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestCostAndQuality::test_reported_cost_matches_schedule</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>::TestCostAndQuality::test_cost_within_benchmark_gap</summary><pre>@pytest.fixture(scope=&quot;module&quot;)
+    def report():
+&gt;       assert os.path.exists(OUTPUT_FILE), f&quot;Output file {OUTPUT_FILE} does not exist&quot;
+E       AssertionError: Output file /root/report.json does not exist
+E       assert False
+E        +  where False = &lt;function exists at 0x7f2a2b803e20&gt;(&#x27;/root/report.json&#x27;)
+E        +    where &lt;function exists at 0x7f2a2b803e20&gt; = &lt;module &#x27;posixpath&#x27; (frozen)&gt;.exists
+E        +      where &lt;module &#x27;posixpath&#x27; (frozen)&gt; = os.path
+
+/verifier/test_outputs.py:500: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;energy-unit-commitment-skilltta-gpt52-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:cc22e69edc77c65ebda13671a98718c09085e55f3a88087d3cf6ae1cf095b61a&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 4,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:cda39a5125da96d2f9ee111ab14b0c33d010777b58dd388fccdc5e39a35416eb&quot;
+}</pre></details></details><h2>人工 Gold 要求修哪里</h2><p>人工标注与参考修复用于定位已知缺陷。它们主要针对 GPT 原始失败；换模型后应重新核对这一缺陷是否仍在轨迹中出现。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">编号 / 主类型</th><th scope="col">原始缺陷</th><th scope="col">定位</th><th scope="col">要求的修复</th></tr></thead><tbody><tr><td>D001<br>精确语义与算法</td><td>有效 Original-Skill 失败轮把热机 p[g,t] 定义为实际 MW，却直接使用 p[t] + reserve[t] - p[t-1] &lt;= ramp_up 和 p[t-1] - p[t] &lt;= ramp_down 这一套 above-minimum 差分；在 0→1/1→0 commitment transition 时，pmin 被错误计入普通 ramp movement，使模型被系统性过度约束。Agent 的本地 check_all() 又复制同一混合约定，因此所有可行性自检仍通过，最终得到对错误模型的零 MIP-gap 最优解。</td><td>unit-commitment-operating-rules/SKILL.md<br><small>Keep These Concepts Separate；Ramping；Implementation Workflow</small></td><td>在建立 capacity、reserve、ramp、startup/shutdown、balance 或 cost 约束前，必须先固定并记录 thermal production 的唯一内部表示。若使用 above-minimum pbar，则统一令 actual=Pmin*u+pbar，并在 capacity、startup/shutdown capability、reserve deliverability、ramping 和 demand balance 中使用与 pbar 一致的公式；若使用 actual MW P，则必须从 pbar=P-Pmin*u 代数推导等价 ramp 约束，显式保留 Pmin*(u[t]-u[t-1]) 的 commitment-change 补偿项，禁止直接复制 above-minimum 差分。全量求解前，对 steady-online、startup-at-minimum 和 shutdown-from-minimum 三类 transition 用实际 row coefficients 做 hand-case gate；若 minimum stable output 被错误消耗为普通 ramp，必须先修正表示再继续。独立验证应按物理/报告约定重新计算，而不能机械复制同一混合公式。</td></tr><tr><td>D002<br>质量门与独立验收</td><td>Original-Skill 失败轮的 HiGHS 对被错误 ramp 约束过度收紧的 MILP 报告 optimal、mip_gap=0.0，Agent 又确认报告成本与自身模型重算一致，便直接接受 2638051.519458347 的高成本结果。原 Skill 缺少一个能发现“可行且 solver-optimal，但 formulation 本身错误/过约束”的 objective-quality completion gate；零 MIP gap 因而被错误当成了任务质量证明。</td><td>milp-solver-workflow/SKILL.md<br><small>Open-Source Solver Use；Extraction And Validation</small></td><td>对明确要求 economical/minimum-cost/maximum-value 或由 objective quality 评分的 MILP，把 solver optimality 与 task-model quality 分开验证。提交前至少完成：从最终 report arrays 独立重算 objective；逐项审计所有 representation-dependent 约束的单位、符号、索引和变量约定；对 transition 行做具体 hand case；检查 starts/stops、长期在线资源、廉价/昂贵资源使用和 binding transition constraints 等 operational signature，对异常退化模式给出数据支持的解释；再使用 relaxed dispatch/LP lower bound、小时间窗 exact check 或第二个代数等价表示之一作为 formulation-independent sanity check。若成本/价值与独立检查存在无法解释的大差距，即使 solver gap 为 0 也不得结束；必须先定位过约束或错约束，而不是盲目放松任务约束。</td></tr></tbody></table></div><details><summary>人工参考修复如何验证，以及原标注记录的限制</summary><div class="table-wrap"><table class=""><thead><tr><th scope="col">缺陷</th><th scope="col">验证方式原文</th><th scope="col">验证证据原文</th><th scope="col">verifier 说明原文</th></tr></thead><tbody><tr><td>D001</td><td>agent-validated (1/1; jointly validated; guard-enabled; partial-adherence caveat)</td><td>Round 1 fresh rollout energy-unit-commitment-round-1-r003 在 exact-pinned local OpenHands runtime 下完整执行，execution_ok=true、task_passed=true、reward=1.0，官方 verifier 14/14；16/60 parent iterations、16 provider requests，正常 end_turn，completion guard 实际续跑 1 次。完整 3-Skill persistent preload 已核验，bundle digest 为 sha256:b77f92669360857ddfe53b0eedf0ad3fc82282e3d7b9b6334d07f26ca2c0ee8f。Agent 实际改用 above-minimum pbar，在 ramp/reserve 中保持 pbar 表示，并在 demand/report 阶段使用 Pmin*u+pbar 转回实际 MW；最终成本由 Original 的 2638051.519458347 降至 1244297.0856280178，startup/shutdown 从 0/7 变为 9/29，经济性测试由失败变为通过。RI-001 与 RI-002 只在完整 Round 1 bundle 上联合验证，模型未显式逐条执行全部 transition hand-case，因此保留 partial-adherence caveat。</td><td>此字段未记录冲突；不等于已排除所有冲突</td></tr><tr><td>D002</td><td>agent-validated (1/1; jointly validated; guard-enabled; partial-adherence caveat)</td><td>同一 Round 1 r003 完整候选通过官方 verifier 14/14、reward=1。最终 HiGHS 在 300 秒达到 time_limit_feasible，reported_mip_gap 约 0.02996，report objective_cost 为 1244297.0856280178；官方 cost-within-benchmark-gap 与 reported-cost-consistency 均通过。相较 Original 的零 MIP-gap 高成本失败，Agent 没有再把 solver gap 本身当成 formulation 正确性的充分证据，并通过重新建模得到合理 operational signature。该轮没有逐项展示 relaxed-LP/small-horizon/equivalent-formulation 三选一的独立 quality sanity check，因此这里只记录完整修复 bundle 的联合 PASS，不声称 RI-002 的每个子步骤都被逐字执行。</td><td>此字段未记录冲突；不等于已排除所有冲突</td></tr></tbody></table></div></details><div class="note warning">有效 Original-Skill guard 轮官方 verifier 13/14，唯一失败为 objective quality；schema、transition logic、thermal/renewable feasibility、reserve、ramping、minimum up/down 与 cost consistency 均通过。<br>Round 1 将 production representation contract 与 objective-quality/formulation audit gate 分别补入 unit-commitment-operating-rules 和 milp-solver-workflow；第三个 unit-commitment-data-modeling 保持官方原文。<br>r001/r002 均在首个 provider request 前因 OpenHands 在线安装基础设施失败作废；r003 使用执行器原生 exact-pinned local runtime archive 后形成第一条有效 fresh development rollout，16/60 iterations、官方 verifier 14/14、reward=1。<br>r003 实际使用 above-minimum pbar 完成 ramp/reserve 建模，再转换为 actual MW 报告，最终 objective 1244297.0856280178；两个 RI 只获完整 bundle 联合验证，并保留 partial-adherence caveat。</div><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/gold.json">人工 Gold 与参考修复来源</a></p><details><summary>参考修复的实际文件差异</summary><p>缺失文件可能来自打包不完整，不能直接认定为有意删除；修改行数也不代表最小修复量。</p><details><summary>milp-solver-workflow/SKILL.md · modified</summary><pre>--- milp-solver-workflow/SKILL.md
+
++++ milp-solver-workflow/SKILL.md
+
+@@ -134,4 +134,19 @@
+
+ Capture status, objective, incumbent values, and any reliable gap/bound. A time-limit status can be useful if a feasible incumbent exists; a failure with no incumbent is not a solution.
+ 
++## Objective-Quality And Formulation Audit Gate
++
++Solver optimality is conditional on the encoded model. A zero MIP gap does **not** prove that the encoded constraints represent the task correctly, and feasibility validation alone cannot detect a model that is accidentally too restrictive.
++
++For any task that explicitly asks for an economical, minimum-cost, maximum-value, or otherwise objective-scored result, treat the following as a blocking completion gate:
++
++1. **Recompute the objective independently from the extracted/report arrays.** The reported objective and the independently recomputed objective must agree within numerical tolerance.
++2. **Audit every representation-dependent constraint before trusting the solver gap.** If a physical quantity has two conventions (for example total output versus output above a baseline), record which convention each variable uses and algebraically derive every transition/ramp/capacity row in that convention. A solver gap for a mixed-convention model is meaningless.
++3. **Run transition hand cases on the actual row coefficients.** Evaluate representative steady-state, activation/start, and deactivation/stop cases with concrete parameter values. Confirm that a baseline amount is not accidentally counted as ramp movement or removed twice.
++4. **Inspect the operational signature of the solution.** Count starts/stops, persistent on/off resources, use of obviously cheaper versus more expensive resources, and binding transition constraints. Degenerate patterns such as no activations over a varying horizon are not automatically wrong, but they require an explanation supported by the task data and the encoded constraints.
++5. **Use an independent quality sanity check.** Build at least one formulation-independent comparison such as a relaxed dispatch/LP lower bound, a small-horizon exact check, or a second mathematically equivalent representation of the transition rows. A large unexplained cost/value gap is evidence to re-audit the formulation before submission, even when the primary MILP reports `optimal`.
++6. **Do not repair a suspicious objective by weakening task constraints blindly.** First locate the exact constraint family that creates the quality gap, then verify its sign, index, units, and representation with a hand case and the task&#x27;s physical rule.
++
++When the task is objective-scored, completion requires both: (a) the extracted schedule/artifact passes independent feasibility checks, and (b) the objective-quality audit gives no unresolved evidence that the model is over-constrained or using an inconsistent convention.
++
+ ## Extraction And Validation
+ </pre></details><details><summary>unit-commitment-data-modeling/SKILL.md · deleted</summary><pre>--- unit-commitment-data-modeling/SKILL.md
+
++++ unit-commitment-data-modeling/SKILL.md
+
+@@ -1,165 +0,0 @@
+
+----
+-name: unit-commitment-data-modeling
+-description: Use for parsing structured unit commitment input data from JSON, CSV, benchmark cases, spreadsheets, databases, or nested tables; finding fields for time periods, resources, load, reserve, generator limits, initial conditions, startup data, renewable availability, and production costs without assuming one source-specific schema.
+----
+-
+-# Unit Commitment Structured Data Parsing
+-
+-Use this skill when a unit commitment task provides structured data and you need to map fields into UC concepts. The source may be JSON, CSV, spreadsheets, database tables, or nested dictionaries. The prompt and schema are the source of truth; do not assume one benchmark or package.
+-
+-## Parsing Workflow
+-
+-1. Load data with structured parsers: JSON as objects, CSV/sheets as tables, databases as query results.
+-2. Inspect schema: top-level keys, tables/sheets, resource groups, time-series fields, cost curves, startup tiers, and initial-condition fields.
+-3. Identify the time axis: number of periods, labels, duration, and report convention.
+-4. Identify resource sets: thermal, renewable, storage, imports, zones, reserve products, or network objects.
+-5. Normalize fields into arrays/tables with explicit shapes.
+-6. Preserve original names and source ordering for final reports.
+-7. Run parser-level checks before modeling.
+-
+-## Map Concepts, Not Names
+-
+-Different sources use different names. Map by meaning, units, shape, and context.
+-
+-| UC concept | Look for |
+-| --- | --- |
+-| Horizon | periods, hours, timestamps, interval count |
+-| Demand | load, system demand, net load, zone load |
+-| Reserve requirement | spinning, operating, contingency, regulation reserve |
+-| Resource sets | thermal, renewable, storage, import/export |
+-| Commitment status | on/off, online, active, unit status |
+-| Output limits | minimum stable output, maximum output, availability |
+-| Ramping | ramp up/down, startup capability, shutdown capability |
+-| Minimum up/down | required duration after start/stop |
+-| Initial conditions | initial status, initial output, time already on/off |
+-| Must-run | forced online, fixed status |
+-| Startup data | fixed costs or tiers by prior offline duration |
+-| Production cost | linear coefficients, heat rate, piecewise or total-cost curves |
+-| Renewable availability | hourly min/max output or forecast bounds |
+-
+-## Common Data Shapes
+-
+-- **Scalar by resource:** min up/down, ramp rates, startup ramp, must-run.
+-- **Time series by system/zone:** demand and reserve requirement.
+-- **Time series by resource:** renewable availability or outage status.
+-- **Curve/tier tables:** startup costs and production-cost breakpoints.
+-- **Nested resource objects:** generator-specific limits, status, and costs.
+-
+-Normalize into a small representation:
+-
+-```python
+-case = {
+-    &quot;periods&quot;: periods,                  # length T
+-    &quot;thermal_names&quot;: thermal_names,      # length G, source order
+-    &quot;renewable_names&quot;: renewable_names,  # length R, source order
+-    &quot;demand&quot;: demand,                    # shape (T,)
+-    &quot;reserve_requirement&quot;: reserve,       # shape (T,)
+-    &quot;thermal&quot;: thermal_params,
+-    &quot;renewable_min&quot;: renewable_min,       # shape (R, T)
+-    &quot;renewable_max&quot;: renewable_max,       # shape (R, T)
+-}
+-```
+-
+-## Time, Ordering, And Units
+-
+-- Use the input horizon as authoritative.
+-- Preserve source period order.
+-- Keep zero-based internal indexes separate from one-based/timestamped report labels.
+-- Verify every time-series length equals `T`.
+-- Preserve resource order unless the prompt requires sorting.
+-- Treat resource IDs as opaque strings.
+-- Keep thermal and renewable sets separate when constraints differ.
+-- Check power units, period duration, ramp-rate units, and cost units before converting anything.
+-
+-Basic checks:
+-
+-```python
+-assert len(demand) == T
+-assert len(reserve_requirement) == T
+-for r in renewable_resources:
+-    assert len(r[&quot;min&quot;]) == T
+-    assert len(r[&quot;max&quot;]) == T
+-```
+-
+-## Production Convention
+-
+-Many UC models use output above minimum internally, while reports often require actual MW.
+-
+-```python
+-actual_output = pmin * commitment + output_above_min
+-output_above_min = actual_output - pmin * commitment
+-```
+-
+-Pick one internal convention and convert carefully for reporting, ramping, reserve deliverability, and cost.
+-
+-## Startup Tiers
+-
+-Startup tiers are usually keyed by prior offline duration. Parse thresholds and costs without assuming order.
+-
+-```python
+-def choose_startup_tier(tiers, prior_offline_duration):
+-    tiers = sorted(tiers, key=lambda x: x[&quot;lag&quot;])
+-    chosen = tiers[0]
+-    for tier in tiers:
+-        if tier[&quot;lag&quot;] &lt;= prior_offline_duration:
+-            chosen = tier
+-        else:
+-            break
+-    return chosen
+-```
+-
+-Keep prior offline duration consistent with initial status and transition timing.
+-
+-## Cost Curves
+-
+-Identify whether points are total cost, marginal cost, incremental segment cost, or heat-rate data. For total-cost breakpoints:
+-
+-```python
+-def interpolate_total_cost(points, output_mw):
+-    pts = sorted((float(p[&quot;mw&quot;]), float(p[&quot;cost&quot;])) for p in points)
+-    if output_mw &lt;= pts[0][0]:
+-        return pts[0][1]
+-    if output_mw &gt;= pts[-1][0]:
+-        return pts[-1][1]
+-    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+-        if x0 &lt;= output_mw &lt;= x1:
+-            a = (output_mw - x0) / (x1 - x0)
+-            return y0 + a * (y1 - y0)
+-    raise ValueError(&quot;output outside cost curve&quot;)
+-```
+-
+-If the first point is at minimum output, it may represent online minimum-output cost. Do not invent additional no-load or shutdown costs unless provided.
+-
+-## Renewables
+-
+-- Parse hourly minimum and maximum output.
+-- If min equals max, output is fixed in that period.
+-- If curtailment is allowed, output can be anywhere between min and max.
+-- Do not count renewable headroom as spinning reserve unless explicitly allowed.
+-- Renewable cost is zero unless the task/data says otherwise.
+-
+-## Parser-Level Validation
+-
+-Before solving, check:
+-
+-```python
+-assert np.all(np.isfinite(demand))
+-assert np.all(np.isfinite(reserve_requirement))
+-assert np.all(thermal_pmin &lt;= thermal_pmax)
+-assert np.all(renewable_min &lt;= renewable_max)
+-assert all(len(curve) &gt;= 2 for curve in production_curves.values())
+-assert all(len(tiers) &gt;= 1 for tiers in startup_tiers.values())
+-```
+-
+-Also check missing required fields, duplicate IDs, mismatched lengths, negative impossible limits, repeated cost points, nonmonotone startup lags, and inconsistent initial status/output.
+-
+-## Common Mistakes
+-
+-- Hard-coding a familiar schema instead of inspecting the data.
+-- Losing ordering when converting dictionaries or tables into arrays.
+-- Joining tables on the wrong key or duplicating resources.
+-- Confusing total output with output above minimum.
+-- Confusing reserve, capacity, availability, and dispatch.
+-- Treating every cost curve as marginal cost.
+-- Ignoring startup tier lags or initial offline duration.
+-- Assuming renewable maximum output must always be used.</pre></details><details><summary>unit-commitment-operating-rules/SKILL.md · modified</summary><pre>--- unit-commitment-operating-rules/SKILL.md
+
++++ unit-commitment-operating-rules/SKILL.md
+
+@@ -34,4 +34,76 @@
+
+ 
+ Do not mix these conventions in ramping, reserve, cost, or reporting.
++
++## Mandatory Production-Representation Contract
++
++Before adding any capacity, ramp, startup/shutdown, reserve, balance, or cost row, write down a one-line model contract declaring whether the continuous thermal production variable is **actual MW** or **MW above minimum**. Do not start coding those rows until this contract is fixed.
++
++The safest default for formulations with startup/shutdown capability and ramp deliverability is often an above-minimum variable:
++
++```python
++pbar[g, t] = actual_output[g, t] - pmin[g] * u[g, t]
++cap[g] = pmax[g] - pmin[g]
++```
++
++Then the core rows have one consistent meaning:
++
++```python
++0 &lt;= pbar[g, t] &lt;= cap[g] * u[g, t]
++
++# headroom plus startup capability
++pbar[g, t] + r[g, t] &lt;= (
++    cap[g] * u[g, t]
++    - max(pmax[g] - startup_limit[g], 0.0) * start[g, t]
++)
++
++# pre-shutdown capability when stop[t+1] means the unit turns off next period
++pbar[g, t] + r[g, t] &lt;= (
++    cap[g] * u[g, t]
++    - max(pmax[g] - shutdown_limit[g], 0.0) * stop[g, t + 1]
++)
++
++prev_pbar = initial_on[g] * (initial_output[g] - pmin[g]) if t == 0 else pbar[g, t - 1]
++pbar[g, t] + r[g, t] - prev_pbar &lt;= ramp_up[g]
++prev_pbar - pbar[g, t] &lt;= ramp_down[g]
++```
++
++If you instead model **actual MW** `P`, derive the algebraically equivalent rows rather than copying the above-minimum equations verbatim. Since `pbar = P - pmin*u`, ramping becomes:
++
++```python
++prev_P = initial_output[g] if t == 0 else P[g, t - 1]
++prev_u = initial_on[g] if t == 0 else u[g, t - 1]
++
++P[g, t] + r[g, t] - prev_P - pmin[g] * (u[g, t] - prev_u) &lt;= ramp_up[g]
++prev_P - P[g, t] - pmin[g] * (prev_u - u[g, t]) &lt;= ramp_down[g]
++```
++
++The `pmin * delta_u` terms are essential at transitions. Using only `P[t] + r[t] - P[t-1] &lt;= ramp_up` on actual MW incorrectly charges the minimum stable output as ramp movement during an off-to-on transition. Likewise, `P[t-1] - P[t] &lt;= ramp_down` incorrectly charges minimum output again at shutdown.
++
++For actual MW, the startup/headroom row is equivalently:
++
++```python
++P[g, t] + r[g, t] &lt;= (
++    pmax[g] * u[g, t]
++    - max(pmax[g] - startup_limit[g], 0.0) * start[g, t]
++)
++```
++
++and demand balance uses actual MW directly. For above-minimum variables, demand balance must add the minimum-output term:
++
++```python
++sum(pbar[g, t] + pmin[g] * u[g, t] for g in thermal_units) + renewable_generation[t] == demand[t]
++```
++
++### Mandatory transition hand-case gate
++
++Before solving the full horizon, evaluate the **actual encoded row coefficients** on at least these cases for a representative unit:
++
++1. steady online: `u_prev=1, u=1`;
++2. startup at minimum output: `u_prev=0, u=1, P=pmin`;
++3. shutdown from minimum output: `u_prev=1, u=0, P_prev=pmin`.
++
++In case 2, minimum stable output must map to `pbar=0`; it must not consume `pmin` MW of ordinary ramp allowance solely because the unit changed commitment state. In case 3 the symmetric rule applies. If the hand case fails, the representation is mixed and the full model must not be solved or reported yet.
++
++Keep the representation contract next to the implementation and reuse it in independent validation. Validation must not simply copy the same mixed-convention algebra from the optimization model.
+ 
+ ## Core Feasibility Checks
+@@ -163,5 +235,5 @@
+
+ ```
+ 
+-If your model uses actual production, convert consistently before applying above-minimum ramp checks. Recheck ramping after any dispatch or repair step.
++If your model uses actual production, use the exact conversion in the Mandatory Production-Representation Contract above; do not apply these above-minimum rows directly to actual MW. Recheck ramping after any dispatch or repair step.
+ 
+ ## Minimum Up/Down Time
+@@ -223,10 +295,11 @@
+
+ 
+ 1. Parse and normalize resource/time arrays.
+-2. Choose actual-output or above-minimum internal variables and stick to it.
++2. Freeze the production representation contract and pass its transition hand-case gate.
+ 3. Include hard feasibility constraints before optimizing cost.
+ 4. Extract the solution into the report convention.
+-5. Run independent validation on extracted arrays.
++5. Run independent validation on extracted arrays using the report/physical convention rather than blindly reusing model rows.
+ 6. Recompute costs and summaries from arrays.
+-7. Write `&quot;pass&quot;` checks only after validation passes.
++7. For an economical/objective-scored task, inspect starts/stops and run the independent objective-quality gate from the MILP workflow before claiming optimality.
++8. Write `&quot;pass&quot;` checks only after validation passes.
+ 
+ ## Common Pitfalls
+@@ -235,6 +308,9 @@
+
+ - Counting reserve from offline units or renewable headroom.
+ - Checking reserve headroom but forgetting startup or ramp deliverability.
++- Mixing actual MW and above-minimum MW in transition or ramp rows.
++- Charging `pmin` as ordinary ramp movement on startup or shutdown.
+ - Ignoring initial output in first-period ramping.
+ - Ignoring initial on/off duration in minimum up/down constraints.
+ - Trusting a repair LP that omits a constraint family.
++- Trusting a zero MIP gap without auditing the encoded formulation and economic signature.
+ - Hard-coding `&quot;pass&quot;` fields before validation.</pre></details></details><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;energy-unit-commitment&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 26481,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:716d3691044a187741aef10e37f4196f536d3f1e0ffd14b0376b21f8c46e32ce&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:716d3691044a187741aef10e37f4196f536d3f1e0ffd14b0376b21f8c46e32ce&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_skill&quot;
+}</pre></details><p>字节变化文件 3 个；排除仅空白变化后 3 个。</p><details><summary>milp-solver-workflow/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_skill/milp-solver-workflow/SKILL.md">修改后</a></p><pre>--- original/milp-solver-workflow/SKILL.md
++++ repaired/milp-solver-workflow/SKILL.md
+@@ -22,6 +22,10 @@
+ 9. Recompute objective and summaries from extracted arrays.
+ 10. Write final output only after validation passes.
+ 
++**Cost-quality guardrail (when the task is “economical”, not just feasible):**
++
++11. Confirm the **objective function you optimized** matches the **cost function you recompute** from the original data (same curve convention, same startup/shutdown accounting, same output convention). If you can, run a small-scope cross-check (e.g., a single-unit single-period or fixed-commitment dispatch) to ensure the modeled piecewise costs increase with output as expected.
++
+ ## Variable Map Pattern
+ 
+ Use helper functions or dictionaries, not scattered index arithmetic.
+@@ -99,6 +103,14 @@
+ cost-curve logic        -&gt; recomputed objective matches report
+ ```
+ 
++**Extend this checklist for “economic” tasks:**
++
++```text
++modeled cost convention -&gt; recomputed cost uses same curve/tier convention
++piecewise linearization -&gt; segment slopes/intercepts reproduce input breakpoints
++startup tier selection  -&gt; offline-duration logic matches data definition
++```
++
+ If validation checks something not in the model, the solver may produce an invalid report. If the model has a constraint not validated after extraction, conversion bugs can slip through.
+ 
+ ## Piecewise-Linear Costs
+@@ -111,6 +123,27 @@
+ - first point as minimum-output or no-load-like cost.
+ 
+ For segment variables, constrain segment quantities to their widths and sum them to the modeled production quantity. Use slopes only when the data represents total-cost breakpoints or incremental segment costs consistently.
++
++**Transferable linearization pattern for total-cost breakpoints (convex, increasing):**
++
++If you have breakpoints `(x_k, y_k)` for output MW `x` and total cost `y`, and you are modeling **actual MW** production `p`:
++
++- define segment variables `s_k &gt;= 0` for `k=1..K-1` (each corresponds to interval `[x_k, x_{k+1}]`)
++- enforce:
++  - `0 &lt;= s_k &lt;= (x_{k+1}-x_k) * u` (or *1 if always online)
++  - `p == x_1 * u + sum_k s_k` when `x_1` equals minimum output (common UC format)
++- cost:
++  - `cost == y_1 * u + sum_k m_k * s_k`, where `m_k = (y_{k+1}-y_k)/(x_{k+1}-x_k)`
++
++This reproduces the breakpoint total costs when `p` is at a breakpoint and is linear between breakpoints.
++
++**Sanity checks that catch wrong conventions early:**
++
++- compute slopes `m_k`; they should be nonnegative and typically nondecreasing for convex costs;
++- verify `y_1` is the cost at `x_1` (often `pmin`), not an incremental cost;
++- ensure you did not double-count `y_1` as both “no-load” and “minimum-output” cost.
++
++If the curve is nonconvex or you must exactly match an arbitrary piecewise curve, use a convex-combination (lambda/SOS2-like) formulation or an MILP with binaries per segment; otherwise the solver may find a feasible schedule with systematically wrong costs.
+ 
+ ## Open-Source Solver Use
+ 
+@@ -133,6 +166,8 @@
+ 
+ Capture status, objective, incumbent values, and any reliable gap/bound. A time-limit status can be useful if a feasible incumbent exists; a failure with no incumbent is not a solution.
+ 
++**Gap reporting discipline:** only report a numeric MIP gap if you can extract it from solver outputs with a clear definition (relative/absolute, primal-dual). If you cannot reliably obtain a gap or bound, report `null` (if schema allows) rather than `0.0`.
++
+ ## Extraction And Validation
+ 
+ After solving:
+@@ -143,6 +178,11 @@
+ - recompute objective from input data and extracted decisions;
+ - run validation that reads only input data plus extracted/report arrays;
+ - write `&quot;pass&quot;` self-checks only after validation passes.
++
++**Economic-quality validation (when required):**
++
++- ensure the recomputed objective uses the *same* curve/tier rules as the model;
++- if the task is judged against an optimality tolerance, do not stop at “feasible”: tighten solver settings (time limit, gap) and confirm the final cost is competitive.
+ 
+ ## Debugging Infeasibility
+ </pre></details><details><summary>unit-commitment-data-modeling/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_skill/unit-commitment-data-modeling/SKILL.md">修改后</a></p><pre>--- original/unit-commitment-data-modeling/SKILL.md
++++ repaired/unit-commitment-data-modeling/SKILL.md
+@@ -130,6 +130,15 @@
+ 
+ If the first point is at minimum output, it may represent online minimum-output cost. Do not invent additional no-load or shutdown costs unless provided.
+ 
++**Parsing-time cost-convention checks (prevents large ‘economical’ failures):**
++
++- Verify breakpoint MWs are strictly increasing.
++- Check whether the first breakpoint MW equals the unit’s `power_output_minimum` (common UC format).
++- Check whether costs are total costs at those MWs (often increasing roughly with MW), not small marginal costs.
++- Compute implied segment slopes `(cost[k+1]-cost[k])/(mw[k+1]-mw[k])` and ensure they are finite and nonnegative.
++
++If these checks fail, do not guess: print/inspect the data fields and adjust the modeling convention accordingly.
++
+ ## Renewables
+ 
+ - Parse hourly minimum and maximum output.</pre></details><details><summary>unit-commitment-operating-rules/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/energy-unit-commitment/repaired_skill/unit-commitment-operating-rules/SKILL.md">修改后</a></p><pre>--- original/unit-commitment-operating-rules/SKILL.md
++++ repaired/unit-commitment-operating-rules/SKILL.md
+@@ -1,6 +1,6 @@
+ ---
+ name: unit-commitment-operating-rules
+-description: Use for day-ahead or multi-period unit commitment problems, including thermal on/off schedules, dispatch, startup/shutdown logic, minimum up/down time, ramping, spinning reserve deliverability, renewable curtailment, operating-cost accounting, and independent feasibility checks for power-system operations schedules.
++description: Use for day-ahead or multi-period unit commitment problems, including thermal on/off schedules, startup/shutdown logic, minimum up/down time, ramping, spinning reserve deliverability, renewable curtailment, operating-cost accounting, and independent feasibility checks for power-system operations schedules.
+ ---
+ 
+ # Unit Commitment Operating Rules
+@@ -51,6 +51,11 @@
+ - minimum up/down time and initial conditions are respected;
+ - cost and summary fields are recomputed from arrays.
+ 
++**Economic-quality check (when the task requires “economical” schedules):**
++
++- verify you optimized the same cost model you later recompute (startup tiers + piecewise production convention);
++- confirm the final objective is competitive (e.g., tighten solver gap/time, and ensure you did not accidentally create a feasibility-only model or a misinterpreted cost curve).
++
+ ## Transition Logic
+ 
+ Link startup/shutdown to commitment and the initial state:
+@@ -197,6 +202,8 @@
+ ```
+ 
+ Update offline duration from initial status and the commitment trajectory. Be careful: duration should describe time offline before the startup period.
++
++**Model/validation alignment:** ensure the offline-duration definition (hours since last online) matches the data’s intended meaning; otherwise you can get a feasible schedule with systematically wrong startup-cost choices.
+ 
+ ## Production Costs
+ 
+@@ -219,15 +226,28 @@
+ 
+ If the first point is at minimum output, its cost may represent online minimum-output cost. Do not add another fixed online cost unless the data says so.
+ 
++**Optimization must use the same convention as recomputation.** A common failure mode is:
++
++- model optimizes a *different* linear cost (e.g., treating total-cost points as marginal slopes, omitting the intercept at minimum output, or double-counting the first breakpoint),
++- then reports a recomputed cost consistent with that wrong model,
++- producing a feasible schedule that is far from the true optimum under the intended benchmark cost.
++
++To prevent this:
++
++- compute implied segment slopes and intercepts from the provided breakpoints;
++- ensure the modeled linearization reproduces the given total costs at breakpoints;
++- spot-check a few units/hours: compare modeled per-hour production cost vs. `total_cost_from_curve` at the same output.
++
+ ## Implementation Workflow
+ 
+ 1. Parse and normalize resource/time arrays.
+ 2. Choose actual-output or above-minimum internal variables and stick to it.
+ 3. Include hard feasibility constraints before optimizing cost.
+-4. Extract the solution into the report convention.
+-5. Run independent validation on extracted arrays.
+-6. Recompute costs and summaries from arrays.
+-7. Write `&quot;pass&quot;` checks only after validation passes.
++4. **Encode costs with the correct curve convention (startup tiers + piecewise production) and verify the linearization matches breakpoints.**
++5. Extract the solution into the report convention.
++6. Run independent validation on extracted arrays.
++7. Recompute costs and summaries from arrays.
++8. Write `&quot;pass&quot;` checks only after validation passes.
+ 
+ ## Common Pitfalls
+ 
+@@ -238,3 +258,4 @@
+ - Ignoring initial on/off duration in minimum up/down constraints.
+ - Trusting a repair LP that omits a constraint family.
+ - Hard-coding `&quot;pass&quot;` fields before validation.
++- **Misinterpreting piecewise production costs (total vs marginal) or mis-linearizing breakpoints, leading to feasible but highly uneconomic schedules.**</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 2 个，其中 2 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>milp-solver-workflow/SKILL.md</td><td>已修改</td></tr><tr><td>unit-commitment-operating-rules/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;QI-1-cost-model-mismatch-or-not-optimized&quot;,
+    &quot;description&quot;: &quot;Guidance did not enforce that the objective must match the verifier’s benchmark UC cost model and be within the allowed optimality gap. The produced schedule is feasible but far from economical (about 2× benchmark), implying either an incorrect/partial cost objective (e.g., missing or misinterpreting piecewise production costs/startup costs) or solving a different optimization problem than the verifier benchmarks.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;milp-solver-workflow/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Workflow / Extraction And Validation / Reporting Discipline&quot;
+      },
+      {
+        &quot;file&quot;: &quot;unit-commitment-operating-rules/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Production Costs / Startup Costs / Implementation Workflow&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;QI-2-gap-reporting-overconfidence&quot;,
+    &quot;description&quot;: &quot;Skill guidance does not require reporting MIP gap as null when not reliably available. The run reported reported_mip_gap = 0.0 along with solver_status=optimal, but the key failure was cost quality; still, guidance should prevent overconfident gap reporting and encourage cross-checking optimality via benchmark-like lower/upper bounds when possible.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;milp-solver-workflow/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Open-Source Solver Use / Reporting Discipline&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;SP-1-skill-boundary-needs-uc-cost-alignment&quot;,
+    &quot;description&quot;: &quot;The boundary between generic MILP workflow and UC-specific modeling lacks explicit instruction to align the production cost curve convention with the data and with the benchmark’s interpretation, especially for \&quot;piecewise_production\&quot; fields. This causes systematic suboptimality across instances, not just this task.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;unit-commitment-data-modeling/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Cost Curves&quot;
+      },
+      {
+        &quot;file&quot;: &quot;unit-commitment-operating-rules/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Production Costs&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;IC-1-must-include-cost-objective-validation-against-curve&quot;,
+    &quot;description&quot;: &quot;Instructions emphasize feasibility validation but do not make explicit checks that the optimization objective matches the recomputed cost function (from the same curve convention) used by validation/benchmarking. The run passed internal cost consistency but still failed the benchmark-gap test, indicating missing instruction to validate cost-model correctness (not just arithmetic consistency).&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;unit-commitment-operating-rules/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Implementation Workflow / Common Pitfalls&quot;
+      },
+      {
+        &quot;file&quot;: &quot;milp-solver-workflow/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Match Model Rows To Validation / Extraction And Validation&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;SPC-1-need-support-for-mip-vs-lp-and_piecewise_linearization&quot;,
+    &quot;description&quot;: &quot;Skills mention piecewise costs conceptually but don’t provide a concrete, transferable linearization pattern for total-cost breakpoints consistent with UC (including intercept handling at pmin) and do not instruct to sanity-check marginal costs vs. curve deltas. This reduces solution-path coverage and increases risk of modeling wrong costs, leading to large cost gaps while staying feasible.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;milp-solver-workflow/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Piecewise-Linear Costs&quot;
+      },
+      {
+        &quot;file&quot;: &quot;unit-commitment-operating-rules/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Production Costs&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/energy-unit-commitment/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;energy-unit-commitment&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 24363,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:bcfee563c8bc6a8bf3ac29535b18bdf3da849cfb42f227e4fa3b8b0a0598711e&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:bcfee563c8bc6a8bf3ac29535b18bdf3da849cfb42f227e4fa3b8b0a0598711e&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/energy-unit-commitment/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/energy-unit-commitment/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>unit-commitment-operating-rules/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/energy-unit-commitment/repaired_skill/unit-commitment-operating-rules/SKILL.md">修改后</a></p><pre>--- original/unit-commitment-operating-rules/SKILL.md
++++ repaired/unit-commitment-operating-rules/SKILL.md
+@@ -219,6 +219,34 @@
+ 
+ If the first point is at minimum output, its cost may represent online minimum-output cost. Do not add another fixed online cost unless the data says so.
+ 
++### Objective Semantics Audit (piecewise curves + double-count prevention)
++
++If your schedule is feasible and your *internal* cost recomputation matches your report, but the objective still looks economically implausible (e.g., far higher than expected, wrong merit order, or dispatch that ignores cheap generation), audit the **meaning** of the production-cost data before changing feasibility constraints.
++
++Perform this audit whenever costs are given as breakpoint tables such as `piecewise_production`:
++
++1. **Determine the curve convention (do not assume).** For each thermal generator, decide whether the `cost` field at breakpoints is:
++   - **total cost at output MW** (most common in UC benchmarks), or
++   - **incremental segment cost** (already a slope/cost for the segment), or
++   - **marginal cost** / heat-rate-like data.
++
++2. **Encode costs to match that convention.**
++   - If points are **total cost**, model cost using a convex-combination / SOS2 formulation over breakpoints, *or* derive **segment slopes** as `Δcost/Δmw` between consecutive points and apply them only to segment quantities.
++   - If points are **incremental/marginal**, do **not** re-integrate them into another “total cost” curve and do not treat the values as total cost at MW.
++
++3. **Prevent double-counting at minimum output.** If you model actual MW production and also enforce `production &gt;= pmin * u`, then:
++   - do not separately add a fixed “no-load” or “min-output” cost unless it is explicitly provided **and** not already embedded in the first breakpoint’s cost;
++   - do not add the first breakpoint cost every period as a separate term if your piecewise interpolation already returns total cost at that output.
++
++4. **Spot-check unit economics numerically (cheap, high-value test).** For a few generators:
++   - compute cost at `pmin` and `pmax` from your model’s cost expression;
++   - compare against the interpolation implied by the raw points;
++   - compute implied $/MWh slopes between adjacent breakpoints and confirm they are nonnegative and roughly consistent with unit type expectations.
++
++5. **Fallback verification: single-period dispatch sanity check.** Fix commitments for one hour (or pick a representative hour) and solve a continuous dispatch/reserve subproblem using the same cost model. If the resulting dispatch violates basic merit-order intuition (expensive units loaded while cheaper units are available), revisit step (1)–(3) before blaming ramping/reserve/min-up constraints.
++
++This audit is diagnostic and objective-encoding focused: it should not weaken feasibility families (startup/shutdown, minimum up/down, ramping, reserve deliverability).
++
+ ## Implementation Workflow
+ 
+ 1. Parse and normalize resource/time arrays.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 2 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>milp-solver-workflow/SKILL.md</td><td>未修改</td></tr><tr><td>unit-commitment-operating-rules/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details></details><details><summary>SkillGrad · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/energy-unit-commitment/skills">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillgrad_gpt52&quot;,
+  &quot;task_id&quot;: &quot;energy-unit-commitment&quot;,
+  &quot;file_count&quot;: 4,
+  &quot;total_bytes&quot;: 26756,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:a2f347002b6a0f4b8169adb51630efd1242d317c09ea0f3480146c3775a7ee84&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:a2f347002b6a0f4b8169adb51630efd1242d317c09ea0f3480146c3775a7ee84&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/energy-unit-commitment/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/energy-unit-commitment/skills&quot;
+}</pre></details><p>字节变化文件 2 个；排除仅空白变化后 2 个。</p><details><summary>milp-solver-workflow/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/energy-unit-commitment/skills/milp-solver-workflow/SKILL.md">修改后</a></p><pre>--- original/milp-solver-workflow/SKILL.md
++++ repaired/milp-solver-workflow/SKILL.md
+@@ -20,7 +20,7 @@
+ 7. Convert internal variables into the report convention.
+ 8. Independently validate extracted arrays.
+ 9. Recompute objective and summaries from extracted arrays.
+-10. Write final output only after validation passes.
++10. **Non-skippable gate immediately before termination:** finalize the evaluator-required artifact(s) and verify they exist and parse.
+ 
+ ## Variable Map Pattern
+ 
+@@ -144,21 +144,6 @@
+ - run validation that reads only input data plus extracted/report arrays;
+ - write `&quot;pass&quot;` self-checks only after validation passes.
+ 
+-## Debugging Infeasibility
+-
+-First suspect the model encoding. Common causes:
+-
+-- mixing total output with output above minimum;
+-- applying startup/shutdown limits to the wrong quantity;
+-- using the wrong `t` or `t-1` index;
+-- over-constraining initial minimum up/down obligations;
+-- enforcing post-horizon obligations when the prompt excludes them;
+-- treating cost curves as feasibility constraints;
+-- choosing bad Big-M values;
+-- requiring segment/tier variables when the trigger did not occur.
+-
+-Debug in stages: check shapes, relax one family at a time, add diagnostic slack variables, print largest violations, and compare local validation with final requirements.
+-
+ ## Repair LPs And Heuristics
+ 
+ A fixed-commitment repair LP is useful only if it includes every feasibility family judged in the final report. Do not repair only balance and capacity while omitting transition-dependent ramp, reserve, startup, shutdown, or minimum-duration limits.
+@@ -167,8 +152,30 @@
+ 
+ ## Reporting Discipline
+ 
++Treat output emission as mandatory. Make report finalization a **hard gate** immediately before ending a run.
++
++**End-of-run gate (non-skippable):**
++
++1. Determine the evaluator-required output path(s) and schema.
++2. Build report-shaped arrays/dicts in report convention.
++3. Recompute summaries from those arrays.
++4. Write JSON to the **exact** required path.
++5. Re-open/read the file and minimally validate: JSON parses and required top-level keys exist.
++6. Only then allow termination.
++
++If the solver fails or has no incumbent, still emit a report by switching to a heuristic/repair schedule **and** setting `solver_status` (or equivalent) to indicate fallback; do not emit nothing.
++
++Read references/report-json-finalization.md when the evaluator requires a JSON artifact at a fixed path (for example, `/root/report.json`). Skip when you are returning results via an API response body and no file-based artifact is required.
++
+ - Use deterministic ordering and plain numeric values.
+ - Do not include placeholder values.
+ - Keep feasibility separate from proof quality/MIP gap.
+ - Use `null`/empty gap when no reliable bound exists, if the schema allows it.
+ - Do not trust solver status or self-reported `&quot;pass&quot;` strings without validation.
++
++## Common Pitfalls
++
++- Ending a run before writing the evaluator-required artifact(s) to disk.
++- Writing the artifact but not re-opening/parsing it (silent missing/invalid JSON).
++- Serializing from solver internals instead of validated report arrays (convention mismatch).
++- Treating “time limit” as success when no incumbent exists.</pre></details><details><summary>milp-solver-workflow/references/report-json-finalization.md · added</summary><p>未提供 · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/energy-unit-commitment/skills/milp-solver-workflow/references/report-json-finalization.md">修改后</a></p><pre>--- original/milp-solver-workflow/references/report-json-finalization.md
++++ repaired/milp-solver-workflow/references/report-json-finalization.md
+@@ -0,0 +1,109 @@
++# Finalize and write the required JSON artifact (e.g., `/root/report.json`)
++
++Use this when the evaluator requires a file-based JSON artifact at a fixed path. The goal is to make “missing output file” impossible: always write the file, even if optimization fails.
++
++## Procedure
++
++### 1) Decide what you can output (branch on solver outcome)
++
++- **Branch A (normal):** you have a candidate solution (MILP incumbent, relaxed LP, or repaired solution) that can be converted into report arrays.
++- **Branch B (fallback):** you do **not** have a candidate solution (infeasible/no incumbent/exception). Build a **heuristic-feasible** schedule (simple, conservative) and still write the report with a clear status label.
++
++### 2) Build report-shaped arrays first (not JSON)
++
++Create all time-series arrays in the report convention (resource order, period order). Fill numeric arrays with plain Python `float`/`int`.
++
++### 3) Compute summaries from arrays
++
++Recompute totals and per-period aggregates from the arrays you will write. Do not copy the solver objective without recomputation.
++
++### 4) Populate `constraint_check` from validation
++
++Run your independent validation routine; set pass/fail flags based on validation results.
++
++### 5) Write and re-open the file; validate a minimal schema
++
++Write JSON to the required path, re-open it, parse it, and confirm required keys exist.
++
++## Runnable Python template (with runtime branch + verification)
++
++```python
++import json
++from pathlib import Path
++
++def minimal_schema_check(obj, required_top_level):
++    if not isinstance(obj, dict):
++        return False, &quot;top-level must be an object&quot;
++    missing = [k for k in required_top_level if k not in obj]
++    if missing:
++        return False, f&quot;missing top-level keys: {missing}&quot;
++    return True, &quot;ok&quot;
++
++
++def write_report(report_path, report_obj, required_top_level):
++    path = Path(report_path)
++    path.parent.mkdir(parents=True, exist_ok=True)
++    path.write_text(json.dumps(report_obj, indent=2, sort_keys=False))
++
++    # Verification step: file exists and is valid JSON with required keys.
++    loaded = json.loads(path.read_text())
++    ok, msg = minimal_schema_check(loaded, required_top_level)
++    if not ok:
++        # Corrective action on failure: rewrite after fixing missing keys.
++        raise ValueError(f&quot;Report schema check failed: {msg}. Fix report_obj and rewrite.&quot;)
++    return loaded
++
++
++def build_fallback_schedule(periods, resources):
++    # Conservative placeholder: keep everything off and produce zeros.
++    # Replace with a domain-specific heuristic when needed.
++    T = len(periods)
++    return {
++        &quot;resources&quot;: list(resources),
++        &quot;periods&quot;: list(periods),
++        &quot;commitment&quot;: {r: [0] * T for r in resources},
++        &quot;dispatch&quot;: {r: [0.0] * T for r in resources},
++        &quot;reserve&quot;: {r: [0.0] * T for r in resources},
++    }
++
++
++def finalize_report(*, report_path, solver_result, periods, resources, required_top_level):
++    # Runtime branch on availability of a candidate solution.
++    if solver_result is not None and solver_result.get(&quot;has_candidate&quot;):
++        schedule = solver_result[&quot;schedule&quot;]  # already in report convention
++        solver_status = solver_result.get(&quot;status&quot;, &quot;unknown&quot;)
++    else:
++        schedule = build_fallback_schedule(periods, resources)
++        solver_status = &quot;heuristic_feasible&quot;
++
++    report_obj = {
++        &quot;solver_status&quot;: solver_status,
++        &quot;schedule&quot;: schedule,
++        &quot;summary&quot;: {},
++        &quot;hourly_summary&quot;: [],
++        &quot;constraint_check&quot;: {},
++    }
++
++    loaded = write_report(report_path, report_obj, required_top_level)
++
++    # Verification: if the evaluator complains later, inspect the written file first.
++    assert loaded[&quot;solver_status&quot;], &quot;missing solver_status; fix report_obj&quot;
++    return loaded
++
++
++# Example invocation (keep values generic):
++# finalize_report(
++#     report_path=&quot;/root/report.json&quot;,
++#     solver_result={&quot;has_candidate&quot;: False},
++#     periods=range(24),
++#     resources=[&quot;G1&quot;, &quot;G2&quot;],
++#     required_top_level=[&quot;solver_status&quot;, &quot;schedule&quot;, &quot;summary&quot;, &quot;hourly_summary&quot;, &quot;constraint_check&quot;],
++# )
++```
++
++## Post-write verification checklist
++
++1. Confirm the file exists at the exact required path.
++2. Confirm it parses as JSON.
++3. Confirm required top-level keys exist.
++4. If verification fails: fix the report object (missing keys/wrong types), rewrite, and re-run the minimal schema check before doing anything else.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 2 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>milp-solver-workflow/SKILL.md</td><td>已修改</td></tr><tr><td>unit-commitment-operating-rules/SKILL.md</td><td>未修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P001&quot;,
+    &quot;description&quot;: &quot;&lt;label&gt;Missing required output file&lt;/label&gt;\n\n(1) **First observable failure:** No `/root/report.json` (or any report artifact) was produced. This is visible in the **Output inventory: `[]`**, meaning the agent never wrote the required JSON schedule for the verifier to evaluate.\n\n(2) **Trajectory step that produced it:** The failure occurs at the point the run ends (`termination_reason: end_turn`) without executing the mandatory “write report to `/root/report.json`” action. In other words, the *finalization/write-output step is absent* from the trajectory (no output-producing step is recorded).\n\n(3) **Relevant skill rule or missing rule:** This is a **missing “always emit required artifact” rule** in the unit-commitment MILP workflow skill. The skill should explicitly require:\n- constructing a schedule (even heuristic-feasible if needed),\n- then **serializing it exactly to the required schema**, and\n- **writing it to `/root/report.json`** before ending the turn.\n\n(4) **General corrective behavior:** Add/strengthen a terminal-phase behavior: *Before ending, verify the required files exist and match schema.* Concretely:\n- enforce a checklist: “solver run (or fallback heuristic) → build arrays for all generators &amp; hours → compute hourly_summary → fill summary fields → set all constraint_check keys → write `/root/report.json`”.\n- if optimization fails, still output a **feasible** schedule with `solver_status: heuristic_feasible` rather than ending without a file.\n\n**Controllability:** Skill-controllable (agent behavior/output discipline), not an API, permission, dependency, or verifier/harness issue.&quot;,
+    &quot;locations&quot;: []
+  }
+]</pre></details></details><details><summary>SkillOpt · 实际 GPT-5.5 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillopt_gpt55&quot;,
+  &quot;task_id&quot;: &quot;energy-unit-commitment&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 33918,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:e17c745a1c1f2e7f620ed7c2545f9093a9ff7784fe2f4ec7a72d92d572454b8a&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:e17c745a1c1f2e7f620ed7c2545f9093a9ff7784fe2f4ec7a72d92d572454b8a&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_skill&quot;
+}</pre></details><p>字节变化文件 3 个；排除仅空白变化后 3 个。</p><details><summary>milp-solver-workflow/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_skill/milp-solver-workflow/SKILL.md">修改后</a></p><pre>--- original/milp-solver-workflow/SKILL.md
++++ repaired/milp-solver-workflow/SKILL.md
+@@ -172,3 +172,27 @@
+ - Keep feasibility separate from proof quality/MIP gap.
+ - Use `null`/empty gap when no reliable bound exists, if the schema allows it.
+ - Do not trust solver status or self-reported `&quot;pass&quot;` strings without validation.
++
++
++
++## End-to-End Unit-Commitment Data And Variable Contract
++
++For a case such as `/root/network.json`, inspect and preserve the input before constructing the model: keep original generator names and source order, separate thermal and renewable generators, and assert that demand, reserve, availability, and every required time series cover exactly 48 periods. Use zero-based internal periods `t=0..47` but report `hour=t+1`. Build one deterministic keyed map for every modeled quantity, for example `x[(&#x27;u&#x27;, g, t)]`, `x[(&#x27;start&#x27;, g, t)]`, `x[(&#x27;stop&#x27;, g, t)]`, `x[(&#x27;p_above_min&#x27;, g, t)]` or `x[(&#x27;p_total&#x27;, g, t)]`, `x[(&#x27;reserve&#x27;, g, t)]`, `x[(&#x27;renewable&#x27;, r, t)]`, `x[(&#x27;curtailment&#x27;, r, t)]`, `x[(&#x27;startup_tier&#x27;, g, t, k)]`, and `x[(&#x27;cost_segment&#x27;, g, t, k)]`. Allocate and extract only through these maps; never reconstruct ownership from flattened offsets or report position. Decide once whether thermal output is total MW or above-minimum MW. If using above-minimum output, define `p_total[g,t] = pmin[g]*u[g,t] + p_above_min[g,t]` and use `p_total` for reporting, balance, ramping, reserve deliverability, and cost links. Assert unique names, finite numeric inputs, valid bounds, and exact dimensions before adding any solver rows.
++
++
++
++## Complete UC Row-Family Build And Audit
++
++Construct and count/log each row family rather than relying on a partial formulation. Add: variable bounds and integrality; renewable production and curtailment/availability links; hourly demand balance; system spinning-reserve requirement; thermal online minimum and maximum limits; production-plus-reserve capability; reserve deliverability from online thermal headroom and ramp capability; must-run constraints; startup/shutdown transition equations for every period; initial commitment, initial output, and initial elapsed up/down conditions; minimum-up and minimum-down windows including the precise horizon-edge convention; startup and shutdown output limits; ramp-up and ramp-down limits using the same total-output convention as the report; startup-tier selection and offline-duration links; piecewise cost-segment widths and production links; and all no-load, production, startup, shutdown, and curtailment cost terms. Keep a dictionary such as `family_rows[name]` with the number and indices of rows added. For each family, define an independent post-extraction check. A feasible schedule must satisfy, within documented tolerances, `sum(thermal_total)+sum(renewable)=demand`, reserve adequacy and deployability, online limits, transitions, initial conditions, duration windows, ramps, must-run, availability, and all cost links; do not label a check pass merely because the corresponding solver row existed.
++
++
++
++## Incumbent Evidence And Non-Rounding Policy
++
++After the MILP call, capture the solver status and message, whether an incumbent vector exists, incumbent objective, best bound, and a reliable relative gap if available. Reject `x is None` or any result without a feasible incumbent. Classify `optimal` only from a solver optimality certificate; classify a time-limit result with an incumbent as `time_limit_feasible`; use `suboptimal_feasible` only when another termination reason leaves a feasible incumbent and the evidence supports that label; otherwise use `feasible` or `heuristic_feasible` only when the construction method justifies it. Report a finite nonnegative gap only when computed from reliable objective/bound evidence; otherwise report JSON `null`. Before extraction, verify each binary/integer value is within an explicit tolerance of an allowed integer. Reject materially fractional commitments, starts, stops, tier selectors, or segment selectors instead of silently rounding them. If near-integral values are normalized to 0/1, rerun every independent feasibility and objective check on the normalized schedule and abort if any check changes from pass.
++
++
++
++## Verifier-Contracted Extraction And Atomic Reporting
++
++Create the report only from the validated extracted arrays. Convert internal thermal variables to actual total MW exactly once, preserve input names and source order, and assert that every commitment, production, reserve, startup, shutdown, and renewable-production array has exactly 48 elements. Independently recompute all hourly balances, reserve shortfalls, generator-limit violations, renewable limits, must-run, ramps, transitions, initial conditions, minimum up/down obligations, and startup/shutdown logic from the input data plus extracted arrays; independently recompute no-load, production, piecewise, startup-tier, shutdown, and any curtailment costs and compare that total with the reported objective within an explicit tolerance. Derive `hourly_summary`, startup/shutdown totals, thermal and renewable totals, maximum violations, generator counts, and all `constraint_check` values from those same arrays; set a check to `pass` only after its independent calculation passes. Validate original names, numeric finiteness, JSON-safe null-or-number gap, exact 48-hour shape, and the allowed solver-status vocabulary. Serialize to a temporary file, parse it back, revalidate the schema and values, and atomically rename it to `/root/report.json` only after every check and consistency comparison succeeds; never emit a placeholder or partially validated report.</pre></details><details><summary>unit-commitment-data-modeling/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_skill/unit-commitment-data-modeling/SKILL.md">修改后</a></p><pre>--- original/unit-commitment-data-modeling/SKILL.md
++++ repaired/unit-commitment-data-modeling/SKILL.md
+@@ -9,13 +9,13 @@
+ 
+ ## Parsing Workflow
+ 
+-1. Load data with structured parsers: JSON as objects, CSV/sheets as tables, databases as query results.
+-2. Inspect schema: top-level keys, tables/sheets, resource groups, time-series fields, cost curves, startup tiers, and initial-condition fields.
+-3. Identify the time axis: number of periods, labels, duration, and report convention.
+-4. Identify resource sets: thermal, renewable, storage, imports, zones, reserve products, or network objects.
+-5. Normalize fields into arrays/tables with explicit shapes.
+-6. Preserve original names and source ordering for final reports.
+-7. Run parser-level checks before modeling.
++1. Load the source with a structured parser and retain the raw object unchanged; for `/root/network.json`, inspect the complete recursively nested schema rather than probing only expected keys.
++2. Build a schema inventory containing every top-level and nested field, its resource/time scope, shape, units, source path, and whether it is required, optional, or inapplicable. Do not proceed while any field is unclassified.
++3. Identify the authoritative time axis, period duration, labels, and source order. For the task case, require exactly 48 periods, preserve their order, use internal indices `0..47`, and map report labels separately to hours `1..48`.
++4. Identify explicit thermal and renewable resource sets, preserving exact names, source order, and one-to-one identity. Reject duplicate names, ambiguous classification, dropped records, or records assigned to both sets.
++5. Map every applicable input field into a typed scalar, ordered vector, matrix, or curve table with explicit dimensions and units. Preserve source values; do not silently default, aggregate, rescale, round, or reorder them.
++6. Normalize system demand and spinning reserve as total system-wide arrays, and normalize resource-specific availability, limits, initial conditions, startup tiers, and production-cost curves without changing their scope.
++7. Run the strict parser gate and mapping audit before creating model variables. Any missing, ambiguous, duplicated, nonfinite, unit-inconsistent, or incorrectly sized required value must raise an error identifying its source path and expected shape.
+ 
+ ## Map Concepts, Not Names
+ 
+@@ -61,6 +61,12 @@
+ ```
+ 
+ ## Time, Ordering, And Units
++
++
++
++### Strict `/root/network.json` normalization gate
++
++Before modeling, materialize a manifest for the complete input: source path, exact field path, semantic concept, scope, units, shape, and destination in the normalized case. The manifest must cover total demand, total spinning reserve, thermal and renewable identities, Pmin/Pmax, renewable availability, ramp-up/ramp-down and startup/shutdown limits, minimum up/down times, must-run flags, initial status, initial output where supplied, elapsed initial on/off duration, startup/shutdown data, startup tiers with offline-duration thresholds, and every production-cost breakpoint or coefficient. Require all applicable time series to have length 48 and all resource vectors to match the preserved source resource order. Verify finite numeric values, valid bounds, nonnegative durations where applicable, compatible power/ramp/cost units, unique curve points and tier thresholds, and consistency between initial status and elapsed duration. Reject missing, ambiguous, duplicated, nonfinite, unit-inconsistent, or incorrectly sized fields; never infer a default from absence. Keep total thermal production distinct from output above minimum and record the single conversion used by the model and report. The gate passes only when every applicable source field has exactly one normalized destination and every normalized field has a recorded source path.
+ 
+ - Use the input horizon as authoritative.
+ - Preserve source period order.
+@@ -155,6 +161,12 @@
+ 
+ ## Common Mistakes
+ 
++
++
++## Mapping Audit Before Model Construction
++
++Emit and inspect a field-coverage audit before building variables. For each source field, report its exact path, semantic interpretation, units, scope (system, resource, or period), normalized destination, shape, and whether it is used in constraints, objective, extraction, or report validation. Require zero unmapped applicable fields and zero normalized fields without a source path. Separately reconcile the ordered thermal and renewable name lists, the 48 source periods, demand and reserve totals, all resource time series, initial-condition records, startup tiers, and cost curves. Treat a failed reconciliation as fatal; a schedule must not be generated from a partially mapped case.
++
+ - Hard-coding a familiar schema instead of inspecting the data.
+ - Losing ordering when converting dictionaries or tables into arrays.
+ - Joining tables on the wrong key or duplicating resources.</pre></details><details><summary>unit-commitment-operating-rules/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/energy-unit-commitment/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/energy-unit-commitment/repaired_skill/unit-commitment-operating-rules/SKILL.md">修改后</a></p><pre>--- original/unit-commitment-operating-rules/SKILL.md
++++ repaired/unit-commitment-operating-rules/SKILL.md
+@@ -238,3 +238,34 @@
+ - Ignoring initial on/off duration in minimum up/down constraints.
+ - Trusting a repair LP that omits a constraint family.
+ - Hard-coding `&quot;pass&quot;` fields before validation.
++
++
++
++## Initial Residual Obligations And Horizon Boundaries
++
++Initial status is not sufficient by itself: use the elapsed time already online or offline to enforce residual minimum-duration obligations. If unit `g` is initially on for `initial_on_duration[g] &lt; min_up[g]`, require `u[g,t] = 1` for every in-horizon `t` with `t &lt; min_up[g] - initial_on_duration[g]`; if it is initially off for `initial_off_duration[g] &lt; min_down[g]`, require `u[g,t] = 0` for every `t &lt; min_down[g] - initial_off_duration[g]`. Do not create a fictitious startup or shutdown at `t=0` merely to represent the initial state. For starts or stops near the final period, apply the task&#x27;s terminal convention explicitly: enforce all required in-horizon windows, and enforce post-horizon obligations only when the model or verifier supplies terminal conditions. Document this choice and validate the same convention used by the optimization model.
++
++
++
++## Startup, Shutdown, And Deliverability Coupling
++
++Startup and shutdown periods require more than transition accounting. Enforce any applicable startup and shutdown output limits, and ensure a unit cannot provide reserve while offline or during a transition beyond its physical capability. A robust per-period thermal formulation with actual output is:
++
++```python
++pmin[g] * u[g,t] &lt;= production[g,t] &lt;= pmax[g] * u[g,t]
++production[g,t] + reserve[g,t] &lt;= pmax[g] * u[g,t]
++```
++
++Then add transition-specific limits supplied by the data, such as `production[g,t] + reserve[g,t] &lt;= startup_limit[g]` when `start[g,t] == 1`, and the corresponding shutdown-period limit when applicable. Apply ramp-up to the deployable quantity (`production + reserve`) and ramp-down to production, using initial output and initial status in the first period. If above-minimum output is used internally, convert every one of these expressions consistently rather than mixing total MW with above-minimum MW.
++
++
++
++## Consistent Piecewise Production And Startup-Tier Linearization
++
++Choose one production-cost convention before constructing the MILP. For a total-output piecewise curve, use segment variables whose sum reconstructs actual production and whose segment bounds are activated by commitment; for an above-minimum curve, model `production = pmin * u + sum(segment)` and activate segment capacity only when online. Ensure segment widths, breakpoint costs, and slopes are not double-counted, and verify the modeled cost equals an independently interpolated curve at extracted output. For startup tiers, introduce mutually consistent tier-selection or lag-activation variables, select the tier based on the actual pre-start offline duration including initial history, and charge exactly one startup tier per startup. Do not add no-load, shutdown, reserve, curtailment, or other costs unless they are present in the input or explicitly required.
++
++
++
++## Final Verifier-Oriented Audit
++
++Before writing the report, validate the extracted arrays independently rather than trusting solver rows. For every unit and hour, check domains, offline zeroes, Pmin/Pmax, must-run status, transition identity, initial residual obligations, startup/shutdown limits, ramping with initial output, minimum up/down windows, and reserve deliverability. For every hour, recompute actual thermal generation, renewable generation, demand balance, reserve requirement, and the sum of scheduled per-unit reserve; bound renewable production by availability and record curtailment only when allowed. Recompute startup and shutdown totals, all objective components, hourly summaries, generator counts, names, and exact horizon lengths from the same arrays. Set a constraint check to `pass` only after its corresponding independent check succeeds, and classify solver status from the actual termination status and incumbent rather than assuming optimality.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 2 个，其中 2 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>milp-solver-workflow/SKILL.md</td><td>已修改</td></tr><tr><td>unit-commitment-operating-rules/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P001&quot;,
+    &quot;description&quot;: &quot;The external network.json case must be mapped without losing resource identity, time-series alignment, units, or initial-condition and cost information. A plausible schedule can still fail if thermal and renewable records are misclassified, demand or reserve are interpreted with the wrong scope, source ordering is changed, or fields are silently defaulted or omitted.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;unit-commitment-data-modeling/SKILL.md&quot;,
+        &quot;section&quot;: &quot;unit-commitment-data-modeling&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P002&quot;,
+    &quot;description&quot;: &quot;This is a fully coupled multi-period unit-commitment problem, not simple economic dispatch. The most consequential semantic risks are incomplete transition equations, incorrect residual initial minimum up/down obligations, missing boundary treatment, confusing above-minimum with actual MW, and treating reserve as an abstract quantity rather than deliverable online thermal capability.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;unit-commitment-operating-rules/SKILL.md&quot;,
+        &quot;section&quot;: &quot;unit-commitment-operating-rules&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P003&quot;,
+    &quot;description&quot;: &quot;The large time-coupled MILP and strict JSON artifact remain vulnerable to indexing errors, incomplete constraint families, unreliable incumbent interpretation, premature integrality rounding, and inconsistencies between modeled variables, extracted schedules, objective values, and report summaries. Prior generic workflow additions did not produce improvement, so the solver guidance must be tied to the complete UC data and reporting contract rather than merely listing standard MILP practices.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;milp-solver-workflow/SKILL.md&quot;,
+        &quot;section&quot;: &quot;milp-solver-workflow&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>MMG2Skill · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/energy-unit-commitment/skills">完整上传修复包</a></p><p>以同任务其他归档保存的原始包为对照，完整包哈希已与共享原始运行核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;mmg2skill_gpt52&quot;,
+  &quot;task_id&quot;: &quot;energy-unit-commitment&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 22634,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:b320acd10c47555bac9253a8156219bddbd034fb4da1fd1dacb9af941b26e728&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:b320acd10c47555bac9253a8156219bddbd034fb4da1fd1dacb9af941b26e728&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/energy-unit-commitment-mmg2skill-gpt52-r001/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/energy-unit-commitment/skills&quot;
+}</pre></details><p>字节变化文件 3 个；排除仅空白变化后 2 个。</p><details><summary>milp-solver-workflow/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/energy-unit-commitment/skills/milp-solver-workflow/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/energy-unit-commitment/skills/milp-solver-workflow/SKILL.md">修改后</a></p><pre>--- original/milp-solver-workflow/SKILL.md
++++ repaired/milp-solver-workflow/SKILL.md
+@@ -4,13 +4,9 @@
+ ---
+ 
+ # MILP Solver Workflow
+-
+ Use this skill for binary/integer decisions, linear constraints, and linear or piecewise-linear objectives. It is useful for time-expanded scheduling models with many repeated resource-period constraints.
+-
+ This is a workflow and implementation guide, not a complete formulation for any one task.
+-
+ ## Workflow
+-
+ 1. Parse and normalize data into ordered arrays.
+ 2. Define decision states before coding: status, transitions, continuous quantities, slacks, segments, tiers.
+ 3. Build a deterministic variable map.
+@@ -21,15 +17,11 @@
+ 8. Independently validate extracted arrays.
+ 9. Recompute objective and summaries from extracted arrays.
+ 10. Write final output only after validation passes.
+-
+ ## Variable Map Pattern
+-
+ Use helper functions or dictionaries, not scattered index arithmetic.
+-
+ ```python
+ offset = {}
+ n = 0
+-
+ def alloc(name, shape, lb=0.0, ub=float(&quot;inf&quot;), integer=False):
+     global n
+     size = int(np.prod(shape))
+@@ -37,42 +29,44 @@
+     offset[name] = idx
+     n += size
+     return idx
+-
+ u = alloc(&quot;commitment&quot;, (G, T), lb=0, ub=1, integer=True)
+ start = alloc(&quot;startup&quot;, (G, T), lb=0, ub=1, integer=True)
+ dispatch = alloc(&quot;dispatch&quot;, (G, T), lb=0)
+ reserve = alloc(&quot;reserve&quot;, (G, T), lb=0)
+ ```
+-
+ Keep variable ownership obvious: type, resource, period, and optional segment/tier.
+-
+ ## Sparse Constraint Pattern
+-
+ Use sparse rows for large time-expanded models:
+-
+ ```python
+ rows, cols, vals = [], [], []
+ lb, ub = [], []
+ row = 0
+-
+ def add_row(terms, lo, hi):
+     global row
+     for j, a in terms:
+         if abs(a) &gt; 0:
+             rows.append(row)
+-            cols.append(j)
++            cols.append(int(j))
+             vals.append(float(a))
+     lb.append(float(lo))
+     ub.append(float(hi))
+     row += 1
+ ```
+-
+-Use equality rows for conservation/linking and upper/lower bound rows for capacity, reserve, ramping, timing, and logic.
+-
++**Do not insert scalar constants into `terms` as if they were variable indices.** If an expression involves an initial condition (e.g., `u0`, `p0`), move that constant to the row bounds (`lo/hi`) instead.
++Example (initial transition at `t=0`):
++- Intended: `u[g,0] - u0 == start[g,0] - stop[g,0]`
++- Row (only decision variables on LHS): `u[g,0] - start[g,0] + stop[g,0] == u0`
++```python
++add_row([(u[g,0], 1.0), (start[g,0], -1.0), (stop[g,0], 1.0)], lo=u0, hi=u0)
++```
++Example (initial ramp at `t=0`, above-minimum convention, with RHS constant `p0`):
++- Intended: `p[g,0] + r[g,0] - p0 &lt;= RU`
++- Row: `p[g,0] + r[g,0] &lt;= RU + p0`
++```python
++add_row([(p[g,0], 1.0), (r[g,0], 1.0)], lo=-INF, hi=RU + p0)
++```
+ ## Sign-Safe Encoding
+-
+ Write the intended inequality first, then move variable terms to the left-hand side.
+-
+ ```python
+ # Intended: x + y &lt;= cap * u - reduction * start
+ # Row form: x + y - cap*u + reduction*start &lt;= 0
+@@ -82,13 +76,9 @@
+     hi=0.0,
+ )
+ ```
+-
+ For non-obvious rows, test a tiny hand case. Example: set `u=1`, `start=1` and check the remaining capacity equals the intended startup capability; set `u=1`, `start=0` and check normal capacity returns.
+-
+ ## Match Model Rows To Validation
+-
+ Keep a checklist linking each model constraint family to a validation check:
+-
+ ```text
+ transition linking      -&gt; startup/shutdown match status
+ online capacity         -&gt; offline zeroes and min/max output
+@@ -98,27 +88,18 @@
+ balance equations       -&gt; demand/load/inventory conservation
+ cost-curve logic        -&gt; recomputed objective matches report
+ ```
+-
+ If validation checks something not in the model, the solver may produce an invalid report. If the model has a constraint not validated after extraction, conversion bugs can slip through.
+-
+ ## Piecewise-Linear Costs
+-
+ Identify the curve convention before modeling:
+-
+ - total cost at output breakpoints;
+ - marginal or incremental segment cost;
+ - heat-rate curve;
+ - first point as minimum-output or no-load-like cost.
+-
+ For segment variables, constrain segment quantities to their widths and sum them to the modeled production quantity. Use slopes only when the data represents total-cost breakpoints or incremental segment costs consistently.
+-
+ ## Open-Source Solver Use
+-
+ HiGHS through SciPy is a common default when available:
+-
+ ```python
+ from scipy.optimize import milp, LinearConstraint, Bounds
+-
+ result = milp(
+     c=c,
+     integrality=integrality,
+@@ -126,28 +107,20 @@
+     constraints=constraints,
+     options={&quot;time_limit&quot;: 600.0, &quot;mip_rel_gap&quot;: 0.01, &quot;disp&quot;: False},
+ )
+-
+ if result.x is None:
+     raise RuntimeError(f&quot;No incumbent: status={result.status}, message={result.message}&quot;)
+ ```
+-
+ Capture status, objective, incumbent values, and any reliable gap/bound. A time-limit status can be useful if a feasible incumbent exists; a failure with no incumbent is not a solution.
+-
+ ## Extraction And Validation
+-
+ After solving:
+-
+ - check binary variables are close to 0/1 before rounding;
+ - convert internal units/conventions to report units;
+ - recompute summaries from arrays;
+ - recompute objective from input data and extracted decisions;
+ - run validation that reads only input data plus extracted/report arrays;
+ - write `&quot;pass&quot;` self-checks only after validation passes.
+-
+ ## Debugging Infeasibility
+-
+ First suspect the model encoding. Common causes:
+-
+ - mixing total output with output above minimum;
+ - applying startup/shutdown limits to the wrong quantity;
+ - using the wrong `t` or `t-1` index;
+@@ -155,18 +128,13 @@
+ - enforcing post-horizon obligations when the prompt excludes them;
+ - treating cost curves as feasibility constraints;
+ - choosing bad Big-M values;
+-- requiring segment/tier variables when the trigger did not occur.
+-
++- requiring segment/tier variables when the trigger did not occur;
++- **corrupting the constraint matrix by accidentally using constants (e.g., `u0`, `p0`) as if they were variable indices in sparse assembly.**
+ Debug in stages: check shapes, relax one family at a time, add diagnostic slack variables, print largest violations, and compare local validation with final requirements.
+-
+ ## Repair LPs And Heuristics
+-
+ A fixed-commitment repair LP is useful only if it includes every feasibility family judged in the final report. Do not repair only balance and capacity while omitting transition-dependent ramp, reserve, startup, shutdown, or minimum-duration limits.
+-
+ Always rerun independent validation after repair.
+-
+ ## Reporting Discipline
+-
+ - Use deterministic ordering and plain numeric values.
+ - Do not include placeholder values.
+ - Keep feasibility separate from proof quality/MIP gap.</pre></details><details><summary>unit-commitment-data-modeling/SKILL.md · modified</summary><p>仅空白行变化。</p><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/energy-unit-commitment/skills/unit-commitment-data-modeling/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/energy-unit-commitment/skills/unit-commitment-data-modeling/SKILL.md">修改后</a></p><pre>--- original/unit-commitment-data-modeling/SKILL.md
++++ repaired/unit-commitment-data-modeling/SKILL.md
+@@ -4,11 +4,8 @@
+ ---
+ 
+ # Unit Commitment Structured Data Parsing
+-
+ Use this skill when a unit commitment task provides structured data and you need to map fields into UC concepts. The source may be JSON, CSV, spreadsheets, database tables, or nested dictionaries. The prompt and schema are the source of truth; do not assume one benchmark or package.
+-
+ ## Parsing Workflow
+-
+ 1. Load data with structured parsers: JSON as objects, CSV/sheets as tables, databases as query results.
+ 2. Inspect schema: top-level keys, tables/sheets, resource groups, time-series fields, cost curves, startup tiers, and initial-condition fields.
+ 3. Identify the time axis: number of periods, labels, duration, and report convention.
+@@ -16,11 +13,8 @@
+ 5. Normalize fields into arrays/tables with explicit shapes.
+ 6. Preserve original names and source ordering for final reports.
+ 7. Run parser-level checks before modeling.
+-
+ ## Map Concepts, Not Names
+-
+ Different sources use different names. Map by meaning, units, shape, and context.
+-
+ | UC concept | Look for |
+ | --- | --- |
+ | Horizon | periods, hours, timestamps, interval count |
+@@ -36,17 +30,13 @@
+ | Startup data | fixed costs or tiers by prior offline duration |
+ | Production cost | linear coefficients, heat rate, piecewise or total-cost curves |
+ | Renewable availability | hourly min/max output or forecast bounds |
+-
+ ## Common Data Shapes
+-
+ - **Scalar by resource:** min up/down, ramp rates, startup ramp, must-run.
+ - **Time series by system/zone:** demand and reserve requirement.
+ - **Time series by resource:** renewable availability or outage status.
+ - **Curve/tier tables:** startup costs and production-cost breakpoints.
+ - **Nested resource objects:** generator-specific limits, status, and costs.
+-
+ Normalize into a small representation:
+-
+ ```python
+ case = {
+     &quot;periods&quot;: periods,                  # length T
+@@ -59,9 +49,7 @@
+     &quot;renewable_max&quot;: renewable_max,       # shape (R, T)
+ }
+ ```
+-
+ ## Time, Ordering, And Units
+-
+ - Use the input horizon as authoritative.
+ - Preserve source period order.
+ - Keep zero-based internal indexes separate from one-based/timestamped report labels.
+@@ -70,9 +58,7 @@
+ - Treat resource IDs as opaque strings.
+ - Keep thermal and renewable sets separate when constraints differ.
+ - Check power units, period duration, ramp-rate units, and cost units before converting anything.
+-
+ Basic checks:
+-
+ ```python
+ assert len(demand) == T
+ assert len(reserve_requirement) == T
+@@ -80,22 +66,15 @@
+     assert len(r[&quot;min&quot;]) == T
+     assert len(r[&quot;max&quot;]) == T
+ ```
+-
+ ## Production Convention
+-
+ Many UC models use output above minimum internally, while reports often require actual MW.
+-
+ ```python
+ actual_output = pmin * commitment + output_above_min
+ output_above_min = actual_output - pmin * commitment
+ ```
+-
+ Pick one internal convention and convert carefully for reporting, ramping, reserve deliverability, and cost.
+-
+ ## Startup Tiers
+-
+ Startup tiers are usually keyed by prior offline duration. Parse thresholds and costs without assuming order.
+-
+ ```python
+ def choose_startup_tier(tiers, prior_offline_duration):
+     tiers = sorted(tiers, key=lambda x: x[&quot;lag&quot;])
+@@ -107,13 +86,9 @@
+             break
+     return chosen
+ ```
+-
+ Keep prior offline duration consistent with initial status and transition timing.
+-
+ ## Cost Curves
+-
+ Identify whether points are total cost, marginal cost, incremental segment cost, or heat-rate data. For total-cost breakpoints:
+-
+ ```python
+ def interpolate_total_cost(points, output_mw):
+     pts = sorted((float(p[&quot;mw&quot;]), float(p[&quot;cost&quot;])) for p in points)
+@@ -127,21 +102,15 @@
+             return y0 + a * (y1 - y0)
+     raise ValueError(&quot;output outside cost curve&quot;)
+ ```
+-
+ If the first point is at minimum output, it may represent online minimum-output cost. Do not invent additional no-load or shutdown costs unless provided.
+-
+ ## Renewables
+-
+ - Parse hourly minimum and maximum output.
+ - If min equals max, output is fixed in that period.
+ - If curtailment is allowed, output can be anywhere between min and max.
+ - Do not count renewable headroom as spinning reserve unless explicitly allowed.
+ - Renewable cost is zero unless the task/data says otherwise.
+-
+ ## Parser-Level Validation
+-
+ Before solving, check:
+-
+ ```python
+ assert np.all(np.isfinite(demand))
+ assert np.all(np.isfinite(reserve_requirement))
+@@ -150,11 +119,8 @@
+ assert all(len(curve) &gt;= 2 for curve in production_curves.values())
+ assert all(len(tiers) &gt;= 1 for tiers in startup_tiers.values())
+ ```
+-
+ Also check missing required fields, duplicate IDs, mismatched lengths, negative impossible limits, repeated cost points, nonmonotone startup lags, and inconsistent initial status/output.
+-
+ ## Common Mistakes
+-
+ - Hard-coding a familiar schema instead of inspecting the data.
+ - Losing ordering when converting dictionaries or tables into arrays.
+ - Joining tables on the wrong key or duplicating resources.</pre></details><details><summary>unit-commitment-operating-rules/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/energy-unit-commitment/skills/unit-commitment-operating-rules/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/energy-unit-commitment/skills/unit-commitment-operating-rules/SKILL.md">修改后</a></p><pre>--- original/unit-commitment-operating-rules/SKILL.md
++++ repaired/unit-commitment-operating-rules/SKILL.md
+@@ -4,19 +4,12 @@
+ ---
+ 
+ # Unit Commitment Operating Rules
+-
+ Use this skill when a task asks for a day-ahead or multi-period unit commitment schedule with generators, load, reserves, operating constraints, and cost tradeoffs.
+-
+ This is a reusable UC operating guide. It gives formulation and validation patterns, not a complete task-specific mathematical model.
+-
+ ## UC In One Paragraph
+-
+ Unit commitment decides which generators are online over time, when they start or stop, how much they produce, and how much reserve they can physically provide. It is harder than hourly economic dispatch because startup/shutdown decisions, ramping, minimum up/down time, reserve deliverability, initial conditions, and cost curves couple one period to the next.
+-
+ ## Keep These Concepts Separate
+-
+ For each thermal unit `g` and period `t`:
+-
+ ```python
+ u[g, t]      # commitment/on status, binary
+ start[g, t]  # startup transition, binary
+@@ -24,20 +17,14 @@
+ p[g, t]      # production variable: know whether actual MW or above-minimum MW
+ r[g, t]      # scheduled reserve
+ ```
+-
+ Reports often require actual MW output. Many UC models internally use output above minimum:
+-
+ ```python
+ actual_output = pmin[g] * u[g, t] + p_above_min[g, t]
+ p_above_min = actual_output - pmin[g] * u[g, t]
+ ```
+-
+ Do not mix these conventions in ramping, reserve, cost, or reporting.
+-
+ ## Core Feasibility Checks
+-
+ Before reporting a schedule, independently verify:
+-
+ - every resource appears exactly once and all time-series have length `T`;
+ - commitment, startup, and shutdown are binary;
+ - offline thermal units have zero production and zero reserve;
+@@ -50,19 +37,15 @@
+ - reserve is deliverable under headroom, startup/shutdown capability, and ramp limits;
+ - minimum up/down time and initial conditions are respected;
+ - cost and summary fields are recomputed from arrays.
+-
+ ## Transition Logic
+-
+ Link startup/shutdown to commitment and the initial state:
+-
+ ```python
+ prev_u = initial_on[g] if t == 0 else u[g, t - 1]
+ u[g, t] - prev_u == start[g, t] - stop[g, t]
+ start[g, t] + stop[g, t] &lt;= 1
+ ```
+-
++When implementing this as sparse rows, if `t==0` then `prev_u` is a **constant** (`u0`) and must be placed on the RHS (row bounds), not treated as a variable term.
+ Equivalent validation pattern:
+-
+ ```python
+ prev_on = initial_on[g]
+ for t in range(T):
+@@ -70,78 +53,54 @@
+     assert stop[g, t] == int(u[g, t] == 0 and prev_on == 1)
+     prev_on = u[g, t]
+ ```
+-
+ ## Capacity And Offline Zeroes
+-
+ For actual-MW production:
+-
+ ```python
+ pmin[g] * u[g, t] &lt;= production[g, t] &lt;= pmax[g] * u[g, t]
+ 0 &lt;= reserve[g, t]
+ ```
+-
+ For above-minimum production:
+-
+ ```python
+ cap = pmax[g] - pmin[g]
+ 0 &lt;= p_above_min[g, t] &lt;= cap * u[g, t]
+ 0 &lt;= reserve[g, t]
+ ```
+-
+ If `u[g, t] == 0`, both production and reserve must be zero.
+-
+ ## Demand, Renewables, And System Reserve
+-
+ Use the task&#x27;s system/zone/network convention. For a single-zone system:
+-
+ ```python
+ thermal_gen = sum(actual_thermal[g, t] for g in thermal_units)
+ renew_gen = sum(renewable_output[r, t] for r in renewable_units)
+ assert abs(thermal_gen + renew_gen - demand[t]) &lt;= tol
+ assert sum(reserve[g, t] for g in thermal_units) &gt;= reserve_requirement[t] - tol
+ ```
+-
+ Renewables:
+-
+ ```python
+ renewable_min[r, t] &lt;= renewable_output[r, t] &lt;= renewable_max[r, t]
+ ```
+-
+ If min equals max, output is fixed. If curtailment is allowed, output may be below max. Do not count renewable headroom as spinning reserve unless the prompt explicitly allows it.
+-
+ ## Reserve Deliverability
+-
+ Reserve is not just unused nameplate capacity. Production and reserve compete for the same physical capability, and reserve must be deployable.
+-
+ Headroom-only checks are too weak:
+-
+ ```python
+ # Not enough by itself:
+ reserve[g, t] &lt;= pmax[g] - production[g, t]
+ reserve[g, t] &lt;= ramp_up[g]
+ ```
+-
+ Use joint production-plus-reserve checks. With actual-MW production:
+-
+ ```python
+ production[g, t] + reserve[g, t] &lt;= pmax[g] * u[g, t]
+ ```
+-
+ With above-minimum production:
+-
+ ```python
+ p_above_min[g, t] + reserve[g, t] &lt;= (pmax[g] - pmin[g]) * u[g, t]
+ ```
+-
+ Startup capability can tighten the startup period. If `startup_limit` is maximum total output during startup:
+-
+ ```python
+ if start[g, t] == 1:
+     production[g, t] + reserve[g, t] &lt;= startup_limit[g]
+ ```
+-
+ A linear above-minimum pattern is:
+-
+ ```python
+ startup_reduction = max(pmax[g] - startup_limit[g], 0.0)
+ p_above_min[g, t] + reserve[g, t] &lt;= (
+@@ -149,41 +108,29 @@
+     - startup_reduction * start[g, t]
+ )
+ ```
+-
+ Apply analogous shutdown-period or pre-shutdown capability rules when the data and prompt require them.
+-
+ ## Ramping
+-
+ Use initial output/status for the first period. When reserve must be deliverable, ramp-up usually applies to production plus reserve:
+-
+ ```python
+ previous = initial_above_min[g] if t == 0 else p_above_min[g, t - 1]
+ p_above_min[g, t] + reserve[g, t] - previous &lt;= ramp_up[g]
+ previous - p_above_min[g, t] &lt;= ramp_down[g]
+ ```
+-
++When implementing this as sparse rows, if `t==0` then `previous` is a **constant** (`p0` in the chosen convention) and must be moved to the RHS (bounds), not inserted as a “variable index” term.
+ If your model uses actual production, convert consistently before applying above-minimum ramp checks. Recheck ramping after any dispatch or repair step.
+-
+ ## Minimum Up/Down Time
+-
+ Minimum up/down constraints are time-window constraints triggered by starts/stops. Validation pattern:
+-
+ ```python
+ if start[g, t] == 1:
+     for tau in range(t, min(T, t + min_up[g])):
+         assert u[g, tau] == 1
+-
+ if stop[g, t] == 1:
+     for tau in range(t, min(T, t + min_down[g])):
+         assert u[g, tau] == 0
+ ```
+-
+ Account for pre-horizon time already on/off. Follow the prompt on whether post-horizon obligations are enforced.
+-
+ ## Startup Costs
+-
+ Startup cost may depend on prior offline duration. A common tier rule is largest lag not exceeding prior offline duration:
+-
+ ```python
+ def choose_startup_cost(tiers, offline_duration):
+     tiers = sorted(tiers, key=lambda z: z[&quot;lag&quot;])
+@@ -195,15 +142,10 @@
+             break
+     return chosen[&quot;cost&quot;]
+ ```
+-
+ Update offline duration from initial status and the commitment trajectory. Be careful: duration should describe time offline before the startup period.
+-
+ ## Production Costs
+-
+ Use only cost components present in the data or required by the prompt. Do not invent no-load, reserve, curtailment, shutdown, or ramping costs.
+-
+ For total-cost breakpoints:
+-
+ ```python
+ def total_cost_from_curve(points, output_mw):
+     pts = sorted((p[&quot;mw&quot;], p[&quot;cost&quot;]) for p in points)
+@@ -216,11 +158,8 @@
+             return y0 + (output_mw - x0) * (y1 - y0) / (x1 - x0)
+     raise ValueError(&quot;output outside curve&quot;)
+ ```
+-
+ If the first point is at minimum output, its cost may represent online minimum-output cost. Do not add another fixed online cost unless the data says so.
+-
+ ## Implementation Workflow
+-
+ 1. Parse and normalize resource/time arrays.
+ 2. Choose actual-output or above-minimum internal variables and stick to it.
+ 3. Include hard feasibility constraints before optimizing cost.
+@@ -228,9 +167,7 @@
+ 5. Run independent validation on extracted arrays.
+ 6. Recompute costs and summaries from arrays.
+ 7. Write `&quot;pass&quot;` checks only after validation passes.
+-
+ ## Common Pitfalls
+-
+ - Treating UC as independent hourly dispatch.
+ - Counting reserve from offline units or renewable headroom.
+ - Checking reserve headroom but forgetting startup or ramp deliverability.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 2 个，其中 2 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>milp-solver-workflow/SKILL.md</td><td>已修改</td></tr><tr><td>unit-commitment-operating-rules/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;MMG-001&quot;,
+    &quot;description&quot;: &quot;The initial MILP formulation contained incorrect constraint construction that effectively made the model infeasible; later inspection showed constants (u0, p0) were being inserted into linear constraints as if they were decision-variable indices.\nEvidence: Running “python3 /root/solve_uc.py” raised “RuntimeError: No incumbent solution… The problem is infeasible. (HiGHS Status 8: model_status is Infeasible…)”.\nTrajectory location: turn 16&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;MMG-002&quot;,
+    &quot;description&quot;: &quot;The startup-tier constraint bug was not the only infeasibility driver; the more fundamental initial-period transition and ramp constraints were still malformed until Turns 21–22.\nEvidence: After adjusting startup tier window constraints (Turn 18), the solver still returned infeasible with the same HiGHS infeasibility message.\nTrajectory location: turn 19&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;MMG-003&quot;,
+    &quot;description&quot;: &quot;Incorrect handling of constants in linear constraint assembly: treating scalar constants as variable indices corrupts the constraint matrix, which can force infeasibility or undefined behavior.\nEvidence: Code excerpt (Turn 20) showed “prev_u = gen.u0 if t == 0 else u[g, t - 1]” and then added (prev_u, -1.0) as a term; similarly “prev_p = gen.p0 if t == 0 else p[g, t - 1]” and then used (prev_p, -1.0) as a term.\nTrajectory location: turn 20 to turn 22&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;MMG-004&quot;,
+    &quot;description&quot;: &quot;Typo/encoding issue in the shell flag (garbled character), though it was immediately corrected in Turn 27 and did not affect the final artifact.\nEvidence: The command “ls -لا /root/report.json” failed with “ls: invalid option -- &#x27;�&#x27;”.\nTrajectory location: turn 26&quot;,
+    &quot;locations&quot;: []
+  }
+]</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_skill">完整上传修复包</a></p><p>以同任务其他归档保存的原始包为对照，完整包哈希已与共享原始运行核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillrevise_gpt52&quot;,
+  &quot;task_id&quot;: &quot;energy-unit-commitment&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 18721,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:15b735e732b0fa6f838757e214d52069ef737785a3f52ce5bec0d80345a06616&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:15b735e732b0fa6f838757e214d52069ef737785a3f52ce5bec0d80345a06616&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_skill&quot;
+}</pre></details><p>字节变化文件 2 个；排除仅空白变化后 2 个。</p><details><summary>milp-solver-workflow/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/energy-unit-commitment/skills/milp-solver-workflow/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_skill/milp-solver-workflow/SKILL.md">修改后</a></p><pre>--- original/milp-solver-workflow/SKILL.md
++++ repaired/milp-solver-workflow/SKILL.md
+@@ -1,174 +1,77 @@
+----
+-name: milp-solver-workflow
+-description: Use for formulating, solving, debugging, and validating mixed-integer linear optimization models with open-source solvers, including variable indexing, sparse constraints, linearized costs, solver limits, MIP gaps, incumbent extraction, numerical tolerances, and deterministic output reporting.
+----
++# unit-commitment-milp-verifier-aligned-workflow
+ 
+-# MILP Solver Workflow
++## Purpose
++Produce a feasible and verifier-consistent mixed-integer linear unit-commitment style schedule (commitment, startups/shutdowns, dispatch, reserves, renewables) by (1) discovering the task&#x27;s required report contract, (2) building a UC MILP with correct time indexing and initial conditions, and (3) validating feasibility and reported fields by recomputing checks from the final report arrays (not from internal solver state).
+ 
+-Use this skill for binary/integer decisions, linear constraints, and linear or piecewise-linear objectives. It is useful for time-expanded scheduling models with many repeated resource-period constraints.
++## When to Use
++Use only when the task requires an end-to-end UC-style optimization output that will be graded by an external verifier reading a written artifact (typically JSON) containing time-series schedules, costs/summaries, and constraint-check fields. Do not use for generic MILP advice, non-UC MILPs, or tasks without a machine-checked report contract; in those cases use a simpler solver/runbook skill.
+ 
+-This is a workflow and implementation guide, not a complete formulation for any one task.
++## Procedure
++- 1) Discover the observable contract (do this before modeling).
++- Locate task files and required output path(s) via repository search (do not assume fixed paths).
++- Identify the required report schema/keys by reading: README/instructions, any provided schema files, and any verifier/test code.
++- Checkpoint evidence: you can list required arrays (names, shapes, units), required summary fields, and how the verifier computes each pass/fail check. If any are unclear, stop and ask for clarification or inspect more files; do not guess.
++- 2) Normalize inputs and define index conventions (make time semantics explicit).
++- Parse inputs into deterministic arrays with explicit indices: generators g=0..G-1, time t=0..T-1.
++- Define, in writing, the meaning of each decision:
++- u[g,t] in {0,1} commitment (online status at t).
++- su[g,t], sd[g,t] in {0,1} startup/shutdown indicator for transitions between t-1 and t (define whether su at t refers to turning on at start of period t).
++- p[g,t] &gt;= 0 dispatch in MW (total output, not &quot;above-min&quot;, unless the contract explicitly says otherwise).
++- r[g,t] &gt;= 0 reserve provided (and any renewable spillage/curtailment variables if needed).
++- Checkpoint evidence: print shapes and confirm they match the contract (T alignment, per-generator parameters present). If any parameter is missing, stop and add a safe default only if the contract explicitly allows it.
++- 3) Pre-solve sanity checks (execution anchor: stop early on impossible inputs).
++- For each time t, compute a conservative upper bound on achievable supply using only input limits (no MILP):
++- max_supply[t] = sum_g Pmax[g] + renewable_max[t] (or other sources per contract), adjusted by any hard outages if present.
++- required[t] = demand[t] + reserve_requirement[t] (if reserve is required by contract).
++- If any t has max_supply[t] &lt; required[t] (optionally with a small tolerance), stop: report &quot;input infeasible&quot; and do not build a MILP that will only return infeasible.
++- Checkpoint evidence: a list of failing periods (if any) and the computed bounds.
++- 4) Build the UC MILP with a deterministic variable map and UC-specific constraint templates.
++- Create a deterministic variable map (single allocator; no scattered index arithmetic).
++- Add constraints in this order (each family must be mirrored by a later validator check):
++- Variable bounds and integrality.
++- Transition linking with explicit t=0 handling:
++- For t&gt;0: su[g,t] - sd[g,t] = u[g,t] - u[g,t-1] (or equivalent), plus su+sd &lt;= 1 if required.
++- For t=0: use initial status u0[g] (from inputs) in the same equation; do not invent u[-1].
++- Dispatch feasibility:
++- If u[g,t]=0 then p[g,t]=0 (enforced via p &lt;= Pmax*u and p &gt;= Pmin*u when Pmin exists).
++- Ensure the model matches the contract&#x27;s definition of p (total MW vs above-min).
++- Demand and reserve balance:
++- Sum_g p[g,t] + renewables_used[t] (as defined) meets demand.
++- Sum_g r[g,t] meets reserve requirement if applicable.
++- Joint capability and deliverability:
++- p[g,t] + r[g,t] &lt;= Pmax[g]*u[g,t] (and &gt;= Pmin*u if applicable).
++- Ramp/deliverability constraints must match contract (e.g., reserve deployable within ramp-up): encode using p and r and correct time coupling.
++- Minimum up/down time with initial conditions:
++- Use a standard formulation keyed off su/sd, explicitly incorporating initial on/off durations if provided.
++- If initial duration data is absent, do not guess obligations; instead implement only what the contract/data supports and record the assumption.
++- Startup/shutdown costs and any multi-tier logic:
++- Implement only if the contract or input data defines the tier mapping unambiguously; otherwise keep costs simple and avoid adding feasibility-impacting constraints.
++- Checkpoint evidence: for each constraint family, you can point to (a) the input parameters used and (b) the corresponding validator function/check that will recompute it from the report.
++- 5) Solve safely and decide what to do based on solver outputs.
++- Discover available solver interfaces in the environment (do not assume a specific package). Prefer a MILP-capable open-source solver present in the environment.
++- Set a time limit and request an incumbent.
++- Decision point:
++- If no incumbent solution exists, stop and debug the model; do not emit a report claiming feasibility.
++- If time-limited but incumbent exists, proceed to validation but mark solver status accordingly.
++- Constraint: only report a MIP gap if it is directly provided by the solver API as a valid relative gap; otherwise set it to null/empty per schema (never invent).
++- 6) Extract schedules and run verifier-aligned validation (execution anchor: report-driven gate).
++- Extract arrays from the incumbent without post-hoc &quot;fixing&quot; (no rounding binaries unless within a strict tolerance and you re-validate after rounding).
++- Build the report object in the contract&#x27;s exact units and conventions.
++- Run a validator that recomputes, from the report arrays plus original inputs (not internal solver rows):
++- transition consistency (u, su, sd, including t=0 with u0),
++- min up/down windows,
++- dispatch bounds (Pmin/Pmax with u),
++- ramp and reserve deliverability,
++- demand balance and reserve satisfaction,
++- objective/cost recomputation consistency (within tolerance if required).
++- Decision point:
++- If any check fails or any required summary metric disagrees with recomputation, do not set any &quot;pass&quot; flags; return to modeling/extraction and fix the root cause.
++- Only after all checks pass, set constraint_check fields to &quot;pass&quot; (or schema-equivalent) and populate summary fields from the validator outputs.
++- 7) Write, reload, and finalize.
++- Write the report to the required output path.
++- Reload the written artifact and rerun the report-driven validator on the reloaded data (guards against serialization/schema mistakes).
++- Checkpoint evidence: validator returns all_pass=true on the reloaded artifact; only then claim completion.
+ 
+-## Workflow
+-
+-1. Parse and normalize data into ordered arrays.
+-2. Define decision states before coding: status, transitions, continuous quantities, slacks, segments, tiers.
+-3. Build a deterministic variable map.
+-4. Add constraints family by family: bounds, linking, balance, time coupling, capacity/ramp limits, cost logic.
+-5. Solve with an available open-source MILP solver.
+-6. Extract a candidate solution, rounding binaries only if near integral.
+-7. Convert internal variables into the report convention.
+-8. Independently validate extracted arrays.
+-9. Recompute objective and summaries from extracted arrays.
+-10. Write final output only after validation passes.
+-
+-## Variable Map Pattern
+-
+-Use helper functions or dictionaries, not scattered index arithmetic.
+-
+-```python
+-offset = {}
+-n = 0
+-
+-def alloc(name, shape, lb=0.0, ub=float(&quot;inf&quot;), integer=False):
+-    global n
+-    size = int(np.prod(shape))
+-    idx = np.arange(n, n + size).reshape(shape)
+-    offset[name] = idx
+-    n += size
+-    return idx
+-
+-u = alloc(&quot;commitment&quot;, (G, T), lb=0, ub=1, integer=True)
+-start = alloc(&quot;startup&quot;, (G, T), lb=0, ub=1, integer=True)
+-dispatch = alloc(&quot;dispatch&quot;, (G, T), lb=0)
+-reserve = alloc(&quot;reserve&quot;, (G, T), lb=0)
+-```
+-
+-Keep variable ownership obvious: type, resource, period, and optional segment/tier.
+-
+-## Sparse Constraint Pattern
+-
+-Use sparse rows for large time-expanded models:
+-
+-```python
+-rows, cols, vals = [], [], []
+-lb, ub = [], []
+-row = 0
+-
+-def add_row(terms, lo, hi):
+-    global row
+-    for j, a in terms:
+-        if abs(a) &gt; 0:
+-            rows.append(row)
+-            cols.append(j)
+-            vals.append(float(a))
+-    lb.append(float(lo))
+-    ub.append(float(hi))
+-    row += 1
+-```
+-
+-Use equality rows for conservation/linking and upper/lower bound rows for capacity, reserve, ramping, timing, and logic.
+-
+-## Sign-Safe Encoding
+-
+-Write the intended inequality first, then move variable terms to the left-hand side.
+-
+-```python
+-# Intended: x + y &lt;= cap * u - reduction * start
+-# Row form: x + y - cap*u + reduction*start &lt;= 0
+-add_row(
+-    [(x, 1.0), (y, 1.0), (u, -cap), (start, reduction)],
+-    lo=-INF,
+-    hi=0.0,
+-)
+-```
+-
+-For non-obvious rows, test a tiny hand case. Example: set `u=1`, `start=1` and check the remaining capacity equals the intended startup capability; set `u=1`, `start=0` and check normal capacity returns.
+-
+-## Match Model Rows To Validation
+-
+-Keep a checklist linking each model constraint family to a validation check:
+-
+-```text
+-transition linking      -&gt; startup/shutdown match status
+-online capacity         -&gt; offline zeroes and min/max output
+-joint reserve capacity  -&gt; production plus reserve fits capability
+-ramp deliverability     -&gt; reserve can be deployed within ramp-up
+-minimum durations       -&gt; starts/stops imply required status windows
+-balance equations       -&gt; demand/load/inventory conservation
+-cost-curve logic        -&gt; recomputed objective matches report
+-```
+-
+-If validation checks something not in the model, the solver may produce an invalid report. If the model has a constraint not validated after extraction, conversion bugs can slip through.
+-
+-## Piecewise-Linear Costs
+-
+-Identify the curve convention before modeling:
+-
+-- total cost at output breakpoints;
+-- marginal or incremental segment cost;
+-- heat-rate curve;
+-- first point as minimum-output or no-load-like cost.
+-
+-For segment variables, constrain segment quantities to their widths and sum them to the modeled production quantity. Use slopes only when the data represents total-cost breakpoints or incremental segment costs consistently.
+-
+-## Open-Source Solver Use
+-
+-HiGHS through SciPy is a common default when available:
+-
+-```python
+-from scipy.optimize import milp, LinearConstraint, Bounds
+-
+-result = milp(
+-    c=c,
+-    integrality=integrality,
+-    bounds=Bounds(lb, ub),
+-    constraints=constraints,
+-    options={&quot;time_limit&quot;: 600.0, &quot;mip_rel_gap&quot;: 0.01, &quot;disp&quot;: False},
+-)
+-
+-if result.x is None:
+-    raise RuntimeError(f&quot;No incumbent: status={result.status}, message={result.message}&quot;)
+-```
+-
+-Capture status, objective, incumbent values, and any reliable gap/bound. A time-limit status can be useful if a feasible incumbent exists; a failure with no incumbent is not a solution.
+-
+-## Extraction And Validation
+-
+-After solving:
+-
+-- check binary variables are close to 0/1 before rounding;
+-- convert internal units/conventions to report units;
+-- recompute summaries from arrays;
+-- recompute objective from input data and extracted decisions;
+-- run validation that reads only input data plus extracted/report arrays;
+-- write `&quot;pass&quot;` self-checks only after validation passes.
+-
+-## Debugging Infeasibility
+-
+-First suspect the model encoding. Common causes:
+-
+-- mixing total output with output above minimum;
+-- applying startup/shutdown limits to the wrong quantity;
+-- using the wrong `t` or `t-1` index;
+-- over-constraining initial minimum up/down obligations;
+-- enforcing post-horizon obligations when the prompt excludes them;
+-- treating cost curves as feasibility constraints;
+-- choosing bad Big-M values;
+-- requiring segment/tier variables when the trigger did not occur.
+-
+-Debug in stages: check shapes, relax one family at a time, add diagnostic slack variables, print largest violations, and compare local validation with final requirements.
+-
+-## Repair LPs And Heuristics
+-
+-A fixed-commitment repair LP is useful only if it includes every feasibility family judged in the final report. Do not repair only balance and capacity while omitting transition-dependent ramp, reserve, startup, shutdown, or minimum-duration limits.
+-
+-Always rerun independent validation after repair.
+-
+-## Reporting Discipline
+-
+-- Use deterministic ordering and plain numeric values.
+-- Do not include placeholder values.
+-- Keep feasibility separate from proof quality/MIP gap.
+-- Use `null`/empty gap when no reliable bound exists, if the schema allows it.
+-- Do not trust solver status or self-reported `&quot;pass&quot;` strings without validation.
++## Constraints / Pitfalls
++- Never &quot;cosmetically&quot; overwrite violation metrics or set constraint checks to &quot;pass&quot; without recomputing them from the final report arrays. If the validator shows nonzero violations, the report must reflect that or the schedule must be fixed.
++- Do not hard-code time indexing, t=0 transition behavior, or whether dispatch is total MW vs above-min. These are frequent verifier-mismatch causes; always derive conventions from the observable contract and inputs, and encode t=0 explicitly using provided initial conditions.</pre></details><details><summary>unit-commitment-operating-rules/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/energy-unit-commitment/skills/unit-commitment-operating-rules/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/energy-unit-commitment/repaired_skill/unit-commitment-operating-rules/SKILL.md">修改后</a></p><pre>--- original/unit-commitment-operating-rules/SKILL.md
++++ repaired/unit-commitment-operating-rules/SKILL.md
+@@ -1,240 +1,48 @@
+----
+-name: unit-commitment-operating-rules
+-description: Use for day-ahead or multi-period unit commitment problems, including thermal on/off schedules, dispatch, startup/shutdown logic, minimum up/down time, ramping, spinning reserve deliverability, renewable curtailment, operating-cost accounting, and independent feasibility checks for power-system operations schedules.
+----
++# unit-commitment-operating-rules
+ 
+-# Unit Commitment Operating Rules
++## Purpose
++Produce verifier-aligned outputs for day-ahead or multi-period unit commitment (UC) tasks by using discovery-first environment grounding, generating a feasible schedule in the required report format, and validating the artifact against the task&#x27;s observable schema and checks before finalizing.
+ 
+-Use this skill when a task asks for a day-ahead or multi-period unit commitment schedule with generators, load, reserves, operating constraints, and cost tradeoffs.
++## When to Use
++Use when a task requires emitting a UC schedule/report (commitment, dispatch, reserves, costs, checks) that will be graded by an external verifier or validator. Do not use when the task is purely conceptual, asks only for equations, or does not require writing a verifier-consumed artifact.
+ 
+-This is a reusable UC operating guide. It gives formulation and validation patterns, not a complete task-specific mathematical model.
++## Procedure
++- 1) Preflight discovery (do this before modeling or writing files)
++- Locate the contract sources in the current workspace: task README/instructions, validator/verifier script, sample output files, or tests.
++- Extract and record:
++- required output file path(s) (exact location the verifier reads),
++- required output format (JSON/CSV) and required keys/fields,
++- required dimensions (time horizon T, generator lists, indexing rules),
++- any explicitly defined checks (names and their computed quantities).
++- Decision point:
++- If a repo-provided runner/solver exists (scripts, notebooks, Makefile targets), use it as the primary path.
++- Only if no such tooling exists, proceed to implement a minimal solver/constructor yourself.
++- 2) Input and convention normalization (before any irreversible solve)
++- Load the input data and validate basic integrity: all required entities exist (generators, periods, demand, limits), no missing arrays, and every time series has consistent length T.
++- Choose exactly one production convention and document it in code:
++- actual MW output, or
++- above-minimum MW output.
++- Checkpoint: confirm initial conditions needed by the checks are present (initial on/off status, initial output, prior on/off durations). If any are missing or ambiguous, stop and request clarification or infer only if the contract explicitly specifies an inference rule.
++- 3) Generate a candidate schedule using the lightest environment-supported method
++- Prefer: run the discovered native solver/entrypoint and capture its outputs.
++- Else: construct a schedule using the smallest method that can satisfy the discovered checks (do not overbuild):
++- enforce offline implies zero production and zero reserve,
++- enforce min/max output when online,
++- enforce demand balance per period using the contract&#x27;s definition,
++- enforce reserve requirement and deliverability using the contract&#x27;s definition,
++- enforce transition logic using initial status,
++- enforce ramping using initial output and the chosen production convention,
++- enforce minimum up/down time only if it is part of the discovered check set.
++- Decision point: if any constraint family is not defined in the discovered contract, do not invent it; treat it as out of scope unless the task instructions explicitly require it.
++- 4) Write, reload, and verify the artifact (finalization gate)
++- Write the report to the exact discovered required output path(s). Do not silently change paths.
++- Execution anchor: reload the written artifact from that same path and perform:
++- schema/type/shape validation (required keys present, types correct, arrays length T, entity IDs match input lists),
++- verifier-aligned recomputation of checks using the discovered definitions (or, if definitions cannot be found, report checks as unknown rather than &quot;pass&quot;).
++- Only after these validations:
++- populate any check fields according to the recomputation results (never blanket &quot;pass&quot;),
++- populate solver status fields only if backed by observable solver output; otherwise use a conservative status (for example, &quot;feasible&quot;) and leave optimality/gap fields unset or null if not explicitly provided by the tool.
+ 
+-## UC In One Paragraph
+-
+-Unit commitment decides which generators are online over time, when they start or stop, how much they produce, and how much reserve they can physically provide. It is harder than hourly economic dispatch because startup/shutdown decisions, ramping, minimum up/down time, reserve deliverability, initial conditions, and cost curves couple one period to the next.
+-
+-## Keep These Concepts Separate
+-
+-For each thermal unit `g` and period `t`:
+-
+-```python
+-u[g, t]      # commitment/on status, binary
+-start[g, t]  # startup transition, binary
+-stop[g, t]   # shutdown transition, binary
+-p[g, t]      # production variable: know whether actual MW or above-minimum MW
+-r[g, t]      # scheduled reserve
+-```
+-
+-Reports often require actual MW output. Many UC models internally use output above minimum:
+-
+-```python
+-actual_output = pmin[g] * u[g, t] + p_above_min[g, t]
+-p_above_min = actual_output - pmin[g] * u[g, t]
+-```
+-
+-Do not mix these conventions in ramping, reserve, cost, or reporting.
+-
+-## Core Feasibility Checks
+-
+-Before reporting a schedule, independently verify:
+-
+-- every resource appears exactly once and all time-series have length `T`;
+-- commitment, startup, and shutdown are binary;
+-- offline thermal units have zero production and zero reserve;
+-- online thermal units respect min/max output;
+-- must-run units are online when required;
+-- startup/shutdown indicators match commitment transitions;
+-- demand balance holds in every period;
+-- renewable output stays within period-specific bounds;
+-- scheduled reserve meets the system requirement;
+-- reserve is deliverable under headroom, startup/shutdown capability, and ramp limits;
+-- minimum up/down time and initial conditions are respected;
+-- cost and summary fields are recomputed from arrays.
+-
+-## Transition Logic
+-
+-Link startup/shutdown to commitment and the initial state:
+-
+-```python
+-prev_u = initial_on[g] if t == 0 else u[g, t - 1]
+-u[g, t] - prev_u == start[g, t] - stop[g, t]
+-start[g, t] + stop[g, t] &lt;= 1
+-```
+-
+-Equivalent validation pattern:
+-
+-```python
+-prev_on = initial_on[g]
+-for t in range(T):
+-    assert start[g, t] == int(u[g, t] == 1 and prev_on == 0)
+-    assert stop[g, t] == int(u[g, t] == 0 and prev_on == 1)
+-    prev_on = u[g, t]
+-```
+-
+-## Capacity And Offline Zeroes
+-
+-For actual-MW production:
+-
+-```python
+-pmin[g] * u[g, t] &lt;= production[g, t] &lt;= pmax[g] * u[g, t]
+-0 &lt;= reserve[g, t]
+-```
+-
+-For above-minimum production:
+-
+-```python
+-cap = pmax[g] - pmin[g]
+-0 &lt;= p_above_min[g, t] &lt;= cap * u[g, t]
+-0 &lt;= reserve[g, t]
+-```
+-
+-If `u[g, t] == 0`, both production and reserve must be zero.
+-
+-## Demand, Renewables, And System Reserve
+-
+-Use the task&#x27;s system/zone/network convention. For a single-zone system:
+-
+-```python
+-thermal_gen = sum(actual_thermal[g, t] for g in thermal_units)
+-renew_gen = sum(renewable_output[r, t] for r in renewable_units)
+-assert abs(thermal_gen + renew_gen - demand[t]) &lt;= tol
+-assert sum(reserve[g, t] for g in thermal_units) &gt;= reserve_requirement[t] - tol
+-```
+-
+-Renewables:
+-
+-```python
+-renewable_min[r, t] &lt;= renewable_output[r, t] &lt;= renewable_max[r, t]
+-```
+-
+-If min equals max, output is fixed. If curtailment is allowed, output may be below max. Do not count renewable headroom as spinning reserve unless the prompt explicitly allows it.
+-
+-## Reserve Deliverability
+-
+-Reserve is not just unused nameplate capacity. Production and reserve compete for the same physical capability, and reserve must be deployable.
+-
+-Headroom-only checks are too weak:
+-
+-```python
+-# Not enough by itself:
+-reserve[g, t] &lt;= pmax[g] - production[g, t]
+-reserve[g, t] &lt;= ramp_up[g]
+-```
+-
+-Use joint production-plus-reserve checks. With actual-MW production:
+-
+-```python
+-production[g, t] + reserve[g, t] &lt;= pmax[g] * u[g, t]
+-```
+-
+-With above-minimum production:
+-
+-```python
+-p_above_min[g, t] + reserve[g, t] &lt;= (pmax[g] - pmin[g]) * u[g, t]
+-```
+-
+-Startup capability can tighten the startup period. If `startup_limit` is maximum total output during startup:
+-
+-```python
+-if start[g, t] == 1:
+-    production[g, t] + reserve[g, t] &lt;= startup_limit[g]
+-```
+-
+-A linear above-minimum pattern is:
+-
+-```python
+-startup_reduction = max(pmax[g] - startup_limit[g], 0.0)
+-p_above_min[g, t] + reserve[g, t] &lt;= (
+-    (pmax[g] - pmin[g]) * u[g, t]
+-    - startup_reduction * start[g, t]
+-)
+-```
+-
+-Apply analogous shutdown-period or pre-shutdown capability rules when the data and prompt require them.
+-
+-## Ramping
+-
+-Use initial output/status for the first period. When reserve must be deliverable, ramp-up usually applies to production plus reserve:
+-
+-```python
+-previous = initial_above_min[g] if t == 0 else p_above_min[g, t - 1]
+-p_above_min[g, t] + reserve[g, t] - previous &lt;= ramp_up[g]
+-previous - p_above_min[g, t] &lt;= ramp_down[g]
+-```
+-
+-If your model uses actual production, convert consistently before applying above-minimum ramp checks. Recheck ramping after any dispatch or repair step.
+-
+-## Minimum Up/Down Time
+-
+-Minimum up/down constraints are time-window constraints triggered by starts/stops. Validation pattern:
+-
+-```python
+-if start[g, t] == 1:
+-    for tau in range(t, min(T, t + min_up[g])):
+-        assert u[g, tau] == 1
+-
+-if stop[g, t] == 1:
+-    for tau in range(t, min(T, t + min_down[g])):
+-        assert u[g, tau] == 0
+-```
+-
+-Account for pre-horizon time already on/off. Follow the prompt on whether post-horizon obligations are enforced.
+-
+-## Startup Costs
+-
+-Startup cost may depend on prior offline duration. A common tier rule is largest lag not exceeding prior offline duration:
+-
+-```python
+-def choose_startup_cost(tiers, offline_duration):
+-    tiers = sorted(tiers, key=lambda z: z[&quot;lag&quot;])
+-    chosen = tiers[0]
+-    for tier in tiers:
+-        if tier[&quot;lag&quot;] &lt;= offline_duration:
+-            chosen = tier
+-        else:
+-            break
+-    return chosen[&quot;cost&quot;]
+-```
+-
+-Update offline duration from initial status and the commitment trajectory. Be careful: duration should describe time offline before the startup period.
+-
+-## Production Costs
+-
+-Use only cost components present in the data or required by the prompt. Do not invent no-load, reserve, curtailment, shutdown, or ramping costs.
+-
+-For total-cost breakpoints:
+-
+-```python
+-def total_cost_from_curve(points, output_mw):
+-    pts = sorted((p[&quot;mw&quot;], p[&quot;cost&quot;]) for p in points)
+-    if output_mw &lt;= pts[0][0]:
+-        return pts[0][1]
+-    if output_mw &gt;= pts[-1][0]:
+-        return pts[-1][1]
+-    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+-        if x0 &lt;= output_mw &lt;= x1:
+-            return y0 + (output_mw - x0) * (y1 - y0) / (x1 - x0)
+-    raise ValueError(&quot;output outside curve&quot;)
+-```
+-
+-If the first point is at minimum output, its cost may represent online minimum-output cost. Do not add another fixed online cost unless the data says so.
+-
+-## Implementation Workflow
+-
+-1. Parse and normalize resource/time arrays.
+-2. Choose actual-output or above-minimum internal variables and stick to it.
+-3. Include hard feasibility constraints before optimizing cost.
+-4. Extract the solution into the report convention.
+-5. Run independent validation on extracted arrays.
+-6. Recompute costs and summaries from arrays.
+-7. Write `&quot;pass&quot;` checks only after validation passes.
+-
+-## Common Pitfalls
+-
+-- Treating UC as independent hourly dispatch.
+-- Counting reserve from offline units or renewable headroom.
+-- Checking reserve headroom but forgetting startup or ramp deliverability.
+-- Ignoring initial output in first-period ramping.
+-- Ignoring initial on/off duration in minimum up/down constraints.
+-- Trusting a repair LP that omits a constraint family.
+-- Hard-coding `&quot;pass&quot;` fields before validation.
++## Constraints / Pitfalls
++- Do not build a custom MILP/optimizer until you have searched for and ruled out repo-native solver/validator tooling and have extracted the required output schema and output path; overbuilding increases verifier mismatch risk.
++- Never set check fields to &quot;pass&quot;, claim &quot;optimal&quot;, or report a zero gap unless you (a) can recompute the corresponding check using the verifier-defined formulas and (b) can cite the solver-produced evidence for optimality/gap; if the contract is not discoverable, emit unknown/omitted check statuses rather than false certainty.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 2 个，其中 2 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>milp-solver-workflow/SKILL.md</td><td>已修改</td></tr><tr><td>unit-commitment-operating-rules/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The skill failed because it operated at the wrong abstraction level (generic UC guide) and lacked environment-grounded, verifier-aligned execution steps, leading the agent to implement a large custom MILP and to report &#x27;pass/optimal/0 gap&#x27; with false certainty. The resulting report did not match the verifier&#x27;s recomputed checks (score 0.0), and the skill&#x27;s verbosity contributed to context pollution and brittle execution. The skill is an oversized conceptual UC formulation guide that lacks an execution-grounded, verifier-aligned workflow for this environment. This caused the agent to build a large custom MILP script and rely on internal validations/blanket &#x27;pass&#x27; flags, culminating in false certainty (optimal/zero-gap) and a mismatch with the independent verifier, yielding a score of 0.0. The excessive detail and broad scope also increased context pollution and iteration cost, making subtle requirement mismatches more likely.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;unit-commitment-operating-rules/SKILL.md&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P2&quot;,
+    &quot;description&quot;: &quot;The skill failed because it operates at a generic MILP-workflow level, not at the UC+verifier-aligned level needed for this task. The agent had to invent and debug key UC constraints (leading to infeasibility and long iteration), and then made confident &#x27;pass&#x27; claims and manual report edits that could diverge from the official verifier, resulting in a 0.0 verifier score. Primary cause: wrong_abstraction_level. The skill is a broad MILP workflow guide rather than a task-specific, verifier-aligned UC execution recipe. That forced the agent to invent/iterate on critical UC constraints (downtime recursion, startup tier linking, ramp/deliverability), causing infeasible models and later potential schema/semantics mismatches with the official verifier despite self-checks. Secondary contributors: context_pollution from an overlong generic guide that didn&#x27;t reduce decision ambiguity, and false_certainty from claiming constraint checks/pass and overwriting summary violations without ensuring equivalence to the external verifier.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;milp-solver-workflow/SKILL.md&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>SkillTTA · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/energy-unit-commitment/repaired_skill">完整上传修复包</a></p><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The provided “above-minimum” startup-capability linearization can fail to enforce a stated startup_limit when startup_limit &lt; Pmin. The constraint is written on (p_above_min + reserve) and does not include the Pmin*u term, so it can allow actual output = Pmin during a startup period even if that exceeds startup_limit (i.e., it does not correctly encode a limit on total MW during startup in the above-minimum variable convention).&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;unit-commitment-operating-rules/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Reserve Deliverability (startup_limit and the “startup_reduction” above-minimum pattern)&quot;
+      }
+    ]
+  }
+]</pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

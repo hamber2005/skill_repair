@@ -1,0 +1,40 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>蛋白表达差异分析 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>蛋白表达差异分析</h1><p class="lead">按蛋白和样本双条件查表，用公式计算两组均值、标准差、log2 倍数变化与倍数变化，保持原格式。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/protein-expression-analysis/task.md">原始任务要求</a></div><p class="meta">protein-expression-analysis · 自然科学 · 1 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>按蛋白和样本双条件查表，用公式计算两组均值、标准差、log2 倍数变化与倍数变化，保持原格式。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>xlsx</td><td>读取和修改工作簿，保留公式与格式，并重算和核查数值。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/protein-expression-analysis/environment/skills/xlsx/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>未提供可用的分项汇总</td><td>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</td></tr><tr><td>原始 Opus 4.7</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>未提供可用的分项汇总</td><td>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</td></tr></tbody></table></div><div class="note">该题尚未发现公开的修复执行结果。原始通过题仍保留在总任务范围中。</div><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/protein-expression-analysis/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/protein-expression-analysis/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/protein-expression-analysis/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;protein-expression-analysis-original-skill-v11x-20260903-r002&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:dd81d820bc8dfd9a6cb8a48e7eafa72a7bf430b65a3bb4948a359573174df196&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 20,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:d63388fec63e8aa1bed7e9484ff2413cd7e767602e7ed4a59c335509fcef1731&quot;
+}</pre></details></details><details><summary>原始 Opus 4.7 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/protein-expression-analysis-opus47-original-skill-r001-recovery001/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/protein-expression-analysis-opus47-original-skill-r001-recovery001/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/protein-expression-analysis-opus47-original-skill-r001-recovery001/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;protein-expression-analysis-opus47-original-skill-r001-recovery001&quot;,
+  &quot;model&quot;: &quot;openrouter/anthropic/claude-opus-4.7&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:dd81d820bc8dfd9a6cb8a48e7eafa72a7bf430b65a3bb4948a359573174df196&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 14,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:d63388fec63e8aa1bed7e9484ff2413cd7e767602e7ed4a59c335509fcef1731&quot;
+}</pre></details></details><h2>人工 Gold 范围</h2><p>该题原始执行通过，未列入失败修复 Gold。</p></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

@@ -1,0 +1,369 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>文明VI相邻加成优化 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>文明VI相邻加成优化</h1><p class="lead">为地图放置城区／区域并最大化加成，输出场景 JSON。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/civ6-adjacency-optimizer/task.md">原始任务要求</a></div><p class="meta">civ6-adjacency-optimizer · 优化与形式推理 · 4 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>为地图放置城区／区域并最大化加成，输出场景 JSON。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>civ6lib</td><td>计算《文明 VI》城区放置约束与相邻加成。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/civ6-adjacency-optimizer/environment/skills/civ6lib/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr><tr><td>hex-grid-spatial</td><td>计算六角格邻接、距离和空间查询。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/civ6-adjacency-optimizer/environment/skills/hex-grid-spatial/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr><tr><td>map-optimization-strategy</td><td>在地图上求满足约束且目标最优的空间布局。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/civ6-adjacency-optimizer/environment/skills/map-optimization-strategy/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr><tr><td>sqlite-map-parser</td><td>读取 SQLite 表结构并提取地图关系数据。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/civ6-adjacency-optimizer/environment/skills/sqlite-map-parser/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.95</td><td>10 项通过 / 10 项检查</td><td>10/10 项外层检查通过，但场景连续得分 0.95；原始输出未分解余下 0.05 的来源。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>0 项通过 / 10 项检查，7 项跳过</td><td>/output/scenario_3.json 缺失，场景产物未完成。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>9 项通过 / 10 项检查</td><td>9/10 项通过；提交总邻接值为 15，按产物重算为 13，因自报值不一致被判无效。</td></tr></tbody></table></div><div class="note">SkillRevise 已上传诊断和最终包，但没有选中的修后执行。该方法拒绝了候选修改，最终保留原包；此状态没有被补成一条 after FAIL。<a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/civ6-adjacency-optimizer/provenance.json">原始选择记录</a></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/civ6-adjacency-optimizer/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/civ6-adjacency-optimizer/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>civ6lib/SKILL.md</td><td>拒绝下降修改</td><td>0.95</td><td>0.0</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/civ6-adjacency-optimizer/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/civ6-adjacency-optimizer/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/civ6-adjacency-optimizer/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/civ6-adjacency-optimizer/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>10/10 项外层检查通过，但场景连续得分 0.95；原始输出未分解余下 0.05 的来源。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;civ6-adjacency-optimizer-original-skill-v11x-20260903-r002&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:5e3b398dd390add962fc8e0188734a725477fde38b9ad575f2fed60d91c2bef3&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 53,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:ef8af0743d752ee449c21c7d72a05675b969f662490516a37c0641feda456c52&quot;
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_skill">上传修复包</a></p><p>/output/scenario_3.json 缺失，场景产物未完成。</p><details><summary>::TestFormat::test_solution_file_exists</summary><pre>/verifier/test_outputs.py:68: in test_solution_file_exists
+    assert paths[&quot;solution&quot;].exists(), \
+E   AssertionError: Solution file not found: /output/scenario_3.json
+E   assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath(&#x27;/output/scenario_3.json&#x27;).exists</pre></details><details><summary>::TestFormat::test_solution_is_valid_json</summary><pre>/verifier/test_outputs.py:73: in test_solution_is_valid_json
+    with open(paths[&quot;solution&quot;]) as f:
+E   FileNotFoundError: [Errno 2] No such file or directory: &#x27;/output/scenario_3.json&#x27;</pre></details><details><summary>::TestEvaluation::test_evaluate_scenario</summary><pre>/verifier/test_outputs.py:149: in test_evaluate_scenario
+    pytest.fail(f&quot;Solution file not found: {paths[&#x27;solution&#x27;]}&quot;)
+E   Failed: Solution file not found: /output/scenario_3.json</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>::TestEvaluation::test_evaluate_scenario<br>::TestFormat::test_solution_file_exists<br>::TestFormat::test_solution_is_valid_json</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;civ6-adjacency-optimizer-a01&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:5e3b398dd390add962fc8e0188734a725477fde38b9ad575f2fed60d91c2bef3&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 4,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:ea0354107ae1c89884bb5996a64a9f8daab7332e54b169301a7431d304864a76&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_skill">上传修复包</a></p><p>9/10 项通过；提交总邻接值为 15，按产物重算为 13，因自报值不一致被判无效。</p><details><summary>::TestEvaluation::test_evaluate_scenario</summary><pre>/verifier/test_outputs.py:167: in test_evaluate_scenario
+    assert result.valid, f&quot;Invalid solution: {result.errors}&quot;
+E   AssertionError: Invalid solution: [&#x27;Total adjacency mismatch: submitted=15, calculated=13&#x27;]
+E   assert False
+E    +  where False = EvaluationResult(valid=False, total_adjacency=13, optimal_adjacency=20, score=0.0, errors=[&#x27;Total adjacency mismatch: submitted=15, calculated=13&#x27;], warnings=[&#x27;COMMERCIAL_HUB@(20,13): Placing here will destroy FEATURE_JUNGLE&#x27;, &#x27;SPACEPORT@(20,15): Placing here will destroy FEATURE_JUNGLE&#x27;, &#x27;Adjacency info for COMMERCIAL_HUB: submitted=5, calculated=3&#x27;], per_district={&#x27;CAMPUS@(21,14)&#x27;: {&#x27;bonus&#x27;: 7, &#x27;breakdown&#x27;: {&#x27;FEATURE_GEOTHERMAL_FISSURE&#x27;: {&#x27;count&#x27;: 1, &#x27;bonus&#x27;: 2, &#x27;count_required&#x27;: 1, &#x27;bonus_per&#x27;: 2, &#x27;sources&#x27;: [&#x27;FEATURE_GEOTHERMAL_FISSURE@(21,13)&#x27;]}, &#x27;FEATURE_REEF&#x27;: {&#x27;count&#x27;: 1, &#x27;bonus&#x27;: 2, &#x27;count_required&#x27;: 1, &#x27;bonus_per&#x27;: 2, &#x27;sources&#x27;: [&#x27;FEATURE_REEF@(20,14)&#x27;]}, &#x27;MOUNTAIN&#x27;: {&#x27;count&#x27;: 1, &#x27;bonus&#x27;: 1, &#x27;count_required&#x27;: 1, &#x27;bonus_per&#x27;: 1, &#x27;sources&#x27;: [&#x27;Mountain@(21,15)&#x27;]}, &#x27;DISTRICT&#x27;: {&#x27;count&#x27;: 4, &#x27;bonus&#x27;: 2, &#x27;count_required&#x27;: 2, &#x27;bonus_per&#x27;: 1, &#x27;sources&#x27;: [&#x27;District(NEIGHBORHOOD)@(22,14)&#x27;, &#x27;District(CITY_CENTER)@(21,13)&#x27;, &#x27;District(COMMERCIAL_HUB)@(20,13)&#x27;, &#x27;District(SPACEPORT)@(20,15)&#x27;]}}}, &#x27;HARBOR@(21,12)&#x27;: {&#x27;bonus&#x27;: 3, &#x27;breakdown&#x27;: {&#x27;CITY_CENTER&#x27;: {&#x27;count&#x27;: 1, &#x27;bonus&#x27;: 2, &#x27;count_required&#x27;: 1, &#x27;bonus_per&#x27;: 2, &#x27;sources&#x27;: [&#x27;CITY_CENTER@(21,13)&#x27;]}, &#x27;DISTRICT&#x27;: {&#x27;count&#x27;: 2, &#x27;bonus&#x27;: 1, &#x27;count_required&#x27;: 2, &#x27;bonus_per&#x27;: 1, &#x27;sources&#x27;: [&#x27;District(COMMERCIAL_HUB)@(20,13)&#x27;, &#x27;District(CITY_CENTER)@(21,13)&#x27;]}}}, &#x27;COMMERCIAL_HUB@(20,13)&#x27;: {&#x27;bonus&#x27;: 3, &#x27;breakdown&#x27;: {&#x27;HARBOR&#x27;: {&#x27;count&#x27;: 1, &#x27;bonus&#x27;: 2, &#x27;count_required&#x27;: 1, &#x27;bonus_per&#x27;: 2, &#x27;sources&#x27;: [&#x27;HARBOR@(21,12)&#x27;]}, &#x27;DISTRICT&#x27;: {&#x27;count&#x27;: 3, &#x27;bonus&#x27;: 1, &#x27;count_required&#x27;: 2, &#x27;bonus_per&#x27;: 1, &#x27;sources&#x27;: [&#x27;District(CITY_CENTER)@(21,13)&#x27;, &#x27;District(HARBOR)@(21,12)&#x27;, &#x27;District(CAMPUS)@(21,14)&#x27;]}}}, &#x27;NEIGHBORHOOD@(22,14)&#x27;: {&#x27;bonus&#x27;: 0, &#x27;breakdown&#x27;: {}}, &#x27;SPACEPORT@(20,15)&#x27;: {&#x27;bonus&#x27;: 0, &#x27;breakdown&#x27;: {}}}, exceeds_optimal=False, adjacency_mismatch=True).valid</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>::TestEvaluation::test_evaluate_scenario</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;civ6-adjacency-optimizer-a09&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:5e3b398dd390add962fc8e0188734a725477fde38b9ad575f2fed60d91c2bef3&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 41,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:ea08c52bb56542a11ef7aa02e4dd4dcbaf8b9283da6d525b89581ce7eebc186a&quot;
+}</pre></details></details><h2>人工 Gold 范围</h2><p>该题属于原始失败但排除出人工 Gold 的 8 题之一。“排除”只表示未纳入这一 Gold 评分集合，不表示任务已解决或不值得分析。</p><div class="note warning"><strong>该题为何被排除出人工 Gold</strong><p>参考解和主评估器允许同类社区区域放置在多个坐标，但一个格式检查要求每种区域只能对应一个 [x, y] 坐标，口径冲突。</p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/exclusions.json">发布者的排除说明</a></div><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;civ6-adjacency-optimizer&quot;,
+  &quot;file_count&quot;: 8,
+  &quot;total_bytes&quot;: 73753,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:ea0354107ae1c89884bb5996a64a9f8daab7332e54b169301a7431d304864a76&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:ea0354107ae1c89884bb5996a64a9f8daab7332e54b169301a7431d304864a76&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_skill&quot;
+}</pre></details><p>字节变化文件 3 个；排除仅空白变化后 3 个。</p><details><summary>civ6lib/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/civ6-adjacency-optimizer/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_skill/civ6lib/SKILL.md">修改后</a></p><pre>--- original/civ6lib/SKILL.md
++++ repaired/civ6lib/SKILL.md
+@@ -35,6 +35,18 @@
+ calculator = get_adjacency_calculator(tiles)
+ total, per_district = calculator.calculate_total_adjacency(placements)
+ ```
++
++### Required pre-output check (to satisfy typical verifiers)
++
++Before writing the final JSON, **compute adjacency using `AdjacencyCalculator` from the exact `placements` dictionary you will output**, then copy the resulting numbers into `adjacency_bonuses` and `total_adjacency`.
++
++This prevents common mistakes around:
++- per-type flooring of +0.5 bonuses
++- whether a district counts as a “district” for minor adjacency
++- river checks (e.g., Commercial Hub river bonus is binary)
++- forgetting that some districts have **no** adjacency bonus
++
++Also ensure your `placements` map uses the same district keys as your output JSON (string names like `&quot;CAMPUS&quot;`).
+ 
+ ---
+ 
+@@ -241,6 +253,7 @@
+ 
+ # Quick Validation Checklist
+ 
++## Placement validity
+ 1. Is tile within 3 of city center?
+ 2. Is tile NOT a mountain/natural wonder?
+ 3. Is tile NOT a strategic/luxury resource?
+@@ -248,3 +261,10 @@
+ 5. Does district meet special requirements?
+ 6. Does city have district slots available?
+ 7. Is this district unique and not already built?
++
++## Output JSON contract (common verifier expectations)
++1. `placements` contains only district names you intend to build, with `[x, y]` integer pairs.
++2. `adjacency_bonuses` has **exactly the same keys** as `placements` (district-for-district).
++3. `total_adjacency == sum(adjacency_bonuses.values())`.
++4. For districts with no adjacency, include them with value `0` (if they appear in `placements`).
++5. If multi-city, ensure you output the expected city center structure and respect per-city uniqueness/limits.</pre></details><details><summary>map-optimization-strategy/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/civ6-adjacency-optimizer/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_skill/map-optimization-strategy/SKILL.md">修改后</a></p><pre>--- original/map-optimization-strategy/SKILL.md
++++ repaired/map-optimization-strategy/SKILL.md
+@@ -5,7 +5,7 @@
+ 
+ # Map-Based Constraint Optimization Strategy
+ 
+-A systematic approach to solving placement optimization problems on spatial maps. This applies to any problem where you must place items on a grid to maximize an objective while respecting placement constraints.
++A systematic approach to solving placement optimization problems on spatial maps. This applies to any problem where you must place items on a grid/map to maximize an objective while respecting placement constraints.
+ 
+ ## Why Exhaustive Search Fails
+ 
+@@ -108,3 +108,17 @@
+ - **Ignoring interactions** - Placing item A may change the value of placing item B (adjacency effects, mutual exclusion)
+ - **Over-optimizing one metric** - Balance intrinsic value with flexibility for remaining placements
+ - **Forgetting to validate** - Always verify final solution satisfies ALL constraints
++
++## Practical execution hygiene (tooling)
++
++When writing outputs via terminal tools, avoid patterns that frequently fail in sandboxed runners:
++
++- Don’t rely on external shell utilities that may be missing.
++- If using a heredoc (`python3 - &lt;&lt;&#x27;PY&#x27; ... PY`), **run display/verification as a separate command**. Some runners reject multi-command payloads or get confused by heredoc termination.
++
++Preferred pattern:
++
++1) Write the file in one command.
++2) Validate/print the file in a second command.
++
++This reduces retries and makes logs easier to interpret.</pre></details><details><summary>sqlite-map-parser/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/civ6-adjacency-optimizer/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/civ6-adjacency-optimizer/repaired_skill/sqlite-map-parser/SKILL.md">修改后</a></p><pre>--- original/sqlite-map-parser/SKILL.md
++++ repaired/sqlite-map-parser/SKILL.md
+@@ -5,7 +5,18 @@
+ 
+ # SQLite to Structured JSON
+ 
+-Parse SQLite databases by exploring schemas first, then extracting data into structured JSON.
++Parse SQLite databases by exploring schemas first, then extracting data into a structured representation.
++
++## Step 0: Confirm the file is SQLite (no external tools required)
++
++Some environments may not include the `file` command. You can detect SQLite by reading the header bytes:
++
++```python
++from pathlib import Path
++p = Path(&quot;/path/to/map.Civ6Map&quot;)
++header = p.read_bytes()[:16]
++is_sqlite = header.startswith(b&quot;SQLite format 3\x00&quot;)
++```
+ 
+ ## Step 1: Explore the Schema
+ 
+@@ -99,6 +110,49 @@
+     conn.close()
+     return {&quot;metadata&quot;: metadata, &quot;items&quot;: list(data.values())}
+ ```
++
++### Civ6Map (SQLite) practical extraction recipe (general)
++
++If you are parsing a Civ6 `.Civ6Map` SQLite DB for downstream mechanics (e.g., civ6lib Tile objects), a common minimal set is:
++
++- `Map(Width, Height)`
++- `Plots(ID, TerrainType, IsImpassable, ...)`
++- `PlotFeatures(ID, FeatureType, ...)`
++- `PlotRivers(ID, IsNEOfRiver, IsWOfRiver, IsNWOfRiver, ...)`
++
++Then compute `(x, y)` via `x = ID % width`, `y = ID // width`.
++
++Keep the transformation logic explicit and testable:
++
++```python
++import sqlite3
++
++conn = sqlite3.connect(db_path)
++c = conn.cursor()
++width, height = c.execute(&quot;SELECT Width, Height FROM Map&quot;).fetchone()
++
++plots = {
++    (pid % width, pid // width): terrain
++    for (pid, terrain, *_) in c.execute(&quot;SELECT ID, TerrainType FROM Plots&quot;)
++}
++
++features = {
++    (pid % width, pid // width): feat
++    for (pid, feat) in c.execute(&quot;SELECT ID, FeatureType FROM PlotFeatures&quot;)
++    if feat
++}
++
++rivers = {
++    (pid % width, pid // width): (is_ne, is_w, is_nw)
++    for (pid, is_ne, is_w, is_nw, *_) in c.execute(
++        &quot;SELECT ID, IsNEOfRiver, IsWOfRiver, IsNWOfRiver FROM PlotRivers&quot;
++    )
++}
++
++conn.close()
++```
++
++How you convert those raw flags into your model’s “river edges” depends on your neighbor-direction convention (see your hex utilities). The key is: **use a single, consistent convention end-to-end**, and validate it by spot-checking a few tiles.
+ 
+ ### Handle Missing Tables Gracefully
+ ```python</pre></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;QI-1&quot;,
+    &quot;description&quot;: &quot;Agent incurred avoidable execution error when trying to run multiple shell commands; skill docs don&#x27;t warn about tool/runner constraints for chaining commands when using heredocs.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;map-optimization-strategy/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Algorithm Skeleton / Debugging workflow guidance&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;TP-1&quot;,
+    &quot;description&quot;: &quot;Boundary issue: civ6lib skill focuses on rules, but doesn&#x27;t explicitly instruct users to cross-check computed adjacency with the provided `AdjacencyCalculator` before writing output, which is the most reliable way to satisfy the verifier&#x27;s accuracy checks.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;civ6lib/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Usage / Quick Validation Checklist / Critical Rule: Minor Bonus Calculation&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;IC-1&quot;,
+    &quot;description&quot;: &quot;Instruction compliance gap: skills don&#x27;t make the final JSON consistency checks explicit as a mandatory last step (placements keys match adjacency_bonuses keys; sum equals total; coordinates are ints; no duplicates).&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;civ6lib/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Quick Validation Checklist&quot;
+      },
+      {
+        &quot;file&quot;: &quot;map-optimization-strategy/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Common Pitfalls / Forgetting to validate&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;SPC-1&quot;,
+    &quot;description&quot;: &quot;Solution-path coverage gap: no documented, reusable procedure for parsing `.Civ6Map` (SQLite) into the Tile structure used by civ6lib, despite agent needing to do ad-hoc parsing and even hitting a missing `file` command. Adding a minimal, general parsing recipe improves robustness across scenarios.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;sqlite-map-parser/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Step 3: Extract and Transform&quot;
+      },
+      {
+        &quot;file&quot;: &quot;civ6lib/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Usage&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><div class="note warning">上传包与当次执行的包哈希不同。下方“修改前后”的差异描述上传版本，不能全部归因于这次运行。<a href="../protocol.html#bundle-identity">查看 5 题的完整审计</a></div><p>轨迹第 2 行保存了当次预加载的 Skill 正文。替换回该正文后，完整包哈希可重建为日志记录值。<a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_run/trajectory/acp_trajectory.jsonl">预加载正文</a></p><details><summary>运行时正文与上传正文的差异</summary><details><summary>civ6lib/SKILL.md</summary><pre>--- runtime_preload/civ6lib/SKILL.md
++++ uploaded_bundle/civ6lib/SKILL.md
+@@ -5,7 +5,7 @@
+ 
+ # Understanding Civ6 District Mechanics
+ 
+-Complete reference for Civilization 6 district placement and adjacency bonus systems (Gathering Storm).
++Complete reference for Civilization 6 district placement and adjacency bonus bonus systems (Gathering Storm).
+ 
+ ## Modules
+ 
+@@ -247,4 +247,8 @@
+ 4. Is tile unoccupied?
+ 5. Does district meet special requirements?
+ 6. Does city have district slots available?
+-7. Is this district unique and not already built?+7. Is this district unique and not already built?
++
++8. **Authoritative adjacency writeback (no hand-math):** After finalizing `placements`, call `AdjacencyCalculator.calculate_total_adjacency(placements)` and populate `adjacency_bonuses` and `total_adjacency` directly from its returned values. If any claimed per-district bonus (or the sum) differs from the calculator output, treat it as an error and fix the pipeline/inputs rather than editing numbers manually.
++
++9. **Engine-grounded bonus claims (especially environmental triggers):** When reporting why a district gets a bonus (e.g., river-based bonuses), confirm it appears in the calculator’s returned per-district breakdown/sources for that placement. If a bonus you expected is absent, assume the engine semantics/parsed tile flags differ and do not claim that bonus.
+</pre></details></details><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;civ6-adjacency-optimizer&quot;,
+  &quot;file_count&quot;: 8,
+  &quot;total_bytes&quot;: 73602,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:08b3d894b9586ea2051718f1d2ef28ac429e5f9876af772c0f25f4c00926d987&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:ea08c52bb56542a11ef7aa02e4dd4dcbaf8b9283da6d525b89581ce7eebc186a&quot;,
+  &quot;matches_recorded_hash&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_skill&quot;
+}</pre></details><p>字节变化文件 2 个；排除仅空白变化后 2 个。</p><details><summary>civ6lib/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/civ6-adjacency-optimizer/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_skill/civ6lib/SKILL.md">修改后</a></p><pre>--- original/civ6lib/SKILL.md
++++ repaired/civ6lib/SKILL.md
+@@ -5,7 +5,7 @@
+ 
+ # Understanding Civ6 District Mechanics
+ 
+-Complete reference for Civilization 6 district placement and adjacency bonus systems (Gathering Storm).
++Complete reference for Civilization 6 district placement and adjacency bonus bonus systems (Gathering Storm).
+ 
+ ## Modules
+ 
+@@ -248,3 +248,7 @@
+ 5. Does district meet special requirements?
+ 6. Does city have district slots available?
+ 7. Is this district unique and not already built?
++
++8. **Authoritative adjacency writeback (no hand-math):** After finalizing `placements`, call `AdjacencyCalculator.calculate_total_adjacency(placements)` and populate `adjacency_bonuses` and `total_adjacency` directly from its returned values. If any claimed per-district bonus (or the sum) differs from the calculator output, treat it as an error and fix the pipeline/inputs rather than editing numbers manually.
++
++9. **Engine-grounded bonus claims (especially environmental triggers):** When reporting why a district gets a bonus (e.g., river-based bonuses), confirm it appears in the calculator’s returned per-district breakdown/sources for that placement. If a bonus you expected is absent, assume the engine semantics/parsed tile flags differ and do not claim that bonus.</pre></details><details><summary>map-optimization-strategy/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/civ6-adjacency-optimizer/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/civ6-adjacency-optimizer/repaired_skill/map-optimization-strategy/SKILL.md">修改后</a></p><pre>--- original/map-optimization-strategy/SKILL.md
++++ repaired/map-optimization-strategy/SKILL.md
+@@ -64,6 +64,37 @@
+ - For each center, the reachable high-value tiles are fixed
+ - Optimize placement within each center&#x27;s reach
+ 
++#### Make Phase 3 Operational (bounded search loop)
++
++When maximizing an objective (not just finding *any* valid placement), do **not** stop after validating a single plausible configuration. Instead, run a **bounded** anchor search plus a small local-improvement loop.
++
++1) **Enumerate anchor candidates (centers) in a bounded way**
++- Build a set of feasible anchors from Phase 1 constraints.
++- If this set is large, restrict to **top-K** anchors using a cheap proxy score (e.g., count of high-value tiles within the allowed radius, or sum of their tile scores).
++
++2) **For each anchor, solve placements with a greedy pass**
++- Fix the anchor.
++- Recompute the candidate set within the anchor’s allowed range.
++- Place items one-by-one by **marginal gain** (objective delta) while enforcing hard constraints after each addition (constraint propagation).
++
++3) **Local improvement (small neighborhood search)**
++Perform a limited number of improvement attempts so runtime stays predictable:
++- Consider single-tile moves for one placed item to another candidate tile.
++- Consider pairwise swaps of two placed items.
++- Keep a change only if it improves the objective and remains valid.
++
++Suggested bounds (tune to map size):
++- `K_anchors = 10–30`
++- `max_local_iters = 50–200`
++- `max_neighbors_per_item = 10–30` (e.g., evaluate only the top-N alternative tiles by heuristic)
++
++4) **Track best-so-far with a strict validator**
++Maintain `best_solution` across anchors and local steps. Every time you accept a new best:
++- Re-validate all placements against the hard constraints.
++- Recompute the objective from the authoritative scoring rules.
++
++**Fallback/verification step:** If the search budget is exhausted, return the best validated solution found so far (never an unvalidated intermediate). If results are unexpectedly low or unstable, increase K slightly or widen the local neighborhood, but keep the search bounded.
++
+ ## Algorithm Skeleton
+ 
+ ```python
+@@ -108,3 +139,7 @@
+ - **Ignoring interactions** - Placing item A may change the value of placing item B (adjacency effects, mutual exclusion)
+ - **Over-optimizing one metric** - Balance intrinsic value with flexibility for remaining placements
+ - **Forgetting to validate** - Always verify final solution satisfies ALL constraints
++
++- **Single-shot confirmation** - Validating one hand-picked layout is not an optimization strategy. Use a bounded anchor loop + local improvements to reliably find a better (or best-found) solution under a fixed time budget.
++
++- **Shell heredoc + chaining mistakes** - If your executor/tool has a single-command constraint, either (a) write the output in one command and verify in a second command, or (b) chain only with operators that are part of the same shell command. When using a heredoc (`&lt;&lt;&#x27;PY&#x27;`), ensure the terminator line ends the command cleanly—do not append extra tokens on the terminator line.</pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

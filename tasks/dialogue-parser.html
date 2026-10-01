@@ -1,0 +1,2184 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>对话图解析 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>对话图解析</h1><p class="lead">解析 script.txt，交付满足可达性约束的 dialogue.json 和 dialogue.dot。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/dialogue-parser/task.md">原始任务要求</a></div><p class="meta">dialogue-parser · 软件工程 · 1 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>解析 script.txt，交付满足可达性约束的 dialogue.json 和 dialogue.dot。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>dialogue-graph</td><td>构建、验证和序列化对话图，输出 JSON 与 DOT。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/dialogue-parser/skills/dialogue-graph/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.833</td><td>5 项通过 / 6 项检查</td><td>5/6 项通过；图中存在不可达的 End 节点，输出可解析但图的连通性不满足要求。</td></tr><tr><td>原始 Opus 4.7</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>6 项通过 / 6 项检查</td><td>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>6 项通过 / 6 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>6 项通过 / 6 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>SkillGrad · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.833</td><td>5 项通过 / 6 项检查</td><td>仍为 5/6；不可达 End 节点未消除。</td></tr><tr><td>SkillHone · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>6 项通过 / 6 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>SkillOpt · 实际 GPT-5.5</td><td><span class="status INVALID">无效执行</span></td><td>—</td><td>未提供可用的分项汇总</td><td>本次没有形成可计入有效任务恢复的执行结果。acp_error</td></tr><tr><td>MMG2Skill · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.833</td><td>5 项通过 / 6 项检查</td><td>仍为 5/6；不可达 End 节点未消除。</td></tr><tr><td>SkillRevise · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.833</td><td>5 项通过 / 6 项检查</td><td>仍为 5/6；End 节点存在于 nodes，却无法从 Start 到达，图连通性检查失败。</td></tr><tr><td>SkillTTA · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>6 项通过 / 6 项检查</td><td>6/6；图结构与路径检查全部通过。</td></tr></tbody></table></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>dialogue-graph/SKILL.md</td><td>接受修改</td><td>0.833</td><td>0.833</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/dialogue-parser/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/dialogue-parser/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/dialogue-parser/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/dialogue-parser/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>5/6 项通过；图中存在不可达的 End 节点，输出可解析但图的连通性不满足要求。</p><details><summary>::test_graph_logic</summary><pre>nodes = {&#x27;AllPotionsBought&#x27;: {&#x27;id&#x27;: &#x27;AllPotionsBought&#x27;, &#x27;speaker&#x27;: &#x27;Narrator&#x27;, &#x27;text&#x27;: &#x27;Your pack clinks with vials. You feel ...Rage&#x27;, &#x27;speaker&#x27;: &#x27;Narrator&#x27;, &#x27;text&#x27;: &#x27;Your shout echoes. A rat scurries away. No answers come.&#x27;, &#x27;type&#x27;: &#x27;line&#x27;}, ...}
+edges = [{&#x27;from&#x27;: &#x27;Start&#x27;, &#x27;text&#x27;: &#x27;&#x27;, &#x27;to&#x27;: &#x27;TavernEntry&#x27;}, {&#x27;from&#x27;: &#x27;TavernEntry&#x27;, &#x27;text&#x27;: &#x27;&#x27;, &#x27;to&#x27;: &#x27;TavernChoice&#x27;}, {&#x27;from...pproach&#x27;}, {&#x27;from&#x27;: &#x27;TavernChoice&#x27;, &#x27;text&#x27;: &#x27;4. [Observe] Study the room from the shadows.&#x27;, &#x27;to&#x27;: &#x27;ObserveRoom&#x27;}, ...]
+edge_map = {&#x27;AllPotionsBought&#x27;: [&#x27;QuestChoice&#x27;], &#x27;AlleyCalm&#x27;: [&#x27;TavernReturn&#x27;], &#x27;AlleyCheck&#x27;: [&#x27;TavernReturn&#x27;], &#x27;AlleyRage&#x27;: [&#x27;AlleyCheck&#x27;], ...}
+logic_check = &#x27;reachability&#x27;
+
+    @pytest.mark.parametrize(&quot;logic_check&quot;, [
+        &quot;edges_valid&quot;,
+        &quot;reachability&quot;,
+        &quot;tavern_branching&quot;,
+        &quot;multiple_endings&quot;
+    ])
+    def test_graph_logic(nodes, edges, edge_map, logic_check):
+        &quot;&quot;&quot;Verify graph connectivity, validity, and branching logic.&quot;&quot;&quot;
+    
+        if logic_check == &quot;edges_valid&quot;:
+            for edge in edges:
+                assert edge[&quot;from&quot;] in nodes, f&quot;Edge source &#x27;{edge[&#x27;from&#x27;]}&#x27; missing&quot;
+                if edge[&quot;to&quot;] != &quot;End&quot;:
+                    assert edge[&quot;to&quot;] in nodes, f&quot;Edge target &#x27;{edge[&#x27;to&#x27;]}&#x27; missing&quot;
+    
+        elif logic_check == &quot;reachability&quot;:
+            reachable = set()
+            queue = deque([&quot;Start&quot;])
+            while queue:
+                curr = queue.popleft()
+                if curr in reachable: continue
+                reachable.add(curr)
+                for tgt in edge_map.get(curr, []):
+                    if tgt != &quot;End&quot;: queue.append(tgt)
+    
+            unreachable = set(nodes.keys()) - reachable
+&gt;           assert not unreachable, f&quot;Unreachable nodes found: {list(unreachable)[:3]}...&quot;
+E           AssertionError: Unreachable nodes found: [&#x27;End&#x27;]...
+E           assert not {&#x27;End&#x27;}
+
+/verifier/test_outputs.py:158: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;dialogue-parser-gpt52-original-v4-r000&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:4d48e3b0e7146cb3596bf3f56f9d37cecab57fcbb32058f229e5401182cd191d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 12,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:a2aab9f585f8b47e51173f919225c17d601b0d949e0e2a951706aed1f5544032&quot;
+}</pre></details></details><details><summary>原始 Opus 4.7 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/dialogue-parser-opus47-original-skill-r001/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/dialogue-parser-opus47-original-skill-r001/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/dialogue-parser-opus47-original-skill-r001/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/dialogue-parser-opus47-original-skill-r001/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;dialogue-parser-opus47-original-skill-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/anthropic/claude-opus-4.7&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:4d48e3b0e7146cb3596bf3f56f9d37cecab57fcbb32058f229e5401182cd191d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 16,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:a2aab9f585f8b47e51173f919225c17d601b0d949e0e2a951706aed1f5544032&quot;
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_skill">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>::test_graph_logic</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;dialogue-parser-a01&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:4d48e3b0e7146cb3596bf3f56f9d37cecab57fcbb32058f229e5401182cd191d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 15,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:5a6692bc649a6a5de119be25980b08e76e0e514359158771582e4e6271624b19&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/dialogue-parser/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/dialogue-parser/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/dialogue-parser/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/dialogue-parser/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/dialogue-parser/repaired_skill">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>::test_graph_logic</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;dialogue-parser-a01&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:4d48e3b0e7146cb3596bf3f56f9d37cecab57fcbb32058f229e5401182cd191d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 14,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:5332983e9c5bdf572d69e02cd1c770a5e510a1ac2320aeb16566204fe0808263&quot;
+}</pre></details></details><details><summary>SkillGrad · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/dialogue-parser/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/dialogue-parser/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/dialogue-parser/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/dialogue-parser/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/dialogue-parser/skills">上传修复包</a></p><p>仍为 5/6；不可达 End 节点未消除。</p><details><summary>::test_graph_logic</summary><pre>nodes = {&#x27;AllPotionsBought&#x27;: {&#x27;id&#x27;: &#x27;AllPotionsBought&#x27;, &#x27;speaker&#x27;: &#x27;Narrator&#x27;, &#x27;text&#x27;: &#x27;Your pack clinks with vials. You feel ...Rage&#x27;, &#x27;speaker&#x27;: &#x27;Narrator&#x27;, &#x27;text&#x27;: &#x27;Your shout echoes. A rat scurries away. No answers come.&#x27;, &#x27;type&#x27;: &#x27;line&#x27;}, ...}
+edges = [{&#x27;from&#x27;: &#x27;Start&#x27;, &#x27;text&#x27;: &#x27;&#x27;, &#x27;to&#x27;: &#x27;TavernEntry&#x27;}, {&#x27;from&#x27;: &#x27;TavernEntry&#x27;, &#x27;text&#x27;: &#x27;&#x27;, &#x27;to&#x27;: &#x27;TavernChoice&#x27;}, {&#x27;from...epApproach&#x27;}, {&#x27;from&#x27;: &#x27;TavernChoice&#x27;, &#x27;text&#x27;: &#x27;[Observe] Study the room from the shadows.&#x27;, &#x27;to&#x27;: &#x27;ObserveRoom&#x27;}, ...]
+edge_map = {&#x27;AllPotionsBought&#x27;: [&#x27;QuestChoice&#x27;], &#x27;AlleyCalm&#x27;: [&#x27;TavernReturn&#x27;], &#x27;AlleyCheck&#x27;: [&#x27;TavernReturn&#x27;], &#x27;AlleyRage&#x27;: [&#x27;AlleyCheck&#x27;], ...}
+logic_check = &#x27;reachability&#x27;
+
+    @pytest.mark.parametrize(&quot;logic_check&quot;, [
+        &quot;edges_valid&quot;,
+        &quot;reachability&quot;,
+        &quot;tavern_branching&quot;,
+        &quot;multiple_endings&quot;
+    ])
+    def test_graph_logic(nodes, edges, edge_map, logic_check):
+        &quot;&quot;&quot;Verify graph connectivity, validity, and branching logic.&quot;&quot;&quot;
+    
+        if logic_check == &quot;edges_valid&quot;:
+            for edge in edges:
+                assert edge[&quot;from&quot;] in nodes, f&quot;Edge source &#x27;{edge[&#x27;from&#x27;]}&#x27; missing&quot;
+                if edge[&quot;to&quot;] != &quot;End&quot;:
+                    assert edge[&quot;to&quot;] in nodes, f&quot;Edge target &#x27;{edge[&#x27;to&#x27;]}&#x27; missing&quot;
+    
+        elif logic_check == &quot;reachability&quot;:
+            reachable = set()
+            queue = deque([&quot;Start&quot;])
+            while queue:
+                curr = queue.popleft()
+                if curr in reachable: continue
+                reachable.add(curr)
+                for tgt in edge_map.get(curr, []):
+                    if tgt != &quot;End&quot;: queue.append(tgt)
+    
+            unreachable = set(nodes.keys()) - reachable
+&gt;           assert not unreachable, f&quot;Unreachable nodes found: {list(unreachable)[:3]}...&quot;
+E           AssertionError: Unreachable nodes found: [&#x27;End&#x27;]...
+E           assert not {&#x27;End&#x27;}
+
+/verifier/test_outputs.py:158: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;dialogue-parser-formal-7-3df35299f2aa&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:4d48e3b0e7146cb3596bf3f56f9d37cecab57fcbb32058f229e5401182cd191d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 17,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:4739442a036ef610d7ac9c2f1367b1226b12e77e1c76b698450c0f7ef5a21352&quot;
+}</pre></details></details><details><summary>SkillHone · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_skill">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>::test_graph_logic</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;dialogue-parser-skillhone-v2-vllm-unified-20260922T021138Z&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:4d48e3b0e7146cb3596bf3f56f9d37cecab57fcbb32058f229e5401182cd191d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 19,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:5c26568f214f24d92d47a751d767db818ef21439fdef0a3da1fe15faee91f1da&quot;
+}</pre></details></details><details><summary>SkillOpt · 实际 GPT-5.5 · 无效执行</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/dialogue-parser/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/dialogue-parser/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/dialogue-parser/repaired_skill">上传修复包</a></p><p>本次没有形成可计入有效任务恢复的执行结果。acp_error</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;dialogue-parser-skillopt-20260920T151445Z&quot;,
+  &quot;model&quot;: &quot;tatu/gpt-5.5@CODING_TATU&quot;,
+  &quot;provider_route&quot;: &quot;tatu&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:4d48e3b0e7146cb3596bf3f56f9d37cecab57fcbb32058f229e5401182cd191d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: null,
+  &quot;termination_reason&quot;: &quot;conversation_error&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: false,
+  &quot;error&quot;: &quot;ACP error -32603: Internal error&quot;,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:15ea51d6d82ae225ffb6967f5a68e7590bab606593a0cb93ee3b1e6a3e8c60e3&quot;
+}</pre></details></details><details><summary>MMG2Skill · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/dialogue-parser-mmg2skill-gpt52-r001/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/dialogue-parser-mmg2skill-gpt52-r001/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/dialogue-parser-mmg2skill-gpt52-r001/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/dialogue-parser-mmg2skill-gpt52-r001/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/dialogue-parser/skills">上传修复包</a></p><p>仍为 5/6；不可达 End 节点未消除。</p><details><summary>::test_graph_logic</summary><pre>nodes = {&#x27;AllPotionsBought&#x27;: {&#x27;id&#x27;: &#x27;AllPotionsBought&#x27;, &#x27;speaker&#x27;: &#x27;Narrator&#x27;, &#x27;text&#x27;: &#x27;Your pack clinks with vials. You feel ...Rage&#x27;, &#x27;speaker&#x27;: &#x27;Narrator&#x27;, &#x27;text&#x27;: &#x27;Your shout echoes. A rat scurries away. No answers come.&#x27;, &#x27;type&#x27;: &#x27;line&#x27;}, ...}
+edges = [{&#x27;from&#x27;: &#x27;Start&#x27;, &#x27;text&#x27;: &#x27;&#x27;, &#x27;to&#x27;: &#x27;TavernEntry&#x27;}, {&#x27;from&#x27;: &#x27;TavernEntry&#x27;, &#x27;text&#x27;: &#x27;&#x27;, &#x27;to&#x27;: &#x27;TavernChoice&#x27;}, {&#x27;from...epApproach&#x27;}, {&#x27;from&#x27;: &#x27;TavernChoice&#x27;, &#x27;text&#x27;: &#x27;[Observe] Study the room from the shadows.&#x27;, &#x27;to&#x27;: &#x27;ObserveRoom&#x27;}, ...]
+edge_map = {&#x27;AllPotionsBought&#x27;: [&#x27;QuestChoice&#x27;], &#x27;AlleyCalm&#x27;: [&#x27;TavernReturn&#x27;], &#x27;AlleyCheck&#x27;: [&#x27;TavernReturn&#x27;], &#x27;AlleyRage&#x27;: [&#x27;AlleyCheck&#x27;], ...}
+logic_check = &#x27;reachability&#x27;
+
+    @pytest.mark.parametrize(&quot;logic_check&quot;, [
+        &quot;edges_valid&quot;,
+        &quot;reachability&quot;,
+        &quot;tavern_branching&quot;,
+        &quot;multiple_endings&quot;
+    ])
+    def test_graph_logic(nodes, edges, edge_map, logic_check):
+        &quot;&quot;&quot;Verify graph connectivity, validity, and branching logic.&quot;&quot;&quot;
+    
+        if logic_check == &quot;edges_valid&quot;:
+            for edge in edges:
+                assert edge[&quot;from&quot;] in nodes, f&quot;Edge source &#x27;{edge[&#x27;from&#x27;]}&#x27; missing&quot;
+                if edge[&quot;to&quot;] != &quot;End&quot;:
+                    assert edge[&quot;to&quot;] in nodes, f&quot;Edge target &#x27;{edge[&#x27;to&#x27;]}&#x27; missing&quot;
+    
+        elif logic_check == &quot;reachability&quot;:
+            reachable = set()
+            queue = deque([&quot;Start&quot;])
+            while queue:
+                curr = queue.popleft()
+                if curr in reachable: continue
+                reachable.add(curr)
+                for tgt in edge_map.get(curr, []):
+                    if tgt != &quot;End&quot;: queue.append(tgt)
+    
+            unreachable = set(nodes.keys()) - reachable
+&gt;           assert not unreachable, f&quot;Unreachable nodes found: {list(unreachable)[:3]}...&quot;
+E           AssertionError: Unreachable nodes found: [&#x27;End&#x27;]...
+E           assert not {&#x27;End&#x27;}
+
+/verifier/test_outputs.py:158: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;dialogue-parser-mmg2skill-gpt52-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:4d48e3b0e7146cb3596bf3f56f9d37cecab57fcbb32058f229e5401182cd191d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 6,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:5ed5b22ebc3312ab7144072063f00a2043ea4a6b6ad841a343020bcd55b91207&quot;
+}</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_skill">上传修复包</a></p><p>仍为 5/6；End 节点存在于 nodes，却无法从 Start 到达，图连通性检查失败。</p><details><summary>::test_graph_logic</summary><pre>nodes = {&#x27;AllPotionsBought&#x27;: {&#x27;id&#x27;: &#x27;AllPotionsBought&#x27;, &#x27;speaker&#x27;: &#x27;Narrator&#x27;, &#x27;text&#x27;: &#x27;Your pack clinks with vials. You feel ...Rage&#x27;, &#x27;speaker&#x27;: &#x27;Narrator&#x27;, &#x27;text&#x27;: &#x27;Your shout echoes. A rat scurries away. No answers come.&#x27;, &#x27;type&#x27;: &#x27;line&#x27;}, ...}
+edges = [{&#x27;from&#x27;: &#x27;Start&#x27;, &#x27;text&#x27;: &#x27;&#x27;, &#x27;to&#x27;: &#x27;TavernEntry&#x27;}, {&#x27;from&#x27;: &#x27;TavernEntry&#x27;, &#x27;text&#x27;: &#x27;&#x27;, &#x27;to&#x27;: &#x27;TavernChoice&#x27;}, {&#x27;from...epApproach&#x27;}, {&#x27;from&#x27;: &#x27;TavernChoice&#x27;, &#x27;text&#x27;: &#x27;[Observe] Study the room from the shadows.&#x27;, &#x27;to&#x27;: &#x27;ObserveRoom&#x27;}, ...]
+edge_map = {&#x27;AllPotionsBought&#x27;: [&#x27;QuestChoice&#x27;], &#x27;AlleyCalm&#x27;: [&#x27;TavernReturn&#x27;], &#x27;AlleyCheck&#x27;: [&#x27;TavernReturn&#x27;], &#x27;AlleyRage&#x27;: [&#x27;AlleyCheck&#x27;], ...}
+logic_check = &#x27;reachability&#x27;
+
+    @pytest.mark.parametrize(&quot;logic_check&quot;, [
+        &quot;edges_valid&quot;,
+        &quot;reachability&quot;,
+        &quot;tavern_branching&quot;,
+        &quot;multiple_endings&quot;
+    ])
+    def test_graph_logic(nodes, edges, edge_map, logic_check):
+        &quot;&quot;&quot;Verify graph connectivity, validity, and branching logic.&quot;&quot;&quot;
+    
+        if logic_check == &quot;edges_valid&quot;:
+            for edge in edges:
+                assert edge[&quot;from&quot;] in nodes, f&quot;Edge source &#x27;{edge[&#x27;from&#x27;]}&#x27; missing&quot;
+                if edge[&quot;to&quot;] != &quot;End&quot;:
+                    assert edge[&quot;to&quot;] in nodes, f&quot;Edge target &#x27;{edge[&#x27;to&#x27;]}&#x27; missing&quot;
+    
+        elif logic_check == &quot;reachability&quot;:
+            reachable = set()
+            queue = deque([&quot;Start&quot;])
+            while queue:
+                curr = queue.popleft()
+                if curr in reachable: continue
+                reachable.add(curr)
+                for tgt in edge_map.get(curr, []):
+                    if tgt != &quot;End&quot;: queue.append(tgt)
+    
+            unreachable = set(nodes.keys()) - reachable
+&gt;           assert not unreachable, f&quot;Unreachable nodes found: {list(unreachable)[:3]}...&quot;
+E           AssertionError: Unreachable nodes found: [&#x27;End&#x27;]...
+E           assert not {&#x27;End&#x27;}
+
+/verifier/test_outputs.py:158: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;dialogue-parser-bundle-1-published-original-revi-adea10832039&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:e9ec9d22f9d2b9252915e2a18089a58184b1e3f9e6ff6399577b3fb28539970f&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 13,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:c070fa0942b91581004ed282ae04e5e711e541ca88e8d66c2fb360d23f2e6d2b&quot;
+}</pre></details></details><details><summary>SkillTTA · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/dialogue-parser/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/dialogue-parser/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/dialogue-parser/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/dialogue-parser/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/dialogue-parser/repaired_skill">上传修复包</a></p><p>6/6；图结构与路径检查全部通过。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;dialogue-parser-skilltta-gpt52-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:4d48e3b0e7146cb3596bf3f56f9d37cecab57fcbb32058f229e5401182cd191d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 19,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:68e8789645894047e7a0f98854b24369896ca187975ebb03911fb2ee775a149c&quot;
+}</pre></details></details><h2>人工 Gold 要求修哪里</h2><p>人工标注与参考修复用于定位已知缺陷。它们主要针对 GPT 原始失败；换模型后应重新核对这一缺陷是否仍在轨迹中出现。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">编号 / 主类型</th><th scope="col">原始缺陷</th><th scope="col">定位</th><th scope="col">要求的修复</th></tr></thead><tbody><tr><td>D001<br>精确语义与算法</td><td>原 Skill 未明确区分终止 edge target 与可序列化的 content node，也未说明 terminal-aware reachability。Agent 因此在不存在显式 [End] section 时仍创建并序列化 End 节点，导致 reachability 失败。</td><td>dialogue-graph/SKILL.md<br><small>How to use &gt; 3. Adding Edges，以及 4. Export</small></td><td>明确 End 默认仅为终止 edge target；没有显式且含内容的 [End] section 时，不得建立或序列化 Node(id=&quot;End&quot;)；非终止 edge target 必须存在；reachability 仅覆盖 content nodes，并在遇到 End 时终止该路径；DOT 中的 End marker 不等于 JSON node。</td></tr></tbody></table></div><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/gold.json">人工 Gold 与参考修复来源</a></p><details><summary>参考修复的实际文件差异</summary><p>缺失文件可能来自打包不完整，不能直接认定为有意删除；修改行数也不代表最小修复量。</p><details><summary>dialogue-graph/SKILL.md · modified</summary><pre>--- dialogue-graph/SKILL.md
+
++++ dialogue-graph/SKILL.md
+
+@@ -51,4 +51,30 @@
+
+ ```
+ 
++#### Reserved terminal target
++
++`End` is a reserved terminal **edge target**, not a content `Node`. It may appear in
++`Edge.target` and in a rendered visualization, but it must not be added to
++`graph.nodes` or serialized into the JSON `nodes` list unless the input contains an
++explicit `[End]` section with real content.
++
++The library intentionally allows an edge whose target is `End` even when no such
++node exists. `Graph.visualize()` draws a display-only `End` marker for those edges;
++that marker does not change the serialized graph.
++
++```python
++graph.add_edge(Edge(source=&quot;ExitLine&quot;, target=&quot;End&quot;))
++
++assert &quot;End&quot; not in graph.nodes
++assert all(
++    edge.target == &quot;End&quot; or edge.target in graph.nodes
++    for edge in graph.edges
++)
++```
++
++When checking reachability, traverse content nodes from the first node and treat an
++edge to `End` as successful termination rather than enqueueing or materializing a
++new node. Never create placeholder nodes merely because a reserved terminal target
++has no matching section.
++
+ ### 4. Export
+ Serialize to JSON format for the engine.
+@@ -59,4 +85,9 @@
+
+ json_str = graph.to_json()
+ ```
++
++Before export, enforce both invariants:
++
++1. every non-terminal edge target exists in `graph.nodes`;
++2. every serialized content node is reachable from the first content node.
+ 
+ ### 5. Validation</pre></details></details><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;dialogue-parser&quot;,
+  &quot;file_count&quot;: 2,
+  &quot;total_bytes&quot;: 10220,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:5a6692bc649a6a5de119be25980b08e76e0e514359158771582e4e6271624b19&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:5a6692bc649a6a5de119be25980b08e76e0e514359158771582e4e6271624b19&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>dialogue-graph/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/dialogue-parser/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/dialogue-parser/repaired_skill/dialogue-graph/SKILL.md">修改后</a></p><pre>--- original/dialogue-graph/SKILL.md
++++ repaired/dialogue-graph/SKILL.md
+@@ -14,14 +14,45 @@
+ *   **Game Logic**: When traversing a dialogue tree.
+ *   **Visualization**: When generating visual diagrams of dialogue flows.
+ 
++## Output schema (important)
++
++Many Dialogue Graph tasks (including SkillBench-style verifiers) expect this JSON shape:
++
++```json
++{
++  &quot;nodes&quot;: [{&quot;id&quot;: &quot;&quot;, &quot;text&quot;: &quot;&quot;, &quot;speaker&quot;: &quot;&quot;, &quot;type&quot;: &quot;line|choice&quot;}],
++  &quot;edges&quot;: [{&quot;from&quot;: &quot;&quot;, &quot;to&quot;: &quot;&quot;, &quot;text&quot;: &quot;&quot;}]
++}
++```
++
++Be careful with naming:
++
++- Use edge keys **`from`** and **`to`** in exported JSON.
++- Node fields are **`id`**, **`text`**, **`speaker`**, **`type`**.
++
++## Terminal node convention: `End`
++
++Some evaluators treat a terminal target named exactly **`&quot;End&quot;`** as a *special sink*:
++
++- Edges may point to `&quot;End&quot;`.
++- The evaluator may **not require** an explicit `&quot;End&quot;` node to exist.
++- The evaluator may **exclude** `&quot;End&quot;` from reachability traversal.
++
++Practical guidance for maximum compatibility:
++
++- Prefer **not** to include an explicit node with `id == &quot;End&quot;` unless you know the evaluator expects it.
++- If you do include an `End` node, ensure your own validation logic matches the evaluator’s expectations; otherwise you can create a graph that is internally “valid” but fails external reachability checks.
++
+ ## How to use
+ 
+ Import the module:
++
+ ```python
+ from dialogue_graph import Graph, Node, Edge
+ ```
+ 
+ ### 1. The `Graph` Class
++
+ The main container.
+ 
+ ```python
+@@ -29,6 +60,7 @@
+ ```
+ 
+ ### 2. Adding Nodes
++
+ Define content nodes.
+ 
+ ```python
+@@ -40,26 +72,33 @@
+ ```
+ 
+ ### 3. Adding Edges
++
+ Connect nodes (transitions).
+ 
+ ```python
+ # Simple transition
+-graph.add_edge(Edge(source=&quot;Start&quot;, target=&quot;Choices&quot;))
++graph.add_edge(Edge(source=&quot;Start&quot;, target=&quot;Choices&quot;, text=&quot;&quot;))
+ 
+ # Choice transition (with text)
+ graph.add_edge(Edge(source=&quot;Choices&quot;, target=&quot;End&quot;, text=&quot;1. Run away&quot;))
+ ```
+ 
++**Important:** Even if the internal `Edge` object uses `source/target`, your exported JSON for typical verifiers should use **`from/to`**.
++
+ ### 4. Export
+-Serialize to JSON format for the engine.
++
++Serialize to JSON format for the engine/verifier.
+ 
+ ```python
+ data = graph.to_dict()
+-# returns {&quot;nodes&quot;: [...], &quot;edges&quot;: [...]}
++# Must return {&quot;nodes&quot;: [...], &quot;edges&quot;: [...]}
++# where edges are {&quot;from&quot;: ..., &quot;to&quot;: ..., &quot;text&quot;: ...}
++
+ json_str = graph.to_json()
+ ```
+ 
+ ### 5. Validation
++
+ Check for integrity.
+ 
+ ```python
+@@ -67,7 +106,22 @@
+ # Returns list of strings, e.g., [&quot;Edge &#x27;Start&#x27;-&gt;&#x27;Unk&#x27; points to missing node &#x27;Unk&#x27;&quot;]
+ ```
+ 
++Recommended validation checks (common in benchmarks):
++
++1. **Edge endpoints**
++   - Every edge `from` must exist in `nodes`.
++   - Every edge `to` must exist in `nodes`, **except** when `to == &quot;End&quot;` (terminal sink convention).
++
++2. **Reachability**
++   - All non-terminal nodes must be reachable from the first node (often `Start`).
++   - If the evaluator treats `End` specially, do **not** require `End` to be reachable as a node; instead, require that at least one reachable node has an outgoing edge to `End`.
++
++3. **Choice-node semantics**
++   - `type == &quot;choice&quot;` nodes usually have outgoing edges whose `text` is the option label (e.g., `&quot;1. [Lie] ...&quot;`).
++   - `type == &quot;line&quot;` nodes typically have a single outgoing edge with `text == &quot;&quot;`.
++
+ ### 6. Visualization
++
+ Generate a PNG/SVG graph diagram.
+ 
+ ```python
+@@ -79,6 +133,7 @@
+ ```
+ 
+ The visualization includes:
++
+ - **Diamond shapes** for choice nodes (light blue)
+ - **Rounded boxes** for dialogue nodes (colored by speaker)
+ - **Bold blue edges** for skill-check choices like `[Lie]`, `[Attack]`
+@@ -86,6 +141,7 @@
+ - **Black edges** for simple transitions
+ 
+ ### 7. Loading from JSON
++
+ Load an existing dialogue graph.
+ 
+ ```python</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>dialogue-graph/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;D1-End-node-reachability-mismatch&quot;,
+    &quot;description&quot;: &quot;Skill omits/contradicts the evaluator’s special handling of terminal node &#x27;End&#x27;, leading to graphs where &#x27;End&#x27; exists as a node but is treated as non-traversable in reachability, making it appear unreachable and fail the reachability check.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Validation / constraints guidance (missing)&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;D2-Edge-schema-inconsistency-source-vs-from&quot;,
+    &quot;description&quot;: &quot;Skill documentation uses `Edge(source,target)` while the task schema and verifier use edge keys `from`/`to`. This mismatch can cause implementations to emit the wrong JSON fields or misuse the library.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;,
+        &quot;section&quot;: &quot;3. Adding Edges&quot;
+      },
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;,
+        &quot;section&quot;: &quot;4. Export&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;D3-Validation-guidance-missing-reachability-exception&quot;,
+    &quot;description&quot;: &quot;Skill’s validation section does not mention the evaluator’s exception that &#x27;End&#x27; may be an edge target without existing as a node and may be excluded from reachability, so agents may incorrectly \&quot;auto-create\&quot; an End node and then fail reachability.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;,
+        &quot;section&quot;: &quot;5. Validation&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/dialogue-parser/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;dialogue-parser&quot;,
+  &quot;file_count&quot;: 2,
+  &quot;total_bytes&quot;: 9394,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:5332983e9c5bdf572d69e02cd1c770a5e510a1ac2320aeb16566204fe0808263&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:5332983e9c5bdf572d69e02cd1c770a5e510a1ac2320aeb16566204fe0808263&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/dialogue-parser/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/dialogue-parser/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>dialogue-graph/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/dialogue-parser/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/dialogue-parser/repaired_skill/dialogue-graph/SKILL.md">修改后</a></p><pre>--- original/dialogue-graph/SKILL.md
++++ repaired/dialogue-graph/SKILL.md
+@@ -67,6 +67,24 @@
+ # Returns list of strings, e.g., [&quot;Edge &#x27;Start&#x27;-&gt;&#x27;Unk&#x27; points to missing node &#x27;Unk&#x27;&quot;]
+ ```
+ 
++#### Terminal target policy (e.g., `&quot;End&quot;`)
++Some dialogue scripts/engines allow a special terminal label such as `&quot;End&quot;` to appear as an **edge target** to indicate termination.
++
++To keep reachability and “missing target” checks consistent, adopt one clear policy and apply it everywhere (builder, validator, serializer):
++
++- **Treat `&quot;End&quot;` as a sentinel target, not a content node**.
++  - Do **not** auto-create a concrete node with `id == &quot;End&quot;` just because an edge references it.
++  - Exclude the sentinel from the `nodes` list and from “all nodes must be reachable” requirements.
++- **Still validate all other targets**:
++  - Every edge target must refer to an existing node **except** the terminal sentinel (e.g., allow `to == &quot;End&quot;` even if no such node exists).
++
++If you implement a reachability traversal (BFS/DFS) for validation, it is fine to treat `&quot;End&quot;` as reachable when directly referenced, but **do not enqueue/expand it** (it has no outgoing edges).
++
++Concrete verification step:
++- After parsing/building, run validation and confirm:
++  1) no missing-target errors for any `to != &quot;End&quot;`, and
++  2) the reachability set covers every exported node id (since the sentinel is not exported as a node).
++
+ ### 6. Visualization
+ Generate a PNG/SVG graph diagram.
+ </pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>dialogue-graph/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;wml-1-terminal-node-sentinel-policy-alignment&quot;,
+    &quot;description&quot;: &quot;When allowing special sentinel/terminal nodes, either (a) exclude them from reachability requirements, or (b) ensure they are included in the traversal model used by validators (e.g., as an explicit node reachable via explicit edges). Mismatches cause false &#x27;unreachable&#x27; failures even when edges refer to the sentinel.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;,
+        &quot;section&quot;: &quot;5. Validation&quot;
+      }
+    ],
+    &quot;evidence&quot;: &quot;Verifier failure: `AssertionError: Unreachable nodes found: [&#x27;End&#x27;]...` and verifier BFS explicitly skips enqueueing `tgt == &#x27;End&#x27;` while computing reachability. Trajectory shows generated JSON includes node `{&#x27;id&#x27;: &#x27;End&#x27;, ...}` and edges referencing `-&gt; End` exist in script (grep shows lines 725/728). Therefore &#x27;End&#x27; will never be marked reachable by the verifier&#x27;s algorithm, making it unreachable by construction if included as a node.&quot;
+  },
+  {
+    &quot;prediction_id&quot;: &quot;wml-2-use-canonical-skill-graph-apis-to-avoid-semantic-drift&quot;,
+    &quot;description&quot;: &quot;When a skill package provides canonical builders/validators/serializers, bypassing them often leads to subtle schema/logic mismatches (sentinel handling, node typing rules, visualization conventions).&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;,
+        &quot;section&quot;: &quot;How to use&quot;
+      }
+    ],
+    &quot;evidence&quot;: &quot;Run metadata: `n_skill_invocations: 0` despite skill being preloaded. The implemented solution writes JSON/DOT manually (seen in trajectory: custom parse_script building lists/dicts; custom dot printing). Only failure is a semantic edge case (End reachability) that a canonical validator might have handled or documented.&quot;
+  }
+]</pre></details></details><details><summary>SkillGrad · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/dialogue-parser/skills">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillgrad_gpt52&quot;,
+  &quot;task_id&quot;: &quot;dialogue-parser&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 10894,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:4739442a036ef610d7ac9c2f1367b1226b12e77e1c76b698450c0f7ef5a21352&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:4739442a036ef610d7ac9c2f1367b1226b12e77e1c76b698450c0f7ef5a21352&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/dialogue-parser/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/dialogue-parser/skills&quot;
+}</pre></details><p>字节变化文件 2 个；排除仅空白变化后 2 个。</p><details><summary>dialogue-graph/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/dialogue-parser/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/dialogue-parser/skills/dialogue-graph/SKILL.md">修改后</a></p><pre>--- original/dialogue-graph/SKILL.md
++++ repaired/dialogue-graph/SKILL.md
+@@ -1,100 +1,71 @@
+ ---
+ name: dialogue-graph
+-description: A library for building, validating, visualizing, and serializing dialogue graphs. Use this when parsing scripts or creating branching narrative structures.
++description: Build, validate, visualize, and serialize dialogue graphs while reliably writing all grader-required on-disk artifacts.
+ ---
+ 
+ # Dialogue Graph Skill
+ 
+-This skill provides a `dialogue_graph` module to easily build valid dialogue trees/graphs.
++## Plan the run (minimal)
+ 
+-## When to use
++1. Identify the required deliverables (filenames + **absolute** paths) before you start changing code.
++2. Build/parse into an in-memory graph/dict first; write files only after you have a coherent best-effort structure.
++3. **End-of-run guardrail (hard stop):** immediately before `end_turn`, you must run **export → artifact check** and **log the results** for each required path: `exists`, `size&gt;0`, and `reload/parse` (e.g., `json.load` for JSON; DOT starts with `digraph`). **Do not call** `end_turn` until you have re-opened the required files and confirmed they load/parse.
++   - Required paths must be stated explicitly (not “the outputs”).
+ 
+-*   **Script Parsers**: When converting text to data.
+-*   **Dialogue Editors**: When building tools to edit conversation flow.
+-*   **Game Logic**: When traversing a dialogue tree.
+-*   **Visualization**: When generating visual diagrams of dialogue flows.
++Read references/export-and-artifact-check.md when the grader requires specific on-disk artifacts at exact paths. Skip when outputs are returned directly (no filesystem deliverables).
+ 
+-## How to use
++## Build a graph data model
+ 
+-Import the module:
++Use a small, explicit model (nodes + edges) so validation and exports are simple.
++
+ ```python
+ from dialogue_graph import Graph, Node, Edge
++
++g = Graph()
++g.add_node(Node(id=&quot;N1&quot;, type=&quot;line&quot;, speaker=&quot;A&quot;, text=&quot;...&quot;))
++g.add_node(Node(id=&quot;N2&quot;, type=&quot;choice&quot;))
++g.add_edge(Edge(source=&quot;N1&quot;, target=&quot;N2&quot;))
++
++data = g.to_dict()
+ ```
+ 
+-### 1. The `Graph` Class
+-The main container.
++Decision rule: prefer `Graph` when you need validation/export helpers; use a plain dict only when the task explicitly forbids external structures.
++
++## Validate before exporting
++
++Validate graph integrity (missing nodes, malformed edges) before writing outputs.
+ 
+ ```python
+-graph = Graph()
++g_errors = g.validate()
++if g_errors:
++    raise ValueError(&quot;Invalid dialogue graph: &quot; + &quot;; &quot;.join(g_errors))
+ ```
+ 
+-### 2. Adding Nodes
+-Define content nodes.
++## Export to JSON
++
++Serialize to a Python dict/JSON string suitable for downstream use.
+ 
+ ```python
+-# Regular line
+-graph.add_node(Node(id=&quot;Start&quot;, speaker=&quot;Guard&quot;, text=&quot;Halt!&quot;, type=&quot;line&quot;))
+-
+-# Choice hub
+-graph.add_node(Node(id=&quot;Choices&quot;, type=&quot;choice&quot;))
++payload = g.to_dict()
++json_text = g.to_json()
+ ```
+ 
+-### 3. Adding Edges
+-Connect nodes (transitions).
++## Export to Graphviz DOT
++
++When a `.dot` file (not just a PNG/SVG) is required, write DOT source explicitly.
+ 
+ ```python
+-# Simple transition
+-graph.add_edge(Edge(source=&quot;Start&quot;, target=&quot;Choices&quot;))
+-
+-# Choice transition (with text)
+-graph.add_edge(Edge(source=&quot;Choices&quot;, target=&quot;End&quot;, text=&quot;1. Run away&quot;))
++lines = [&quot;digraph Dialogue {&quot;, &quot;  rankdir=LR;&quot;]
++for n in g.nodes.values():
++    lines.append(f&#x27;  &quot;{n.id}&quot;;&#x27;)
++for e in g.edges:
++    lines.append(f&#x27;  &quot;{e.source}&quot; -&gt; &quot;{e.target}&quot;;&#x27;)
++lines.append(&quot;}&quot;)
++dot_text = &quot;\n&quot;.join(lines)
+ ```
+ 
+-### 4. Export
+-Serialize to JSON format for the engine.
++## Common Pitfalls
+ 
+-```python
+-data = graph.to_dict()
+-# returns {&quot;nodes&quot;: [...], &quot;edges&quot;: [...]}
+-json_str = graph.to_json()
+-```
+-
+-### 5. Validation
+-Check for integrity.
+-
+-```python
+-errors = graph.validate()
+-# Returns list of strings, e.g., [&quot;Edge &#x27;Start&#x27;-&gt;&#x27;Unk&#x27; points to missing node &#x27;Unk&#x27;&quot;]
+-```
+-
+-### 6. Visualization
+-Generate a PNG/SVG graph diagram.
+-
+-```python
+-# Requires: pip install graphviz
+-# Also requires Graphviz binary: https://graphviz.org/download/
+-
+-graph.visualize(&#x27;dialogue_graph&#x27;)  # Creates dialogue_graph.png
+-graph.visualize(&#x27;output&#x27;, format=&#x27;svg&#x27;)  # Creates output.svg
+-```
+-
+-The visualization includes:
+-- **Diamond shapes** for choice nodes (light blue)
+-- **Rounded boxes** for dialogue nodes (colored by speaker)
+-- **Bold blue edges** for skill-check choices like `[Lie]`, `[Attack]`
+-- **Gray edges** for regular choices
+-- **Black edges** for simple transitions
+-
+-### 7. Loading from JSON
+-Load an existing dialogue graph.
+-
+-```python
+-# From file
+-graph = Graph.from_file(&#x27;dialogue.json&#x27;)
+-
+-# From dict
+-graph = Graph.from_dict({&#x27;nodes&#x27;: [...], &#x27;edges&#x27;: [...]})
+-
+-# From JSON string
+-graph = Graph.from_json(json_string)
+-```
++- Finishing “logic” but not materializing required deliverables (JSON/DOT) at the specified paths; always perform a post-write artifact check with a hard stop before ending.
++- Writing visualization outputs (PNG/SVG) when the evaluator expects DOT source.
++- Skipping validation: exporting a graph with edges pointing to missing node IDs.</pre></details><details><summary>dialogue-graph/references/export-and-artifact-check.md · added</summary><p>未提供 · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/dialogue-parser/skills/dialogue-graph/references/export-and-artifact-check.md">修改后</a></p><pre>--- original/dialogue-graph/references/export-and-artifact-check.md
++++ repaired/dialogue-graph/references/export-and-artifact-check.md
+@@ -0,0 +1,71 @@
++# Export + artifact check for dialogue-graph deliverables
++
++Use this when the task/grader requires specific files to exist on disk at exact paths (e.g., JSON + DOT). The goal is to **always** produce best-effort valid artifacts, then verify they are present and readable.
++
++## Procedure
++
++### 1) Decide required deliverables and paths
++
++At start-of-run, write down the canonical output list (path + format). Treat later prompt wording as metadata; do not end the run until the list is satisfied.
++
++### 2) Export (best-effort) with a runtime branch
++
++```python
++import json
++from pathlib import Path
++
++def write_text(path: str, text: str) -&gt; None:
++    p = Path(path)
++    p.parent.mkdir(parents=True, exist_ok=True)
++    p.write_text(text, encoding=&quot;utf-8&quot;)
++
++# Inputs you already have in memory
++# - payload: a JSON-serializable dict like {&quot;nodes&quot;: [...], &quot;edges&quot;: [...]} (or graph.to_dict())
++# - dot_text: DOT source string
++
++required = {
++    &quot;/app/dialogue.json&quot;: &quot;json&quot;,
++    &quot;/app/dialogue.dot&quot;: &quot;dot&quot;,
++}
++
++# Branch A: strict validation passes -&gt; write canonical outputs
++try:
++    json_text = json.dumps(payload, ensure_ascii=False, indent=2)
++    if not json_text.strip():
++        raise ValueError(&quot;empty JSON&quot;)
++    write_text(&quot;/app/dialogue.json&quot;, json_text)
++    write_text(&quot;/app/dialogue.dot&quot;, dot_text)
++
++# Branch B: validation/serialization fails -&gt; write minimal safe placeholders
++except Exception as e:
++    fallback = {&quot;nodes&quot;: [], &quot;edges&quot;: [], &quot;error&quot;: str(e)}
++    write_text(&quot;/app/dialogue.json&quot;, json.dumps(fallback, ensure_ascii=False, indent=2))
++    write_text(&quot;/app/dialogue.dot&quot;, &quot;digraph Dialogue {\n  // export failed\n}\n&quot;)
++```
++
++### 3) Verification + corrective action
++
++```python
++import json
++from pathlib import Path
++
++def must_exist_nonempty(path: str) -&gt; None:
++    p = Path(path)
++    if not p.exists():
++        raise FileNotFoundError(path)
++    if p.stat().st_size == 0:
++        raise ValueError(f&quot;empty file: {path}&quot;)
++
++for path in (&quot;/app/dialogue.json&quot;, &quot;/app/dialogue.dot&quot;):
++    must_exist_nonempty(path)
++
++# JSON must load
++with open(&quot;/app/dialogue.json&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as f:
++    obj = json.load(f)
++
++# Minimal shape check
++if not isinstance(obj, dict) or &quot;nodes&quot; not in obj or &quot;edges&quot; not in obj:
++    raise ValueError(&quot;dialogue.json missing required keys&quot;)
++```
++
++If verification fails: (1) re-run export in Branch B to guarantee files exist, then (2) fix the underlying cause (non-serializable payload, missing dot_text) and re-run Branch A.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>dialogue-graph/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P001&quot;,
+    &quot;description&quot;: &quot;Missing required output artifacts: /app/dialogue.json and /app/dialogue.dot were never produced. The output inventory contained only script.txt. The run ended without an explicit export and artifact-check step.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;,
+        &quot;section&quot;: &quot;End-of-run guardrail&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>SkillHone · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillhone&quot;,
+  &quot;task_id&quot;: &quot;dialogue-parser&quot;,
+  &quot;file_count&quot;: 5,
+  &quot;total_bytes&quot;: 17602,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:5c26568f214f24d92d47a751d767db818ef21439fdef0a3da1fe15faee91f1da&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:5c26568f214f24d92d47a751d767db818ef21439fdef0a3da1fe15faee91f1da&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_skill&quot;
+}</pre></details><p>字节变化文件 7 个；排除仅空白变化后 7 个。</p><details><summary>SKILL.md · added</summary><p>未提供 · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_skill/SKILL.md">修改后</a></p><pre>--- original/SKILL.md
++++ repaired/SKILL.md
+@@ -0,0 +1,113 @@
++---
++name: dialogue-graph
++description: A library for building, validating, visualizing, and serializing dialogue graphs. Use this when parsing scripts or creating branching narrative structures.
++---
++
++# Dialogue Graph Skill
++
++This skill provides a `dialogue_graph` module to easily build valid dialogue trees/graphs.
++
++## When to use
++
++*   **Script Parsers**: When converting text to data.
++*   **Dialogue Editors**: When building tools to edit conversation flow.
++*   **Game Logic**: When traversing a dialogue tree.
++*   **Visualization**: When generating visual diagrams of dialogue flows.
++
++## How to use
++
++Import the module:
++```python
++from dialogue_graph import Graph, Node, Edge
++```
++
++### 1. The `Graph` Class
++The main container.
++
++```python
++graph = Graph()
++```
++
++### 2. Adding Nodes
++Define content nodes.
++
++```python
++# Regular line
++graph.add_node(Node(id=&quot;Start&quot;, speaker=&quot;Guard&quot;, text=&quot;Halt!&quot;, type=&quot;line&quot;))
++
++# Choice hub
++graph.add_node(Node(id=&quot;Choices&quot;, type=&quot;choice&quot;))
++```
++
++### 3. Adding Edges
++Connect nodes (transitions).
++
++```python
++# Simple transition
++graph.add_edge(Edge(source=&quot;Start&quot;, target=&quot;Choices&quot;))
++
++# Choice transition (with text)
++graph.add_edge(Edge(source=&quot;Choices&quot;, target=&quot;End&quot;, text=&quot;1. Run away&quot;))
++```
++
++### 4. Export
++Serialize to JSON format for the engine.
++
++```python
++data = graph.to_dict()
++# returns {&quot;nodes&quot;: [...], &quot;edges&quot;: [...]}
++json_str = graph.to_json()
++```
++
++### 5. Validation
++Check for integrity.
++
++```python
++errors = graph.validate()
++# Returns list of strings, e.g., [&quot;Edge &#x27;Start&#x27;-&gt;&#x27;Unk&#x27; points to missing node &#x27;Unk&#x27;&quot;]
++```
++
++### 6. Visualization
++
++#### A) No-dependency DOT export (recommended)
++Write a Graphviz `.dot` source file without requiring any external packages/binaries:
++
++```python
++dot_src = graph.to_dot()
++with open(&#x27;dialogue.dot&#x27;, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as f:
++    f.write(dot_src)
++```
++
++You can render the DOT later (outside this runtime) with Graphviz tools.
++
++#### B) Optional image rendering via `graphviz`
++Generate a PNG/SVG graph diagram.
++
++```python
++# Requires: pip install graphviz
++# Also requires Graphviz binary: https://graphviz.org/download/
++
++graph.visualize(&#x27;dialogue_graph&#x27;)  # Creates dialogue_graph.png
++graph.visualize(&#x27;output&#x27;, format=&#x27;svg&#x27;)  # Creates output.svg
++```
++
++The visualization includes:
++- **Diamond shapes** for choice nodes (light blue)
++- **Rounded boxes** for dialogue nodes (colored by speaker)
++- **Bold blue edges** for skill-check choices like `[Lie]`, `[Attack]`
++- **Gray edges** for regular choices
++- **Black edges** for simple transitions
++
++### 7. Loading from JSON
++Load an existing dialogue graph.
++
++```python
++# From file
++graph = Graph.from_file(&#x27;dialogue.json&#x27;)
++
++# From dict
++graph = Graph.from_dict({&#x27;nodes&#x27;: [...], &#x27;edges&#x27;: [...]})
++
++# From JSON string
++graph = Graph.from_json(json_string)
++```</pre></details><details><summary>dialogue-graph/SKILL.md · removed</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/dialogue-parser/selected_run/agent/acp_trajectory.jsonl">修改前</a> · 未提供</p><pre>--- original/dialogue-graph/SKILL.md
++++ repaired/dialogue-graph/SKILL.md
+@@ -1,100 +0,0 @@
+----
+-name: dialogue-graph
+-description: A library for building, validating, visualizing, and serializing dialogue graphs. Use this when parsing scripts or creating branching narrative structures.
+----
+-
+-# Dialogue Graph Skill
+-
+-This skill provides a `dialogue_graph` module to easily build valid dialogue trees/graphs.
+-
+-## When to use
+-
+-*   **Script Parsers**: When converting text to data.
+-*   **Dialogue Editors**: When building tools to edit conversation flow.
+-*   **Game Logic**: When traversing a dialogue tree.
+-*   **Visualization**: When generating visual diagrams of dialogue flows.
+-
+-## How to use
+-
+-Import the module:
+-```python
+-from dialogue_graph import Graph, Node, Edge
+-```
+-
+-### 1. The `Graph` Class
+-The main container.
+-
+-```python
+-graph = Graph()
+-```
+-
+-### 2. Adding Nodes
+-Define content nodes.
+-
+-```python
+-# Regular line
+-graph.add_node(Node(id=&quot;Start&quot;, speaker=&quot;Guard&quot;, text=&quot;Halt!&quot;, type=&quot;line&quot;))
+-
+-# Choice hub
+-graph.add_node(Node(id=&quot;Choices&quot;, type=&quot;choice&quot;))
+-```
+-
+-### 3. Adding Edges
+-Connect nodes (transitions).
+-
+-```python
+-# Simple transition
+-graph.add_edge(Edge(source=&quot;Start&quot;, target=&quot;Choices&quot;))
+-
+-# Choice transition (with text)
+-graph.add_edge(Edge(source=&quot;Choices&quot;, target=&quot;End&quot;, text=&quot;1. Run away&quot;))
+-```
+-
+-### 4. Export
+-Serialize to JSON format for the engine.
+-
+-```python
+-data = graph.to_dict()
+-# returns {&quot;nodes&quot;: [...], &quot;edges&quot;: [...]}
+-json_str = graph.to_json()
+-```
+-
+-### 5. Validation
+-Check for integrity.
+-
+-```python
+-errors = graph.validate()
+-# Returns list of strings, e.g., [&quot;Edge &#x27;Start&#x27;-&gt;&#x27;Unk&#x27; points to missing node &#x27;Unk&#x27;&quot;]
+-```
+-
+-### 6. Visualization
+-Generate a PNG/SVG graph diagram.
+-
+-```python
+-# Requires: pip install graphviz
+-# Also requires Graphviz binary: https://graphviz.org/download/
+-
+-graph.visualize(&#x27;dialogue_graph&#x27;)  # Creates dialogue_graph.png
+-graph.visualize(&#x27;output&#x27;, format=&#x27;svg&#x27;)  # Creates output.svg
+-```
+-
+-The visualization includes:
+-- **Diamond shapes** for choice nodes (light blue)
+-- **Rounded boxes** for dialogue nodes (colored by speaker)
+-- **Bold blue edges** for skill-check choices like `[Lie]`, `[Attack]`
+-- **Gray edges** for regular choices
+-- **Black edges** for simple transitions
+-
+-### 7. Loading from JSON
+-Load an existing dialogue graph.
+-
+-```python
+-# From file
+-graph = Graph.from_file(&#x27;dialogue.json&#x27;)
+-
+-# From dict
+-graph = Graph.from_dict({&#x27;nodes&#x27;: [...], &#x27;edges&#x27;: [...]})
+-
+-# From JSON string
+-graph = Graph.from_json(json_string)
+-```</pre></details><details><summary>dialogue-graph/scripts/dialogue_graph.py · removed</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/dialogue-parser/skills/dialogue-graph/scripts/dialogue_graph.py">修改前</a> · 未提供</p><pre>--- original/dialogue-graph/scripts/dialogue_graph.py
++++ repaired/dialogue-graph/scripts/dialogue_graph.py
+@@ -1,172 +0,0 @@
+-import json
+-from typing import Any
+-
+-
+-class Node:
+-    def __init__(self, id: str, text: str = &quot;&quot;, speaker: str = &quot;&quot;, type: str = &quot;line&quot;):
+-        self.id = id
+-        self.text = text
+-        self.speaker = speaker
+-        self.type = type # &#x27;line&#x27;, &#x27;choice&#x27;
+-
+-    def to_dict(self) -&gt; dict[str, Any]:
+-        return {
+-            &quot;id&quot;: self.id,
+-            &quot;text&quot;: self.text,
+-            &quot;speaker&quot;: self.speaker,
+-            &quot;type&quot;: self.type
+-        }
+-
+-class Edge:
+-    def __init__(self, source: str, target: str, text: str = &quot;&quot;):
+-        self.source = source
+-        self.target = target
+-        self.text = text
+-
+-    def to_dict(self) -&gt; dict[str, Any]:
+-        d = {&quot;from&quot;: self.source, &quot;to&quot;: self.target}
+-        if self.text is not None:
+-            d[&quot;text&quot;] = self.text
+-        return d
+-
+-class Graph:
+-    def __init__(self):
+-        self.nodes: dict[str, Node] = {}
+-        self.edges: list[Edge] = []
+-
+-    def add_node(self, node: Node):
+-        if node.id in self.nodes:
+-            raise ValueError(f&quot;Node {node.id} already exists&quot;)
+-        self.nodes[node.id] = node
+-
+-    def add_edge(self, edge: Edge):
+-        self.edges.append(edge)
+-
+-    def validate(self) -&gt; list[str]:
+-        &quot;&quot;&quot;Validate the graph structure.&quot;&quot;&quot;
+-        errors = []
+-        for edge in self.edges:
+-            if edge.source not in self.nodes:
+-                errors.append(f&quot;Edge source &#x27;{edge.source}&#x27; not found&quot;)
+-            if edge.target not in self.nodes and edge.target != &quot;End&quot;:
+-                errors.append(f&quot;Edge target &#x27;{edge.target}&#x27; not found&quot;)
+-        return errors
+-
+-    def to_dict(self) -&gt; dict[str, Any]:
+-        return {
+-            &quot;nodes&quot;: [n.to_dict() for n in self.nodes.values()],
+-            &quot;edges&quot;: [e.to_dict() for e in self.edges]
+-        }
+-
+-    def to_json(self) -&gt; str:
+-        return json.dumps(self.to_dict(), indent=2)
+-
+-    def visualize(self, output_file: str = &#x27;dialogue_graph&#x27;, format: str = &#x27;png&#x27;) -&gt; str:
+-        &quot;&quot;&quot;
+-        Create a visual representation of the dialogue graph using graphviz.
+-
+-        Args:
+-            output_file: Output filename (without extension)
+-            format: Output format (&#x27;png&#x27;, &#x27;svg&#x27;, &#x27;pdf&#x27;)
+-
+-        Returns:
+-            Path to the generated file
+-
+-        Requires:
+-            pip install graphviz
+-            Also requires Graphviz system binary: https://graphviz.org/download/
+-        &quot;&quot;&quot;
+-        try:
+-            from graphviz import Digraph
+-        except ImportError as exc:
+-            raise ImportError(
+-                &quot;graphviz package required. Install with: pip install graphviz&quot;
+-            ) from exc
+-
+-        dot = Digraph(comment=&#x27;Dialogue Graph&#x27;, format=format)
+-        dot.attr(rankdir=&#x27;TB&#x27;, splines=&#x27;ortho&#x27;, nodesep=&#x27;0.5&#x27;, ranksep=&#x27;0.8&#x27;)
+-        dot.attr(&#x27;node&#x27;, fontname=&#x27;Arial&#x27;, fontsize=&#x27;10&#x27;)
+-        dot.attr(&#x27;edge&#x27;, fontname=&#x27;Arial&#x27;, fontsize=&#x27;8&#x27;)
+-
+-        # Speaker color mapping
+-        colors = {
+-            &#x27;Narrator&#x27;: &#x27;lightyellow&#x27;,
+-            &#x27;Guard&#x27;: &#x27;lightcoral&#x27;,
+-            &#x27;Stranger&#x27;: &#x27;plum&#x27;,
+-            &#x27;Merchant&#x27;: &#x27;lightgreen&#x27;,
+-            &#x27;Barkeep&#x27;: &#x27;peachpuff&#x27;,
+-            &#x27;Kira&#x27;: &#x27;lightcyan&#x27;,
+-        }
+-
+-        # Add nodes
+-        for node_id, node in self.nodes.items():
+-            text = node.text[:37] + &#x27;...&#x27; if len(node.text) &gt; 40 else node.text
+-
+-            if node.type == &#x27;choice&#x27;:
+-                dot.node(node_id, node_id, shape=&#x27;diamond&#x27;, style=&#x27;filled&#x27;,
+-                        fillcolor=&#x27;lightblue&#x27;, width=&#x27;1.5&#x27;)
+-            else:
+-                if node.speaker and text:
+-                    label = f&quot;{node_id}\\n{node.speaker}: {text}&quot;
+-                elif node.speaker:
+-                    label = f&quot;{node_id}\\n{node.speaker}&quot;
+-                else:
+-                    label = node_id
+-
+-                color = colors.get(node.speaker, &#x27;white&#x27;)
+-                dot.node(node_id, label, shape=&#x27;box&#x27;, style=&#x27;filled,rounded&#x27;,
+-                        fillcolor=color, width=&#x27;2&#x27;)
+-
+-        # Add End node
+-        dot.node(&#x27;End&#x27;, &#x27;END&#x27;, shape=&#x27;doublecircle&#x27;, style=&#x27;filled&#x27;,
+-                fillcolor=&#x27;lightgray&#x27;, width=&#x27;0.8&#x27;)
+-
+-        # Add edges
+-        for edge in self.edges:
+-            edge_text = edge.text[:27] + &#x27;...&#x27; if len(edge.text) &gt; 30 else edge.text
+-
+-            if edge_text:
+-                if &#x27;[&#x27; in edge_text and &#x27;]&#x27; in edge_text:
+-                    # Skill check edge
+-                    dot.edge(edge.source, edge.target, label=edge_text,
+-                            color=&#x27;darkblue&#x27;, fontcolor=&#x27;darkblue&#x27;, style=&#x27;bold&#x27;)
+-                else:
+-                    dot.edge(edge.source, edge.target, label=edge_text,
+-                            color=&#x27;gray40&#x27;, fontcolor=&#x27;gray40&#x27;)
+-            else:
+-                dot.edge(edge.source, edge.target, color=&#x27;black&#x27;)
+-
+-        # Render
+-        output_path = dot.render(output_file, cleanup=True)
+-        return output_path
+-
+-    @staticmethod
+-    def from_json(json_str: str) -&gt; &#x27;Graph&#x27;:
+-        &quot;&quot;&quot;Load a Graph from JSON string.&quot;&quot;&quot;
+-        data = json.loads(json_str)
+-        return Graph.from_dict(data)
+-
+-    @staticmethod
+-    def from_dict(data: dict) -&gt; &#x27;Graph&#x27;:
+-        &quot;&quot;&quot;Load a Graph from a dictionary.&quot;&quot;&quot;
+-        graph = Graph()
+-        for n in data.get(&#x27;nodes&#x27;, []):
+-            graph.nodes[n[&#x27;id&#x27;]] = Node(
+-                id=n[&#x27;id&#x27;],
+-                text=n.get(&#x27;text&#x27;, &#x27;&#x27;),
+-                speaker=n.get(&#x27;speaker&#x27;, &#x27;&#x27;),
+-                type=n.get(&#x27;type&#x27;, &#x27;line&#x27;)
+-            )
+-        for e in data.get(&#x27;edges&#x27;, []):
+-            graph.edges.append(Edge(
+-                source=e[&#x27;from&#x27;],
+-                target=e[&#x27;to&#x27;],
+-                text=e.get(&#x27;text&#x27;, &#x27;&#x27;)
+-            ))
+-        return graph
+-
+-    @staticmethod
+-    def from_file(filepath: str) -&gt; &#x27;Graph&#x27;:
+-        &quot;&quot;&quot;Load a Graph from a JSON file.&quot;&quot;&quot;
+-        with open(filepath, encoding=&#x27;utf-8&#x27;) as f:
+-            return Graph.from_json(f.read())</pre></details><details><summary>dialogue_graph.py · added</summary><p>未提供 · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_skill/dialogue_graph.py">修改后</a></p><pre>--- original/dialogue_graph.py
++++ repaired/dialogue_graph.py
+@@ -0,0 +1,11 @@
++&quot;&quot;&quot;Public import shim for the Dialogue Graph skill.
++
++The SkillHone prompt and SKILL.md advertise `from dialogue_graph import Graph, Node, Edge`.
++The original implementation lives in `scripts/dialogue_graph.py`.
++
++This shim preserves the documented import path without changing the existing code.
++&quot;&quot;&quot;
++
++from scripts.dialogue_graph import Edge, Graph, Node
++
++__all__ = [&quot;Graph&quot;, &quot;Node&quot;, &quot;Edge&quot;]</pre></details><details><summary>references/EXPLORATION.md · added</summary><p>未提供 · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_skill/references/EXPLORATION.md">修改后</a></p><pre>--- original/references/EXPLORATION.md
++++ repaired/references/EXPLORATION.md
+@@ -0,0 +1,12 @@
++# Exploration / References
++
++This repair did **not** fetch or adapt any external reference skills or web sources.
++
++## Adopted sources
++
++- None.
++
++## Notes
++
++- Implemented a missing `parse_script(text: str)` entrypoint in `solution.py` using the existing in-bundle `dialogue_graph` data structures.
++- Updated `SKILL.md` to document `Graph.to_dot()` as the recommended no-dependency visualization path.</pre></details><details><summary>scripts/dialogue_graph.py · added</summary><p>未提供 · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_skill/scripts/dialogue_graph.py">修改后</a></p><pre>--- original/scripts/dialogue_graph.py
++++ repaired/scripts/dialogue_graph.py
+@@ -0,0 +1,245 @@
++import json
++from typing import Any
++
++
++class Node:
++    def __init__(self, id: str, text: str = &quot;&quot;, speaker: str = &quot;&quot;, type: str = &quot;line&quot;):
++        self.id = id
++        self.text = text
++        self.speaker = speaker
++        self.type = type # &#x27;line&#x27;, &#x27;choice&#x27;
++
++    def to_dict(self) -&gt; dict[str, Any]:
++        return {
++            &quot;id&quot;: self.id,
++            &quot;text&quot;: self.text,
++            &quot;speaker&quot;: self.speaker,
++            &quot;type&quot;: self.type
++        }
++
++class Edge:
++    def __init__(self, source: str, target: str, text: str = &quot;&quot;):
++        self.source = source
++        self.target = target
++        self.text = text
++
++    def to_dict(self) -&gt; dict[str, Any]:
++        d = {&quot;from&quot;: self.source, &quot;to&quot;: self.target}
++        if self.text is not None:
++            d[&quot;text&quot;] = self.text
++        return d
++
++class Graph:
++    def __init__(self):
++        self.nodes: dict[str, Node] = {}
++        self.edges: list[Edge] = []
++
++    def to_dot(self) -&gt; str:
++        &quot;&quot;&quot;Export the graph as Graphviz DOT source text.
++
++        This does not require the external `graphviz` Python package nor the Graphviz
++        system binary; it simply returns a `.dot` string.
++        &quot;&quot;&quot;
++        def esc(s: str) -&gt; str:
++            return (s or &quot;&quot;).replace(&quot;\\&quot;, &quot;\\\\&quot;).replace(&#x27;&quot;&#x27;, &#x27;\\&quot;&#x27;)
++
++        lines: list[str] = [&quot;digraph Dialogue {&quot;, &quot;  rankdir=TB;&quot;]
++
++        # Nodes
++        for node_id, node in self.nodes.items():
++            if node.type == &quot;choice&quot;:
++                label = node_id
++                attrs = &quot;shape=diamond, style=filled, fillcolor=lightblue&quot;
++            else:
++                if node.speaker and node.text:
++                    label = f&quot;{node_id}\\n{node.speaker}: {node.text}&quot;
++                elif node.speaker:
++                    label = f&quot;{node_id}\\n{node.speaker}&quot;
++                else:
++                    label = node_id
++                attrs = &quot;shape=box, style=\&quot;filled,rounded\&quot;, fillcolor=white&quot;
++
++            lines.append(f&#x27;  &quot;{esc(node_id)}&quot; [label=&quot;{esc(label)}&quot;, {attrs}];&#x27;)
++
++        # If edges reference End, include an explicit End node in DOT.
++        if any(e.target == &quot;End&quot; for e in self.edges):
++            lines.append(&#x27;  &quot;End&quot; [label=&quot;END&quot;, shape=doublecircle, style=filled, fillcolor=lightgray];&#x27;)
++
++        # Edges
++        for e in self.edges:
++            if e.text:
++                lines.append(f&#x27;  &quot;{esc(e.source)}&quot; -&gt; &quot;{esc(e.target)}&quot; [label=&quot;{esc(e.text)}&quot;];&#x27;)
++            else:
++                lines.append(f&#x27;  &quot;{esc(e.source)}&quot; -&gt; &quot;{esc(e.target)}&quot;;&#x27;)
++
++        lines.append(&quot;}&quot;)
++        return &quot;\n&quot;.join(lines)
++
++    def validate(self) -&gt; list[str]:
++        &quot;&quot;&quot;Validate the graph structure.
++
++        Checks:
++          - edge endpoints exist (target may be the terminal &quot;End&quot;)
++          - all nodes are reachable from the first inserted node
++        &quot;&quot;&quot;
++        errors = []
++
++        for edge in self.edges:
++            if edge.source not in self.nodes:
++                errors.append(f&quot;Edge source &#x27;{edge.source}&#x27; not found&quot;)
++            if edge.target not in self.nodes and edge.target != &quot;End&quot;:
++                errors.append(f&quot;Edge target &#x27;{edge.target}&#x27; not found&quot;)
++
++        # Reachability from first node (in insertion order)
++        if self.nodes:
++            start = next(iter(self.nodes.keys()))
++            adj: dict[str, list[str]] = {nid: [] for nid in self.nodes}
++            for edge in self.edges:
++                if edge.source in adj:
++                    adj[edge.source].append(edge.target)
++
++            seen = set([start])
++            stack = [start]
++            while stack:
++                cur = stack.pop()
++                for nxt in adj.get(cur, []):
++                    if nxt == &quot;End&quot;:
++                        continue
++                    if nxt in self.nodes and nxt not in seen:
++                        seen.add(nxt)
++                        stack.append(nxt)
++
++            unreachable = [nid for nid in self.nodes.keys() if nid not in seen]
++            if unreachable:
++                errors.append(f&quot;Unreachable nodes from &#x27;{start}&#x27;: {&#x27;, &#x27;.join(unreachable)}&quot;)
++
++        return errors
++
++    def add_node(self, node: Node):
++        if node.id in self.nodes:
++            raise ValueError(f&quot;Node {node.id} already exists&quot;)
++        self.nodes[node.id] = node
++
++    def add_edge(self, edge: Edge):
++        self.edges.append(edge)
++
++    # validate() moved above to include reachability + dot support
++
++    def to_dict(self) -&gt; dict[str, Any]:
++        return {
++            &quot;nodes&quot;: [n.to_dict() for n in self.nodes.values()],
++            &quot;edges&quot;: [e.to_dict() for e in self.edges]
++        }
++
++    def to_json(self) -&gt; str:
++        return json.dumps(self.to_dict(), indent=2)
++
++    def visualize(self, output_file: str = &#x27;dialogue_graph&#x27;, format: str = &#x27;png&#x27;) -&gt; str:
++        &quot;&quot;&quot;
++        Create a visual representation of the dialogue graph using graphviz.
++
++        Args:
++            output_file: Output filename (without extension)
++            format: Output format (&#x27;png&#x27;, &#x27;svg&#x27;, &#x27;pdf&#x27;)
++
++        Returns:
++            Path to the generated file
++
++        Requires:
++            pip install graphviz
++            Also requires Graphviz system binary: https://graphviz.org/download/
++        &quot;&quot;&quot;
++        try:
++            from graphviz import Digraph
++        except ImportError as exc:
++            raise ImportError(
++                &quot;graphviz package required. Install with: pip install graphviz&quot;
++            ) from exc
++
++        dot = Digraph(comment=&#x27;Dialogue Graph&#x27;, format=format)
++        dot.attr(rankdir=&#x27;TB&#x27;, splines=&#x27;ortho&#x27;, nodesep=&#x27;0.5&#x27;, ranksep=&#x27;0.8&#x27;)
++        dot.attr(&#x27;node&#x27;, fontname=&#x27;Arial&#x27;, fontsize=&#x27;10&#x27;)
++        dot.attr(&#x27;edge&#x27;, fontname=&#x27;Arial&#x27;, fontsize=&#x27;8&#x27;)
++
++        # Speaker color mapping
++        colors = {
++            &#x27;Narrator&#x27;: &#x27;lightyellow&#x27;,
++            &#x27;Guard&#x27;: &#x27;lightcoral&#x27;,
++            &#x27;Stranger&#x27;: &#x27;plum&#x27;,
++            &#x27;Merchant&#x27;: &#x27;lightgreen&#x27;,
++            &#x27;Barkeep&#x27;: &#x27;peachpuff&#x27;,
++            &#x27;Kira&#x27;: &#x27;lightcyan&#x27;,
++        }
++
++        # Add nodes
++        for node_id, node in self.nodes.items():
++            text = node.text[:37] + &#x27;...&#x27; if len(node.text) &gt; 40 else node.text
++
++            if node.type == &#x27;choice&#x27;:
++                dot.node(node_id, node_id, shape=&#x27;diamond&#x27;, style=&#x27;filled&#x27;,
++                        fillcolor=&#x27;lightblue&#x27;, width=&#x27;1.5&#x27;)
++            else:
++                if node.speaker and text:
++                    label = f&quot;{node_id}\\n{node.speaker}: {text}&quot;
++                elif node.speaker:
++                    label = f&quot;{node_id}\\n{node.speaker}&quot;
++                else:
++                    label = node_id
++
++                color = colors.get(node.speaker, &#x27;white&#x27;)
++                dot.node(node_id, label, shape=&#x27;box&#x27;, style=&#x27;filled,rounded&#x27;,
++                        fillcolor=color, width=&#x27;2&#x27;)
++
++        # Add End node
++        dot.node(&#x27;End&#x27;, &#x27;END&#x27;, shape=&#x27;doublecircle&#x27;, style=&#x27;filled&#x27;,
++                fillcolor=&#x27;lightgray&#x27;, width=&#x27;0.8&#x27;)
++
++        # Add edges
++        for edge in self.edges:
++            edge_text = edge.text[:27] + &#x27;...&#x27; if len(edge.text) &gt; 30 else edge.text
++
++            if edge_text:
++                if &#x27;[&#x27; in edge_text and &#x27;]&#x27; in edge_text:
++                    # Skill check edge
++                    dot.edge(edge.source, edge.target, label=edge_text,
++                            color=&#x27;darkblue&#x27;, fontcolor=&#x27;darkblue&#x27;, style=&#x27;bold&#x27;)
++                else:
++                    dot.edge(edge.source, edge.target, label=edge_text,
++                            color=&#x27;gray40&#x27;, fontcolor=&#x27;gray40&#x27;)
++            else:
++                dot.edge(edge.source, edge.target, color=&#x27;black&#x27;)
++
++        # Render
++        output_path = dot.render(output_file, cleanup=True)
++        return output_path
++
++    @staticmethod
++    def from_json(json_str: str) -&gt; &#x27;Graph&#x27;:
++        &quot;&quot;&quot;Load a Graph from JSON string.&quot;&quot;&quot;
++        data = json.loads(json_str)
++        return Graph.from_dict(data)
++
++    @staticmethod
++    def from_dict(data: dict) -&gt; &#x27;Graph&#x27;:
++        &quot;&quot;&quot;Load a Graph from a dictionary.&quot;&quot;&quot;
++        graph = Graph()
++        for n in data.get(&#x27;nodes&#x27;, []):
++            graph.nodes[n[&#x27;id&#x27;]] = Node(
++                id=n[&#x27;id&#x27;],
++                text=n.get(&#x27;text&#x27;, &#x27;&#x27;),
++                speaker=n.get(&#x27;speaker&#x27;, &#x27;&#x27;),
++                type=n.get(&#x27;type&#x27;, &#x27;line&#x27;)
++            )
++        for e in data.get(&#x27;edges&#x27;, []):
++            graph.edges.append(Edge(
++                source=e[&#x27;from&#x27;],
++                target=e[&#x27;to&#x27;],
++                text=e.get(&#x27;text&#x27;, &#x27;&#x27;)
++            ))
++        return graph
++
++    @staticmethod
++    def from_file(filepath: str) -&gt; &#x27;Graph&#x27;:
++        &quot;&quot;&quot;Load a Graph from a JSON file.&quot;&quot;&quot;
++        with open(filepath, encoding=&#x27;utf-8&#x27;) as f:
++            return Graph.from_json(f.read())</pre></details><details><summary>solution.py · added</summary><p>未提供 · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillHone/tasks/dialogue-parser/repaired_skill/solution.py">修改后</a></p><pre>--- original/solution.py
++++ repaired/solution.py
+@@ -0,0 +1,166 @@
++&quot;&quot;&quot;Dialogue script parser using the Dialogue Graph skill.
++
++This repository is a Skill bundle, but the benchmark issue requires a small,
++reusable parser entrypoint:
++
++    def parse_script(text: str) -&gt; dict
++
++The returned dict must have the shape:
++    {&quot;nodes&quot;: [{&quot;id&quot;,&quot;text&quot;,&quot;speaker&quot;,&quot;type&quot;}], &quot;edges&quot;: [{&quot;from&quot;,&quot;to&quot;,&quot;text&quot;}]}
++
++The parser supports a simple script format:
++  - Section headers: [NodeId]
++  - Dialogue lines: Speaker: text -&gt; TargetId
++  - Choices: 1. choice text -&gt; TargetId
++
++Notes:
++  - Each section becomes at least one node (a &quot;line&quot; node with empty content)
++    so it can be targeted and is reachable.
++  - A section containing choices also creates an additional &quot;choice&quot; hub node
++    with id f&quot;{SectionId}__choice&quot;.
++  - If a section has both dialogue lines and choices, dialogue lines connect to
++    the choice hub, and choices connect onward.
++&quot;&quot;&quot;
++
++from __future__ import annotations
++
++from dataclasses import dataclass
++import re
++from typing import Optional
++
++from dialogue_graph import Edge, Graph, Node
++
++
++_SECTION_RE = re.compile(r&quot;^\[(?P&lt;id&gt;[^\]]+)\]\s*$&quot;)
++_LINE_RE = re.compile(r&quot;^(?P&lt;speaker&gt;[^:]+):\s*(?P&lt;text&gt;.+?)(?:\s*-&gt;\s*(?P&lt;to&gt;[A-Za-z0-9_\-]+))?\s*$&quot;)
++_CHOICE_RE = re.compile(r&quot;^(?P&lt;num&gt;\d+)\.\s*(?P&lt;text&gt;.+?)(?:\s*-&gt;\s*(?P&lt;to&gt;[A-Za-z0-9_\-]+))?\s*$&quot;)
++
++
++@dataclass
++class _PendingEdge:
++    source: str
++    target: str
++    text: str = &quot;&quot;
++
++
++def _ensure_node(graph: Graph, node_id: str, *, type: str = &quot;line&quot;) -&gt; None:
++    if node_id in graph.nodes:
++        # Do not overwrite existing node content.
++        return
++    graph.add_node(Node(id=node_id, type=type))
++
++
++def parse_script(text: str):
++    &quot;&quot;&quot;Parse dialogue script content into a JSON-serializable graph dict.
++
++    Canonical mapping used for benchmark compatibility:
++      - Each section header `[SectionId]` becomes exactly one node with id `SectionId`.
++      - If the section contains numbered choices, that section node has type `choice`.
++      - Otherwise it is a `line` node whose `speaker`/`text` come from the first
++        `Speaker: ...` line in the section (if any).
++      - Edges originate from the section node. Choice edge `text` is the choice label.
++
++    This avoids introducing synthetic node ids (`__lineN`, `__choice`) which can
++    cause strict-id/count mismatches in tests.
++    &quot;&quot;&quot;
++
++    graph = Graph()
++
++    current_section: Optional[str] = None
++    section_first_line: dict[str, tuple[str, str]] = {}
++    section_has_choice: dict[str, bool] = {}
++    pending: list[_PendingEdge] = []
++
++    def _ensure_section(section_id: str) -&gt; None:
++        if section_id not in graph.nodes:
++            graph.add_node(Node(id=section_id, type=&quot;line&quot;))
++        section_has_choice.setdefault(section_id, False)
++
++    for raw in text.splitlines():
++        line = raw.strip()
++        if not line:
++            continue
++
++        m = _SECTION_RE.match(line)
++        if m:
++            current_section = m.group(&quot;id&quot;).strip()
++            _ensure_section(current_section)
++            continue
++
++        if current_section is None:
++            continue
++
++        m = _CHOICE_RE.match(line)
++        if m:
++            section_has_choice[current_section] = True
++            choice_text = m.group(&quot;text&quot;).strip()
++            to = (m.group(&quot;to&quot;) or &quot;&quot;).strip() or &quot;End&quot;
++            pending.append(_PendingEdge(source=current_section, target=to, text=choice_text))
++            continue
++
++        m = _LINE_RE.match(line)
++        if m:
++            speaker = m.group(&quot;speaker&quot;).strip()
++            content = m.group(&quot;text&quot;).strip()
++            to = (m.group(&quot;to&quot;) or &quot;&quot;).strip()
++
++            # Record the first dialogue line as the node&#x27;s content.
++            section_first_line.setdefault(current_section, (speaker, content))
++
++            # If this line explicitly transitions, create the edge from the section.
++            if to:
++                pending.append(_PendingEdge(source=current_section, target=to, text=&quot;&quot;))
++            continue
++
++        # Unknown line format: ignore.
++
++    # Populate node fields/types now that we know whether choices exist.
++    for section_id, node in list(graph.nodes.items()):
++        if section_has_choice.get(section_id):
++            node.type = &quot;choice&quot;
++        speaker_text = section_first_line.get(section_id)
++        if speaker_text and not node.text and not node.speaker:
++            node.speaker, node.text = speaker_text
++
++    # Ensure all referenced targets exist (except End).
++    for e in pending:
++        if e.target and e.target != &quot;End&quot;:
++            _ensure_section(e.target)
++
++    # Add edges (deduplicate exact duplicates).
++    seen = set()
++    for e in pending:
++        key = (e.source, e.target, e.text)
++        if key in seen:
++            continue
++        seen.add(key)
++        graph.add_edge(Edge(source=e.source, target=e.target, text=e.text))
++
++    errors = graph.validate()
++    if errors:
++        raise ValueError(&quot;Invalid dialogue graph: &quot; + &quot;; &quot;.join(errors))
++
++    return graph.to_dict()
++
++
++def main() -&gt; None:
++    &quot;&quot;&quot;CLI helper: read /app/script.txt and write /app/dialogue.json/.dot.&quot;&quot;&quot;
++
++    import pathlib
++
++    script_path = pathlib.Path(&quot;/app/script.txt&quot;)
++    out_json = pathlib.Path(&quot;/app/dialogue.json&quot;)
++    out_dot = pathlib.Path(&quot;/app/dialogue.dot&quot;)
++
++    text = script_path.read_text(encoding=&quot;utf-8&quot;)
++    data = parse_script(text)
++
++    # Re-hydrate to use to_dot() reliably.
++    graph = Graph.from_dict(data)
++
++    out_json.write_text(graph.to_json(), encoding=&quot;utf-8&quot;)
++    out_dot.write_text(graph.to_dot(), encoding=&quot;utf-8&quot;)
++
++
++if __name__ == &quot;__main__&quot;:
++    main()</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>dialogue-graph/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P001&quot;,
+    &quot;description&quot;: &quot;The bundle documented graph construction but did not provide a reusable parse_script entry point for converting dialogue text into the graph representation. Add that entry point while retaining the existing graph data structures.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;solution.py&quot;,
+        &quot;section&quot;: &quot;parse_script entry point&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>SkillOpt · 实际 GPT-5.5 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/dialogue-parser/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillopt_gpt55&quot;,
+  &quot;task_id&quot;: &quot;dialogue-parser&quot;,
+  &quot;file_count&quot;: 2,
+  &quot;total_bytes&quot;: 14301,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:15ea51d6d82ae225ffb6967f5a68e7590bab606593a0cb93ee3b1e6a3e8c60e3&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:15ea51d6d82ae225ffb6967f5a68e7590bab606593a0cb93ee3b1e6a3e8c60e3&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: false,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/dialogue-parser/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/dialogue-parser/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>dialogue-graph/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/dialogue-parser/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/dialogue-parser/repaired_skill/dialogue-graph/SKILL.md">修改后</a></p><pre>--- original/dialogue-graph/SKILL.md
++++ repaired/dialogue-graph/SKILL.md
+@@ -55,8 +55,12 @@
+ 
+ ```python
+ data = graph.to_dict()
+-# returns {&quot;nodes&quot;: [...], &quot;edges&quot;: [...]}
+-json_str = graph.to_json()
++# Before serialization, convert Edge(source, target, text) objects to:
++# {&quot;from&quot;: source, &quot;to&quot;: target, &quot;text&quot;: text}
++# The evaluator-facing JSON is exactly:
++# {&quot;nodes&quot;:[{&quot;id&quot;:&quot;&quot;,&quot;text&quot;:&quot;&quot;,&quot;speaker&quot;:&quot;&quot;,&quot;type&quot;:&quot;&quot;}],
++#  &quot;edges&quot;:[{&quot;from&quot;:&quot;&quot;,&quot;to&quot;:&quot;&quot;,&quot;text&quot;:&quot;&quot;}]}
++json_str = json.dumps(data, sort_keys=False, separators=(&quot;,&quot;, &quot;:&quot;))
+ ```
+ 
+ ### 5. Validation
+@@ -98,3 +102,59 @@
+ # From JSON string
+ graph = Graph.from_json(json_string)
+ ```
++
++
++
++## Task-oriented script parsing contract
++
++For the parser task, implement `def parse_script(text: str)` in `/app/solution.py`. It may return the dictionary directly or a `Graph`, but the final serialized object must have exactly the top-level keys `nodes` and `edges`, with node objects containing exactly `id`, `text`, `speaker`, and `type`, and edge objects containing exactly `from`, `to`, and `text`.
++
++### Grammar and deterministic construction
++
++Parse the input line by line after normalizing newlines. Ignore blank lines, but do not silently ignore nonblank malformed lines. The supported forms are:
++
++```text
++[SceneId]
++Speaker: dialogue text -&gt; Target
++N. choice text -&gt; Target
++N. [Tag] choice text -&gt; Target
++```
++
++`SceneId`, `Speaker`, and `Target` are nonempty strings without the surrounding brackets, colon, or arrow. A choice number is one or more decimal digits followed by a period. The arrow target is required on every dialogue and choice line. Split dialogue at the final valid ` -&gt; ` separator so dialogue text can contain other punctuation; split a choice similarly. Trim surrounding whitespace from fields.
++
++Headers are labels, not emitted nodes. Maintain a label table from each header identifier to the first generated node for that section. A section containing choices maps its header to one choice hub; a section containing dialogue maps its header to its first line node. Reject duplicate headers. A target must resolve to a header label or the special terminal target `End`.
++
++Create dialogue nodes in source order with deterministic IDs `line_001`, `line_002`, and so on. Their `type` is `line`, `speaker` is the parsed speaker, and `text` is the dialogue text without the arrow and target. For consecutive dialogue lines in one section, add a simple edge from each line to the next line. The final dialogue line&#x27;s target edge goes to the resolved target.
++
++For each contiguous block of numbered choices, create one deterministic hub node with ID `choice_&lt;SceneId&gt;` (use a collision-safe deterministic suffix if the same sanitized ID would collide). Its `type` is `choice`, and its `text` and `speaker` are empty strings. The section label resolves to this hub. Add one edge from the hub for each choice in source order. The edge `text` is the trimmed choice text after the numeric prefix, including an optional bracketed tag such as `[Lie]` or `[Attack]`; preserve the tag exactly rather than discarding it. Choice numbers determine ordering and are not required in the edge text. Repeated destinations are valid and must produce separate edges. Do not create implicit nodes for choices: all choice destinations resolve through the label table or `End`.
++
++When `End` is referenced, create exactly one terminal node with ID `End`, empty `text` and `speaker`, and `type` `terminal` if it is not already present. `End` is the only permitted unresolved target and may have multiple incoming edges. A literal `[End]` header is not needed and should be rejected as a duplicate/conflicting terminal declaration. The first generated line or choice hub in the first section is the graph&#x27;s start node.
++
++Use stable source order for nodes and edges: line nodes and hubs are emitted in the order their sections/content first appear, and edges are emitted in construction order. Do not use hash iteration order for serialization. Convert library `Edge(source, target, text)` values explicitly to `{&quot;from&quot;: edge.source, &quot;to&quot;: edge.target, &quot;text&quot;: edge.text}`; never expose `source` or `target` in the final JSON.
++
++### Errors and validation
++
++Raise a clear `ValueError` containing the 1-based input line number for malformed nonblank lines, including an invalid header, missing speaker colon, missing `-&gt;` target, missing choice number, empty choice text, or empty target. Reject an unknown non-terminal target with an error identifying the source and target. Reject duplicate labels. A section must contain at least one valid dialogue line or choice block.
++
++After construction, validate that every non-terminal edge target exists, that every generated node is reachable from the first parsed node, and that the special `End` node is allowed as a terminal target. Multiple paths to `End` must remain valid. Report missing targets and unreachable node IDs explicitly instead of silently repairing them.
++
++### Required files and DOT output
++
++When run as the task solution, read `/app/script.txt`, call `parse_script`, validate the result, and write stable JSON to `/app/dialogue.json` using UTF-8 and deterministic separators. Also write `/app/dialogue.dot`. The DOT graph must contain the same nodes and edges as the JSON, use quoted IDs, escape backslashes, quotes, and newlines in labels, and use edge labels from the serialized `text` field. Give `choice` nodes a distinct shape (for example `diamond`), terminal nodes a distinct shape, and line nodes a readable shape; styling must not change graph semantics.
++
++### Representative example and tests
++
++For the input:
++
++```text
++[GateScene]
++Guard: Halt! State your name and business. -&gt; NameChoice
++
++[NameChoice]
++1. I am Sir Aldric, Knight of the Realm. -&gt; KnightPath
++2. Just a humble traveler seeking shelter. -&gt; TravelerPath
++3. [Lie] I&#x27;m a merchant with important goods. -&gt; MerchantPath
++4. [Attack] Draw your sword! -&gt; CombatStart
++```
++
++`GateScene` resolves to a `line_001` node, `NameChoice` resolves to its choice hub, and the hub has four ordered outgoing edges whose texts retain `[Lie]` and `[Attack]`. The parser must also be tested with ordinary dialogue lines, tagged and untagged choices, repeated destinations, a terminal `-&gt; End`, multiple incoming edges to `End`, an unknown target, an unreachable section, and malformed lines such as `Guard: missing target`. Tests should assert exact node/edge keys, deterministic IDs and ordering, preservation of choice tags, and matching JSON/DOT edge semantics.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>dialogue-graph/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P001&quot;,
+    &quot;description&quot;: &quot;The skill does not define how to parse bracketed scene headers, speaker lines of the form Speaker: text -&gt; Target, numbered choices with optional tags such as [Lie] or [Attack], or terminal destinations such as End. It also leaves ambiguous whether headers, dialogue lines, and choice hubs are nodes, how node IDs are assigned, how choice text and tags are preserved, and how multiple incoming paths are handled. Its documented Edge representation uses source and target, while the required serialized contract uses from and to. Validation and visualization guidance is likewise insufficiently specific for the required reachability rules and /app output files.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;,
+        &quot;section&quot;: &quot;dialogue-graph&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>MMG2Skill · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/dialogue-parser/skills">完整上传修复包</a></p><p>以同任务其他归档保存的原始包为对照，完整包哈希已与共享原始运行核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;mmg2skill_gpt52&quot;,
+  &quot;task_id&quot;: &quot;dialogue-parser&quot;,
+  &quot;file_count&quot;: 2,
+  &quot;total_bytes&quot;: 8368,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:5ed5b22ebc3312ab7144072063f00a2043ea4a6b6ad841a343020bcd55b91207&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:5ed5b22ebc3312ab7144072063f00a2043ea4a6b6ad841a343020bcd55b91207&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/dialogue-parser-mmg2skill-gpt52-r001/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/dialogue-parser/skills&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>dialogue-graph/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/dialogue-parser/skills/dialogue-graph/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/dialogue-parser/skills/dialogue-graph/SKILL.md">修改后</a></p><pre>--- original/dialogue-graph/SKILL.md
++++ repaired/dialogue-graph/SKILL.md
+@@ -1,100 +1,31 @@
+ ---
+ name: dialogue-graph
+-description: A library for building, validating, visualizing, and serializing dialogue graphs. Use this when parsing scripts or creating branching narrative structures.
++description: Build, validate, serialize, and visualize a dialogue graph parsed from
++  a bracketed-section script into `{&quot;nodes&quot;:[...],&quot;edges&quot;:[...]}` plus a `.dot` graph.
+ ---
+ 
+-# Dialogue Graph Skill
+-
+-This skill provides a `dialogue_graph` module to easily build valid dialogue trees/graphs.
+-
+-## When to use
+-
+-*   **Script Parsers**: When converting text to data.
+-*   **Dialogue Editors**: When building tools to edit conversation flow.
+-*   **Game Logic**: When traversing a dialogue tree.
+-*   **Visualization**: When generating visual diagrams of dialogue flows.
+-
+-## How to use
+-
+-Import the module:
+-```python
+-from dialogue_graph import Graph, Node, Edge
+-```
+-
+-### 1. The `Graph` Class
+-The main container.
+-
+-```python
+-graph = Graph()
+-```
+-
+-### 2. Adding Nodes
+-Define content nodes.
+-
+-```python
+-# Regular line
+-graph.add_node(Node(id=&quot;Start&quot;, speaker=&quot;Guard&quot;, text=&quot;Halt!&quot;, type=&quot;line&quot;))
+-
+-# Choice hub
+-graph.add_node(Node(id=&quot;Choices&quot;, type=&quot;choice&quot;))
+-```
+-
+-### 3. Adding Edges
+-Connect nodes (transitions).
+-
+-```python
+-# Simple transition
+-graph.add_edge(Edge(source=&quot;Start&quot;, target=&quot;Choices&quot;))
+-
+-# Choice transition (with text)
+-graph.add_edge(Edge(source=&quot;Choices&quot;, target=&quot;End&quot;, text=&quot;1. Run away&quot;))
+-```
+-
+-### 4. Export
+-Serialize to JSON format for the engine.
+-
+-```python
+-data = graph.to_dict()
+-# returns {&quot;nodes&quot;: [...], &quot;edges&quot;: [...]}
+-json_str = graph.to_json()
+-```
+-
+-### 5. Validation
+-Check for integrity.
+-
+-```python
+-errors = graph.validate()
+-# Returns list of strings, e.g., [&quot;Edge &#x27;Start&#x27;-&gt;&#x27;Unk&#x27; points to missing node &#x27;Unk&#x27;&quot;]
+-```
+-
+-### 6. Visualization
+-Generate a PNG/SVG graph diagram.
+-
+-```python
+-# Requires: pip install graphviz
+-# Also requires Graphviz binary: https://graphviz.org/download/
+-
+-graph.visualize(&#x27;dialogue_graph&#x27;)  # Creates dialogue_graph.png
+-graph.visualize(&#x27;output&#x27;, format=&#x27;svg&#x27;)  # Creates output.svg
+-```
+-
+-The visualization includes:
+-- **Diamond shapes** for choice nodes (light blue)
+-- **Rounded boxes** for dialogue nodes (colored by speaker)
+-- **Bold blue edges** for skill-check choices like `[Lie]`, `[Attack]`
+-- **Gray edges** for regular choices
+-- **Black edges** for simple transitions
+-
+-### 7. Loading from JSON
+-Load an existing dialogue graph.
+-
+-```python
+-# From file
+-graph = Graph.from_file(&#x27;dialogue.json&#x27;)
+-
+-# From dict
+-graph = Graph.from_dict({&#x27;nodes&#x27;: [...], &#x27;edges&#x27;: [...]})
+-
+-# From JSON string
+-graph = Graph.from_json(json_string)
+-```
++## Steps
++1. Inspect the script structure as **sections** starting with headers like `[SectionId]`, collecting each section’s non-empty lines until the next header.
++2. Confirm each section is **one of**:
++   - a single **speaker line**: `Speaker: text. -&gt; TargetId`
++   - a **choice hub**: multiple numbered lines like `1. Choice text -&gt; TargetId`  
++   (No mixing speaker+choices in the same section; no “nonconforming” lines.)
++3. Parse sections into nodes:
++   - For a speaker line section, create a node `{id: SectionId, type:&quot;line&quot;, speaker:&lt;Speaker&gt;, text:&lt;text&gt;}`.
++   - For a choice section, create a node `{id: SectionId, type:&quot;choice&quot;, speaker:&quot;&quot;, text:&quot;&quot;}` (or a minimal placeholder text if needed).
++4. Parse transitions into edges:
++   - From a speaker line section: add one edge `{&quot;from&quot;: SectionId, &quot;to&quot;: TargetId, &quot;text&quot;: &quot;&quot;}`.
++   - From a choice section: for each choice, add `{&quot;from&quot;: SectionId, &quot;to&quot;: TargetId, &quot;text&quot;: &lt;full choice label/text&gt;}`.
++5. Ensure all edge targets exist by creating missing target nodes when needed; if the script references `End` without defining `[End]`, add an implicit `End` node (commonly `{id:&quot;End&quot;, type:&quot;line&quot;, speaker:&quot;&quot;, text:&quot;&quot;}`).
++6. Validate graph constraints:
++   - Determine the **start node** as the first section encountered in the file.
++   - Run reachability (BFS/DFS) from the start node; error if any node is unreachable.
++   - Error on missing edge targets **other than** the allowed implicit end case (or create the missing nodes as in Step 5).
++7. Serialize outputs:
++   - Write JSON as `{&quot;nodes&quot;:[{&quot;id&quot;,&quot;text&quot;,&quot;speaker&quot;,&quot;type&quot;}...],&quot;edges&quot;:[{&quot;from&quot;,&quot;to&quot;,&quot;text&quot;}...]}`.
++   - Write a `.dot` file with nodes and directed edges for visualization (choice nodes can be `shape=diamond`, line nodes `shape=box`).
++8. When searching the script from the shell for patterns starting with `-` (e.g., `-&gt; End`), use `grep` with `--` to stop option parsing:  
++   `grep -n -- &#x27;-&gt; End&#x27; /app/script.txt`
++9. When using a terminal tool that only accepts one command at a time, run commands in separate calls, or chain within a single command using `&amp;&amp;` (not as two separate lines).
++## Expected Result
++A parsed dialogue graph where every node is reachable from the first section, all referenced targets exist (with an implicit `End` node if needed), and the graph is exported to valid `dialogue.json` plus a readable `dialogue.dot`.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>dialogue-graph/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;MMG-001&quot;,
+    &quot;description&quot;: &quot;Shell/grep parsing error: the pattern beginning with “-&gt;” was interpreted as options because “--” was not used before the pattern.\nEvidence: The command “grep -n &#x27;-&gt; End&#x27; /app/script.txt | head” failed with “grep: invalid option -- &#x27;&gt;&#x27;”.\nTrajectory location: turn 4&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;MMG-002&quot;,
+    &quot;description&quot;: &quot;Misunderstanding of the terminal tool constraint; multiple commands must be run separately (or properly chained within a single command per tool rules).\nEvidence: The agent attempted to run two separate commands in one tool call; tool returned “Cannot execute multiple commands at once.”\nTrajectory location: turn 8&quot;,
+    &quot;locations&quot;: []
+  }
+]</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_skill">完整上传修复包</a></p><p>以同任务其他归档保存的原始包为对照，完整包哈希已与共享原始运行核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillrevise_gpt52&quot;,
+  &quot;task_id&quot;: &quot;dialogue-parser&quot;,
+  &quot;file_count&quot;: 2,
+  &quot;total_bytes&quot;: 10153,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:c070fa0942b91581004ed282ae04e5e711e541ca88e8d66c2fb360d23f2e6d2b&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:c070fa0942b91581004ed282ae04e5e711e541ca88e8d66c2fb360d23f2e6d2b&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>dialogue-graph/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/dialogue-parser/skills/dialogue-graph/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/dialogue-parser/repaired_skill/dialogue-graph/SKILL.md">修改后</a></p><pre>--- original/dialogue-graph/SKILL.md
++++ repaired/dialogue-graph/SKILL.md
+@@ -1,100 +1,39 @@
+----
+-name: dialogue-graph
+-description: A library for building, validating, visualizing, and serializing dialogue graphs. Use this when parsing scripts or creating branching narrative structures.
+----
++# Dialogue Script -&gt; Graph Artifacts (JSON + DOT)
+ 
+-# Dialogue Graph Skill
++## Purpose
++Convert a plain-text dialogue script into a validated dialogue graph representation (nodes + edges) and serialize it into verifier-checked artifacts (typically JSON and DOT text), using environment discovery and post-write schema/consistency checks.
+ 
+-This skill provides a `dialogue_graph` module to easily build valid dialogue trees/graphs.
++## When to Use
++Use this when a task requires parsing a dialogue script format (often sectioned and/or choice-based) into a machine-validated graph schema and emitting artifacts that downstream tooling/tests verify (for example, a JSON graph and a .dot file).
+ 
+-## When to use
++## Procedure
++- 1) Discover the contract and environment before coding anything irreversible.
++- Locate the repository entrypoint(s) and expected outputs by searching for any of: README/spec, tests, verify scripts, fixture examples, or schema definitions.
++- Identify (a) required artifact types (JSON, DOT, other), (b) exact key names (for example &quot;from&quot; vs &quot;source&quot;), (c) start-node rule (first section vs a sentinel name), and (d) terminal-node convention (whether a sentinel like &quot;End&quot; is allowed or must be materialized).
++- Execution anchor: run the available verification command (tests or a provided checker) to see explicit failures and expected formats.
++- 2) Parse the script into an internal, contract-shaped graph model.
++- Read the script as text; normalize line endings; ignore empty/comment-only lines if the spec allows.
++- Discover sections (for example bracketed headers) rather than assuming a fixed start label; set start_id to the first section encountered unless the contract says otherwise.
++- For each section, classify content into node types required by the contract (for example &quot;line&quot; vs &quot;choice&quot;) using only rules supported by the spec/tests; if ambiguous, choose a deterministic rule and record/raise a parse error when the contract requires strictness.
++- Extract fields (speaker/text/choice text/targets) exactly as the contract names them; do not invent extra fields.
++- 3) Build edges with strict referential rules and deterministic ID handling.
++- Create node ids from section identifiers exactly as parsed (preserve case/spacing rules per contract).
++- Create edges only when the script indicates a transition (for example an arrow); store edge endpoints using the contract keys (&quot;from&quot;/&quot;to&quot; or &quot;source&quot;/&quot;target&quot;).
++- Decision point: if an edge target is referenced but no section defines it:
++- If the contract explicitly allows a terminal/sentinel target, handle it exactly as required (either permit as an edge to a non-materialized sentinel, or materialize a terminal node). Do not guess.
++- Otherwise, fail validation (do not silently auto-create nodes).
++- 4) Serialize artifacts to verifier-visible files using discovered paths/names.
++- Write JSON using the exact schema and key ordering only if required (otherwise any ordering).
++- Write DOT as plain text (no external graphviz install, no image generation). Keep it minimal: declare a directed/undirected graph per contract and emit node/edge statements using node ids safely escaped if needed by DOT syntax.
++- If output paths are not provided, discover the expected location from tests/spec; do not hard-code project-specific paths.
++- 5) Validate before finalizing (reload-and-assert).
++- Reload the written JSON from disk and assert:
++- Top-level object has required keys (for example nodes, edges) and correct types (lists/objects).
++- Each node has required fields (at least id and type) and unique ids.
++- Each edge has required fields and references valid node ids, except only those terminal conventions explicitly allowed by the contract.
++- If reachability is required, compute reachability from start_id and assert all required nodes are reachable.
++- Read the DOT file back as text and sanity-check it matches the contract (for example starts with &quot;digraph&quot; if directed) and references known node ids/edges.
+ 
+-*   **Script Parsers**: When converting text to data.
+-*   **Dialogue Editors**: When building tools to edit conversation flow.
+-*   **Game Logic**: When traversing a dialogue tree.
+-*   **Visualization**: When generating visual diagrams of dialogue flows.
+-
+-## How to use
+-
+-Import the module:
+-```python
+-from dialogue_graph import Graph, Node, Edge
+-```
+-
+-### 1. The `Graph` Class
+-The main container.
+-
+-```python
+-graph = Graph()
+-```
+-
+-### 2. Adding Nodes
+-Define content nodes.
+-
+-```python
+-# Regular line
+-graph.add_node(Node(id=&quot;Start&quot;, speaker=&quot;Guard&quot;, text=&quot;Halt!&quot;, type=&quot;line&quot;))
+-
+-# Choice hub
+-graph.add_node(Node(id=&quot;Choices&quot;, type=&quot;choice&quot;))
+-```
+-
+-### 3. Adding Edges
+-Connect nodes (transitions).
+-
+-```python
+-# Simple transition
+-graph.add_edge(Edge(source=&quot;Start&quot;, target=&quot;Choices&quot;))
+-
+-# Choice transition (with text)
+-graph.add_edge(Edge(source=&quot;Choices&quot;, target=&quot;End&quot;, text=&quot;1. Run away&quot;))
+-```
+-
+-### 4. Export
+-Serialize to JSON format for the engine.
+-
+-```python
+-data = graph.to_dict()
+-# returns {&quot;nodes&quot;: [...], &quot;edges&quot;: [...]}
+-json_str = graph.to_json()
+-```
+-
+-### 5. Validation
+-Check for integrity.
+-
+-```python
+-errors = graph.validate()
+-# Returns list of strings, e.g., [&quot;Edge &#x27;Start&#x27;-&gt;&#x27;Unk&#x27; points to missing node &#x27;Unk&#x27;&quot;]
+-```
+-
+-### 6. Visualization
+-Generate a PNG/SVG graph diagram.
+-
+-```python
+-# Requires: pip install graphviz
+-# Also requires Graphviz binary: https://graphviz.org/download/
+-
+-graph.visualize(&#x27;dialogue_graph&#x27;)  # Creates dialogue_graph.png
+-graph.visualize(&#x27;output&#x27;, format=&#x27;svg&#x27;)  # Creates output.svg
+-```
+-
+-The visualization includes:
+-- **Diamond shapes** for choice nodes (light blue)
+-- **Rounded boxes** for dialogue nodes (colored by speaker)
+-- **Bold blue edges** for skill-check choices like `[Lie]`, `[Attack]`
+-- **Gray edges** for regular choices
+-- **Black edges** for simple transitions
+-
+-### 7. Loading from JSON
+-Load an existing dialogue graph.
+-
+-```python
+-# From file
+-graph = Graph.from_file(&#x27;dialogue.json&#x27;)
+-
+-# From dict
+-graph = Graph.from_dict({&#x27;nodes&#x27;: [...], &#x27;edges&#x27;: [...]})
+-
+-# From JSON string
+-graph = Graph.from_json(json_string)
+-```
++## Constraints / Pitfalls
++- Do not assume any specific library/module (for example a pre-existing Graph/Node/Edge package) exists; always discover what is available in the environment and implement with standard language features unless verified otherwise.
++- Do not assume a fixed start node label (for example &quot;[Start]&quot;) or silently auto-create missing targets; derive start/terminal behavior from the observable contract (spec/tests) and enforce it with a post-write reload-and-assert check.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>dialogue-graph/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The skill is a generic ‘dialogue graph library’ description that assumes tools/modules and emphasizes visualization features, but the task needed a concrete parser producing a specific JSON/DOT format with strict graph constraints. This mismatch led to assumption-driven implementation/reporting and diluted focus, contributing to a non-perfect verification result. The skill failed primarily because it operates at the wrong abstraction level and is mismatched to the execution environment: it assumes a pre-existing `dialogue_graph` library and Graphviz setup, while the task required implementing a concrete parser (`parse_script`) producing a very specific JSON schema and a .dot file. The skill’s extra visualization/styling detail adds context pollution without helping satisfy constraints, and its guidance doesn’t force discovery/verification of available modules or validation entrypoints, leading to assumption-driven behavior (e.g., `[Start]` as the first node) and incomplete alignment with the verifier’s expectations.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>SkillTTA · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/dialogue-parser/repaired_skill">完整上传修复包</a></p><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;SKILL.md instructs users to import a `dialogue_graph` module (`from dialogue_graph import Graph, Node, Edge`), but the bundle only provides `dialogue-graph/scripts/dialogue_graph.py` and does not define an installable/importable `dialogue_graph` package/module at the documented import path. This makes the documented usage likely to fail without extra, undocumented PYTHONPATH/package setup.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;,
+        &quot;section&quot;: &quot;How to use (Import the module)&quot;
+      },
+      {
+        &quot;file&quot;: &quot;dialogue-graph/scripts/dialogue_graph.py&quot;,
+        &quot;section&quot;: &quot;File location / module name mismatch relative to documented `from dialogue_graph import ...`&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P2&quot;,
+    &quot;description&quot;: &quot;`Graph.validate()` is advertised as validating graph integrity, but it only checks edge endpoint existence and does not validate key constraints that the task/evaluators commonly enforce (e.g., all nodes reachable from the first node). Using this validation as-is can allow structurally invalid graphs to pass \&quot;validate\&quot; while failing downstream constraints.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/scripts/dialogue_graph.py&quot;,
+        &quot;section&quot;: &quot;Graph.validate&quot;
+      },
+      {
+        &quot;file&quot;: &quot;dialogue-graph/SKILL.md&quot;,
+        &quot;section&quot;: &quot;5. Validation (\&quot;Check for integrity.\&quot;)&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P3&quot;,
+    &quot;description&quot;: &quot;The implementation treats the special target `\&quot;End\&quot;` inconsistently across validation/serialization/visualization: `validate()` explicitly allows edges to point to `End` even when `End` is not present in `self.nodes`, `to_dict()`/`to_json()` will omit an `End` node unless the user added one, but `visualize()` always injects an `End` node into the DOT output. This can produce a JSON graph with dangling `to: \&quot;End\&quot;` references (depending on consumer expectations) and a DOT graph that does not faithfully represent the serialized JSON graph.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;dialogue-graph/scripts/dialogue_graph.py&quot;,
+        &quot;section&quot;: &quot;Graph.validate (edge.target != \&quot;End\&quot; exception)&quot;
+      },
+      {
+        &quot;file&quot;: &quot;dialogue-graph/scripts/dialogue_graph.py&quot;,
+        &quot;section&quot;: &quot;Graph.to_dict / Graph.to_json (serializes only self.nodes)&quot;
+      },
+      {
+        &quot;file&quot;: &quot;dialogue-graph/scripts/dialogue_graph.py&quot;,
+        &quot;section&quot;: &quot;Graph.visualize (unconditionally adds &#x27;End&#x27; node)&quot;
+      }
+    ]
+  }
+]</pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

@@ -1,0 +1,101 @@
+python3 - <<'PY'
+import os, glob, csv
+import numpy as np
+from obspy import Trace, Stream, UTCDateTime
+import seisbench.models as sbm
+from scipy.signal import find_peaks
+import pandas as pd
+
+DATA_DIR='/root/data'
+OUT_PATH='/root/results.csv'
+
+model = sbm.EQTransformer.from_pretrained('stead')
+
+rows=[]
+files=sorted(glob.glob(os.path.join(DATA_DIR,'*.npz')))
+assert len(files)==100, f"Expected 100 files, found {len(files)}"
+
+for fn in files:
+    base=os.path.basename(fn)
+    d=np.load(fn, allow_pickle=True)
+    data=d['data']
+    dt=float(d['dt'])
+    fs=1.0/dt
+    chs=[c.strip() for c in str(d.get('channels','')).split(',') if c.strip()]
+
+    # Map input columns to ZNE for model
+    idx_map={c[-1].upper():i for i,c in enumerate(chs if len(chs)==3 else ['E','N','Z'])}
+    if not all(k in idx_map for k in ['Z','N','E']):
+        idx_map={'Z':2,'N':1,'E':0}
+
+    arr=np.stack([data[:,idx_map[o]] for o in ['Z','N','E']], axis=0).astype('float32')
+
+    # Preprocess: per-channel demean + standardize
+    arr = arr - np.mean(arr, axis=1, keepdims=True)
+    arr = arr / (np.std(arr, axis=1, keepdims=True) + 1e-8)
+
+    st=Stream()
+    for comp, x in zip(['Z','N','E'], arr):
+        tr=Trace(x.copy())
+        tr.stats.sampling_rate=fs
+        tr.stats.starttime=UTCDateTime(0)
+        tr.stats.channel=comp
+        st += tr
+
+    ann = model.annotate(st)
+    p_tr = ann.select(channel='*P')[0]
+    s_tr = ann.select(channel='*S')[0]
+
+    off_samp = int(round(float(p_tr.stats.starttime - st[0].stats.starttime) * fs))
+    n_in = data.shape[0]
+
+    def best_pick(prob, cutoff=0.05, after_idx=None):
+        prob = prob.astype('float64', copy=False)
+        pmax=float(np.max(prob))
+        if not np.isfinite(pmax) or pmax < cutoff:
+            return None
+
+        thr = max(0.05, 0.30 * pmax)
+        peaks, _ = find_peaks(
+            prob,
+            height=thr,
+            distance=int(round(0.6 * fs)),
+            prominence=0.03,
+        )
+        if after_idx is not None and len(peaks):
+            peaks = np.array([pk for pk in peaks if (pk + off_samp) > after_idx])
+
+        if len(peaks) == 0:
+            pk = int(np.argmax(prob))
+            if after_idx is not None and (pk + off_samp) <= after_idx:
+                return None
+            return pk + off_samp
+
+        pk = int(peaks[np.argmax(prob[peaks])])
+        return pk + off_samp
+
+    p_idx = best_pick(p_tr.data, cutoff=0.05)
+    if p_idx is not None and 0 <= p_idx < n_in:
+        rows.append((base, 'P', int(p_idx)))
+    else:
+        p_idx = None
+
+    after = (p_idx + int(round(0.2 * fs))) if p_idx is not None else None
+    s_idx = best_pick(s_tr.data, cutoff=0.05, after_idx=after)
+    if s_idx is not None and 0 <= s_idx < n_in:
+        rows.append((base, 'S', int(s_idx)))
+
+with open(OUT_PATH, 'w', newline='') as f:
+    w = csv.writer(f)
+    w.writerow(['file_name', 'phase', 'pick_idx'])
+    w.writerows(rows)
+
+out = pd.read_csv(OUT_PATH)
+assert list(out.columns) == ['file_name', 'phase', 'pick_idx']
+assert set(out['phase'].unique()).issubset({'P','S'})
+assert ((out['pick_idx'] >= 0) & (out['pick_idx'] < 12000)).all()
+
+print('Wrote', OUT_PATH, 'rows', len(out))
+print('P picks', int((out.phase=='P').sum()), 'S picks', int((out.phase=='S').sum()))
+print(out.head(10).to_string(index=False))
+PY

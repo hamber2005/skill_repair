@@ -1,0 +1,262 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>财务游戏表格问答 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>财务游戏表格问答</h1><p class="lead">按奇偶游戏分配给两名玩家，计算胜场差并写答案。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/financial-modeling-qa/task.md">原始任务要求</a></div><p class="meta">financial-modeling-qa · 金融与经济 · 2 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>按奇偶游戏分配给两名玩家，计算胜场差并写答案。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>pdf</td><td>提取 PDF 文本和表格，修改、填表及生成 PDF。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/financial-modeling-qa/environment/skills/pdf/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr><tr><td>xlsx</td><td>读取和修改工作簿，保留公式与格式，并重算和核查数值。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/financial-modeling-qa/environment/skills/xlsx/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>3 项通过 / 4 项检查</td><td>结果 25，参考 23；人工排除说明指出公开输入缺少相关骰子记录。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>3 项通过 / 4 项检查</td><td>结果改为 24，仍不等于参考 23；数值接近不能补足缺失输入。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>3 项通过 / 4 项检查</td><td>仍为 25，对参考 23。</td></tr><tr><td>SkillRevise · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>4 项通过 / 4 项检查</td><td>4/4 项通过。该题属于 8 道 Gold 排除题之一，这次任务通过可以记录，但不能计算对应的人工 Gold 修复准确率。</td></tr></tbody></table></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>xlsx/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr><tr><td>pdf/SKILL.md</td><td>接受修改</td><td>0.0</td><td>1.0</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/financial-modeling-qa/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/financial-modeling-qa/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/financial-modeling-qa/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/financial-modeling-qa/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>结果 25，参考 23；人工排除说明指出公开输入缺少相关骰子记录。</p><details><summary>::TestOutputs::test_answer_value_correct</summary><pre>self = &lt;test_outputs.TestOutputs object at 0x767055da29f0&gt;
+
+    def test_answer_value_correct(self):
+        &quot;&quot;&quot;Check answer numeric value matches expected value.&quot;&quot;&quot;
+        with open(ANSWER_PATH, &quot;r&quot;, encoding=&quot;utf-8&quot;) as f:
+            content = f.read().strip()
+    
+        actual = float(content)
+        expected = float(EXPECTED_ANSWER)
+    
+&gt;       assert abs(actual - expected) &lt;= TOL, (
+            f&quot;Incorrect answer. Expected {expected}, got {actual}&quot;
+        )
+E       AssertionError: Incorrect answer. Expected 23.0, got 25.0
+E       assert 2.0 &lt;= 1e-06
+E        +  where 2.0 = abs((25.0 - 23.0))
+
+/verifier/test_outputs.py:67: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;financial-modeling-qa-original-skill-v11x-20260903-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:c9fd9621f3d14dda5cb73b9d5e30ccdbfcc3c0311d51ab0502ef17065e14770f&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 18,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:83634687cb5b0853b93c8b5449fd4646b163653f448bbd161ec2a5c730d203d5&quot;
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/financial-modeling-qa/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/financial-modeling-qa/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/financial-modeling-qa/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/financial-modeling-qa/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/financial-modeling-qa/repaired_skill">上传修复包</a></p><p>结果改为 24，仍不等于参考 23；数值接近不能补足缺失输入。</p><details><summary>::TestOutputs::test_answer_value_correct</summary><pre>self = &lt;test_outputs.TestOutputs object at 0xffffa80523f0&gt;
+
+    def test_answer_value_correct(self):
+        &quot;&quot;&quot;Check answer numeric value matches expected value.&quot;&quot;&quot;
+        with open(ANSWER_PATH, &quot;r&quot;, encoding=&quot;utf-8&quot;) as f:
+            content = f.read().strip()
+    
+        actual = float(content)
+        expected = float(EXPECTED_ANSWER)
+    
+&gt;       assert abs(actual - expected) &lt;= TOL, (
+            f&quot;Incorrect answer. Expected {expected}, got {actual}&quot;
+        )
+E       AssertionError: Incorrect answer. Expected 23.0, got 24.0
+E       assert 1.0 &lt;= 1e-06
+E        +  where 1.0 = abs((24.0 - 23.0))
+
+/verifier/test_outputs.py:67: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;financial-modeling-qa-a01&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:c9fd9621f3d14dda5cb73b9d5e30ccdbfcc3c0311d51ab0502ef17065e14770f&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 15,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:fb11c12fe8c6111f45d79acf1213bb1dfeed9194765d646e2f39f1fdb8f77efc&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/financial-modeling-qa/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/financial-modeling-qa/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/financial-modeling-qa/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/financial-modeling-qa/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/financial-modeling-qa/repaired_skill">上传修复包</a></p><p>仍为 25，对参考 23。</p><details><summary>::TestOutputs::test_answer_value_correct</summary><pre>self = &lt;test_outputs.TestOutputs object at 0xffffbdbc4a40&gt;
+
+    def test_answer_value_correct(self):
+        &quot;&quot;&quot;Check answer numeric value matches expected value.&quot;&quot;&quot;
+        with open(ANSWER_PATH, &quot;r&quot;, encoding=&quot;utf-8&quot;) as f:
+            content = f.read().strip()
+    
+        actual = float(content)
+        expected = float(EXPECTED_ANSWER)
+    
+&gt;       assert abs(actual - expected) &lt;= TOL, (
+            f&quot;Incorrect answer. Expected {expected}, got {actual}&quot;
+        )
+E       AssertionError: Incorrect answer. Expected 23.0, got 25.0
+E       assert 2.0 &lt;= 1e-06
+E        +  where 2.0 = abs((25.0 - 23.0))
+
+/verifier/test_outputs.py:67: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;financial-modeling-qa-a09&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:96c6c35203876c98d43e6406ca4686a7bb7dfd1ed0a4bbb68fad200ea8a2116e&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 21,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:9ad3c19b53d93804165931720e853b437adfc613c9bd24932488183124f20a49&quot;
+}</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_skill">上传修复包</a></p><p>4/4 项通过。该题属于 8 道 Gold 排除题之一，这次任务通过可以记录，但不能计算对应的人工 Gold 修复准确率。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;financial-modeling-qa-bundle-2-published-original-revi-4a13dea4ac51&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:9ad9ca0f6425373729d9bb91f19fa2d1e25bc71e8c9ffa029a0a25b4d66da1a7&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 21,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:412d743eb1ce7439383c9ad35d2e48b36c0605cf51f610bf99c4d981575e1699&quot;
+}</pre></details></details><h2>人工 Gold 范围</h2><p>该题属于原始失败但排除出人工 Gold 的 8 题之一。“排除”只表示未纳入这一 Gold 评分集合，不表示任务已解决或不值得分析。</p><div class="note warning"><strong>该题为何被排除出人工 Gold</strong><p>可见工作簿只有 5999 条记录，缺少 Game 8 的 Turn 15。官方 oracle 补入不可见的骰子值，并据此把答案固定为 23；模型仅凭可见输入不能完整复现这一依据。</p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/exclusions.json">发布者的排除说明</a></div><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/financial-modeling-qa/repaired_skill">完整上传修复包</a></p><p>missing。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;financial-modeling-qa&quot;,
+  &quot;file_count&quot;: 15,
+  &quot;total_bytes&quot;: 85199,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:fb11c12fe8c6111f45d79acf1213bb1dfeed9194765d646e2f39f1fdb8f77efc&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:fb11c12fe8c6111f45d79acf1213bb1dfeed9194765d646e2f39f1fdb8f77efc&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/financial-modeling-qa/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/financial-modeling-qa/repaired_skill&quot;
+}</pre></details><p>缺少可信原包，不能把无法比较记成“没有修改”。</p><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;diag-1-missing-turn-handling-caused-wrong-diff&quot;,
+    &quot;description&quot;: &quot;The agent computed match outcomes from an incomplete dataset (missing Turn 15 / one missing row) and patched the missing turn by inserting an all-zero turn. This arbitrary imputation changed match results, producing an incorrect final difference.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Reading and analyzing data / general workflow guidance&quot;
+      },
+      {
+        &quot;file&quot;: &quot;pdf/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Overview / extraction guidance (indirectly, missing emphasis on using background rules for data integrity assumptions)&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;diag-2-no-explicit-data-integrity-checklist-for-game-pairing&quot;,
+    &quot;description&quot;: &quot;Skill guidance lacks an explicit requirement for validating dataset completeness and pairing logic (2 turns per game, 3000 games, 1500 matches) before computing derived results. The agent noticed inconsistency but proceeded without a principled resolution aligned to the problem statement.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Formula Verification Checklist&quot;
+      },
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Reading and analyzing data&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;diag-3-tooling-gap-for-pdf-cli-and-fallbacks&quot;,
+    &quot;description&quot;: &quot;The PDF skill mentions `pdftotext` but doesn’t warn that it may be unavailable and provide robust fallback steps. The agent attempted `pdftotext` and got `command not found`, then switched to pypdf (good), but the skill could be clearer about verifying extracted rule nuances that affect scoring and ties.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;pdf/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Command-Line Tools / pdftotext (poppler-utils)&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/financial-modeling-qa/repaired_skill">完整上传修复包</a></p><p>missing。</p><div class="note warning">上传包与当次执行的包哈希不同。下方“修改前后”的差异描述上传版本，不能全部归因于这次运行。<a href="../protocol.html#bundle-identity">查看 5 题的完整审计</a></div><p>轨迹第 2 行保存了当次预加载的 Skill 正文。替换回该正文后，完整包哈希可重建为日志记录值。<a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/financial-modeling-qa/repaired_run/trajectory/acp_trajectory.jsonl">预加载正文</a></p><details><summary>运行时正文与上传正文的差异</summary><details><summary>pdf/SKILL.md</summary><pre>--- runtime_preload/pdf/SKILL.md
++++ uploaded_bundle/pdf/SKILL.md
+@@ -193,7 +193,7 @@
+ qpdf input.pdf output.pdf --rotate=+90:1  # Rotate page 1 by 90 degrees
+ 
+ # Remove password
+-qpdf --password=***REDACTED*** --decrypt encrypted.pdf decrypted.pdf
++qpdf --password=mypassword --decrypt encrypted.pdf decrypted.pdf
+ ```
+ 
+ ### pdftk (if available)
+@@ -291,4 +291,4 @@
+ - For advanced pypdfium2 usage, see reference.md
+ - For JavaScript libraries (pdf-lib), see reference.md
+ - If you need to fill out a PDF form, follow the instructions in forms.md
+-- For troubleshooting guides, see reference.md+- For troubleshooting guides, see reference.md
+</pre></details><details><summary>xlsx/SKILL.md</summary><pre>--- runtime_preload/xlsx/SKILL.md
++++ uploaded_bundle/xlsx/SKILL.md
+@@ -102,6 +102,12 @@
+ - **If recovery fails, apply a conservative policy that preserves matchup semantics**:
+   - Exclude any group/entity with incomplete records from computations that require completeness, and
+   - When forming pairs/matches by ID rule (odd vs even, N vs N+1), only evaluate pairs where **both** members satisfy the invariant; otherwise skip/flag the affected pair rather than imputing scores.
++
++#### Verification step (mandatory when you skip/flag incomplete groups)
++When you apply the conservative skip policy above, add a quick verification pass so you don’t silently change the denominator:
++- **Compute which pairs will be scored vs skipped** under your pairing rule (e.g., adjacent odd/even IDs).
++- **Assert** that every scored pair contains only complete groups.
++- **Track counts**: `n_pairs_total`, `n_pairs_scored`, `n_pairs_skipped` (and optionally the list of skipped IDs) to validate the workflow during development.
+ 
+ Negative boundary:
+ - If the problem statement explicitly defines how to score missing records (e.g., “missing counts as 0”), follow that rule.
+@@ -302,4 +308,4 @@
+ **For Excel files themselves**:
+ - Add comments to cells with complex formulas or important assumptions
+ - Document data sources for hardcoded values
+-- Include notes for key calculations and model sections+- Include notes for key calculations and model sections
+</pre></details></details><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;financial-modeling-qa&quot;,
+  &quot;file_count&quot;: 15,
+  &quot;total_bytes&quot;: 85051,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:34a1f45aed42e1dabd07357362ad0102006a6f95950a6b894f13ec6671fb4fdb&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:9ad3c19b53d93804165931720e853b437adfc613c9bd24932488183124f20a49&quot;,
+  &quot;matches_recorded_hash&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/financial-modeling-qa/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/financial-modeling-qa/repaired_skill&quot;
+}</pre></details><p>缺少可信原包，不能把无法比较记成“没有修改”。</p></details><details><summary>SkillRevise · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_skill">完整上传修复包</a></p><p>missing。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillrevise_gpt52&quot;,
+  &quot;task_id&quot;: &quot;financial-modeling-qa&quot;,
+  &quot;file_count&quot;: 15,
+  &quot;total_bytes&quot;: 73870,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:412d743eb1ce7439383c9ad35d2e48b36c0605cf51f610bf99c4d981575e1699&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:412d743eb1ce7439383c9ad35d2e48b36c0605cf51f610bf99c4d981575e1699&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/financial-modeling-qa/repaired_skill&quot;
+}</pre></details><p>缺少可信原包，不能把无法比较记成“没有修改”。</p><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The skill is misaligned with the task (spreadsheet authoring vs. dataset QA) and provides no guardrails for the real failure: handling missing/dirty records. In the trace, after detecting a missing turn/game inconsistency, the agent assumed a zero-score turn and output a definitive numeric answer anyway, creating false certainty and likely yielding the wrong result. The task likely failed because the execution introduced an unvalidated data-imputation rule (missing turn treated as zero) after detecting inconsistent turns per game. Since the prompt/background did not specify how to handle missing/incomplete games, this assumption could easily produce an incorrect win-difference. The skill did not provide a clear, task-appropriate workflow for validating dataset integrity and defining tie/missing-data policies, and its spreadsheet-modeling-centric guidance added noise rather than preventing this analytical logic error.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P2&quot;,
+    &quot;description&quot;: &quot;The skill is a PDF-tooling reference, mismatched to an Excel-based scoring task, and it lacks concrete execution guardrails. This led the agent to issue an invalid multi-command terminal call and to terminate without recovering and writing the required numeric answer file. Primary cause: environment_mismatch—this &#x27;pdf&#x27; skill is not designed for spreadsheet-driven analytics tasks and offers no guidance for the key operations needed. Proximate cause: wrong_abstraction_level/over_generality—the skill is a long reference guide without explicit step order, checkpoints, or environment constraints; consequently the agent issued an invalid multi-command tool invocation and did not recover to rerun correctly, so no answer file was produced.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;pdf/SKILL.md&quot;
+      }
+    ]
+  }
+]</pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

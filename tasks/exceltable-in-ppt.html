@@ -1,0 +1,1767 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PPT嵌入汇率表更新 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>PPT嵌入汇率表更新</h1><p class="lead">根据文本框更新汇率表，保持其他汇率及公式正确，交付 results.pptx。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/exceltable-in-ppt/task.md">原始任务要求</a></div><p class="meta">exceltable-in-ppt · 文档与办公 · 2 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>根据文本框更新汇率表，保持其他汇率及公式正确，交付 results.pptx。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>pptx</td><td>读取、修改及生成 PPT，处理文字、布局与嵌入对象。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/exceltable-in-ppt/skills/pptx/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr><tr><td>xlsx</td><td>读取和修改工作簿，保留公式与格式，并重算和核查数值。</td><td><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/originals/exceltable-in-ppt/skills/xlsx/SKILL.md">原 Skill 正文</a><br><small>冻结的Gold原始Skill</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>6 项通过 / 8 项检查</td><td>6/8 项通过；反向汇率 CNY→USD 应为 0.142，实际读到 NaN；无关 CNY→EUR 原值 0.127 也变成 NaN。</td></tr><tr><td>原始 Opus 4.7</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>8 项通过 / 8 项检查</td><td>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>8 项通过 / 8 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>8 项通过 / 8 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>SkillGrad · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>6 项通过 / 8 项检查</td><td>仍为 6/8；反向汇率和无关单元格均读到 NaN，未解决修改范围与结果回读问题。</td></tr><tr><td>SkillOpt · 实际 GPT-5.5</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>8 项通过 / 8 项检查</td><td>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</td></tr><tr><td>MMG2Skill · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>6 项通过 / 8 项检查</td><td>仍为 6/8；反向汇率和无关单元格均读到 NaN。</td></tr><tr><td>SkillRevise · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>6 项通过 / 8 项检查</td><td>仍为 6/8；反向汇率 CNY→USD 为 NaN，参考为 0.142；无关的 CNY→EUR 也由 0.127 变为 NaN。</td></tr><tr><td>SkillTTA · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>6 项通过 / 8 项检查</td><td>6/8；倒数汇率没有按要求更新，其他单元格保持不变的检查也失败。</td></tr></tbody></table></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>pptx/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr><tr><td>xlsx/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>6/8 项通过；反向汇率 CNY→USD 应为 0.142，实际读到 NaN；无关 CNY→EUR 原值 0.127 也变成 NaN。</p><details><summary>::test_inverse_rate_updated</summary><pre>def test_inverse_rate_updated():
+        &quot;&quot;&quot;Test that the inverse exchange rate cell was also updated.&quot;&quot;&quot;
+        df = extract_embedded_excel(RESULT_FILE)
+    
+        # Find the cell for to_currency -&gt; from_currency (the inverse)
+        first_col = df.columns[0]
+        row_mask = df[first_col] == EXPECTED_TO_CURRENCY
+    
+        assert row_mask.any(), f&quot;Currency {EXPECTED_TO_CURRENCY} not found in table rows&quot;
+    
+        row = df[row_mask].iloc[0]
+    
+        assert EXPECTED_FROM_CURRENCY in df.columns, f&quot;Currency {EXPECTED_FROM_CURRENCY} not found in table columns&quot;
+    
+        actual_inverse_rate = row[EXPECTED_FROM_CURRENCY]
+    
+        # Allow some tolerance for rounding
+&gt;       assert abs(actual_inverse_rate - EXPECTED_INVERSE_RATE) &lt; 0.01, (
+            f&quot;Inverse rate {EXPECTED_TO_CURRENCY} -&gt; {EXPECTED_FROM_CURRENCY} &quot;
+            f&quot;was not updated correctly. Expected: {EXPECTED_INVERSE_RATE}, Got: {actual_inverse_rate}&quot;
+        )
+E       AssertionError: Inverse rate CNY -&gt; USD was not updated correctly. Expected: 0.142, Got: nan
+E       assert np.float64(nan) &lt; 0.01
+E        +  where np.float64(nan) = abs((np.float64(nan) - 0.142))
+
+/verifier/test_outputs.py:123: AssertionError</pre></details><details><summary>::test_other_cells_unchanged</summary><pre>def test_other_cells_unchanged():
+        &quot;&quot;&quot;Test that other exchange rates in the table were not modified.&quot;&quot;&quot;
+        input_df = extract_embedded_excel(INPUT_FILE)
+        output_df = extract_embedded_excel(RESULT_FILE)
+    
+        first_col = input_df.columns[0]
+    
+        # Check all cells except the ones we expect to change
+        for _idx, row in input_df.iterrows():
+            from_currency = row[first_col]
+    
+            for col in input_df.columns[1:]:  # Skip the first column (currency names)
+                to_currency = col
+    
+                # Skip the cells we expect to change
+                if from_currency == EXPECTED_FROM_CURRENCY and to_currency == EXPECTED_TO_CURRENCY:
+                    continue
+                if from_currency == EXPECTED_TO_CURRENCY and to_currency == EXPECTED_FROM_CURRENCY:
+                    continue
+    
+                input_value = input_df[input_df[first_col] == from_currency].iloc[0][col]
+                output_value = output_df[output_df[first_col] == from_currency].iloc[0][col]
+    
+&gt;               assert abs(input_value - output_value) &lt; 0.001, (
+                    f&quot;Cell ({from_currency}, {to_currency}) was unexpectedly modified. &quot; f&quot;Original: {input_value}, New: {output_value}&quot;
+                )
+E               AssertionError: Cell (CNY, EUR) was unexpectedly modified. Original: 0.127, New: nan
+E               assert np.float64(nan) &lt; 0.001
+E                +  where np.float64(nan) = abs((np.float64(0.127) - np.float64(nan)))
+
+/verifier/test_outputs.py:152: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exceltable-in-ppt-original-skill-v11x-20260907-guarddiag-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:1ed92db339072dccf8053c49ac2b9a08d5d01f3ae7fd205efc9bdafcf3023c54&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 26,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:aab6ea072fe07fc7446677c9405a1a72c90a8153d731c9d0428fd914ea1c164b&quot;
+}</pre></details></details><details><summary>原始 Opus 4.7 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/exceltable-in-ppt-opus47-original-skill-r002/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/exceltable-in-ppt-opus47-original-skill-r002/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/exceltable-in-ppt-opus47-original-skill-r002/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/Opus47-OriginalSkill-79Tasks-20260920/runs/opus47-original-skill/exceltable-in-ppt-opus47-original-skill-r002/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>所选原始执行通过任务检查。单次通过不代表重复运行必然通过。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exceltable-in-ppt-opus47-original-skill-r002&quot;,
+  &quot;model&quot;: &quot;openrouter/anthropic/claude-opus-4.7&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:1ed92db339072dccf8053c49ac2b9a08d5d01f3ae7fd205efc9bdafcf3023c54&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 16,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:aab6ea072fe07fc7446677c9405a1a72c90a8153d731c9d0428fd914ea1c164b&quot;
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_skill">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exceltable-in-ppt-a10&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:a2acc74c44ac1cea44b3e37129657797de9e6939771bc4c6d118fde453a489f8&quot;,
+  &quot;max_parent_iterations&quot;: 40,
+  &quot;iterations&quot;: 14,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:1e7a70a1ad1337891c58952475910db77c9c1006f8784f658253411f31dfb9ae&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exceltable-in-ppt/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exceltable-in-ppt/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exceltable-in-ppt/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exceltable-in-ppt/repaired_skill">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exceltable-in-ppt-a11&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:a2cc7b7fb21b689a6838f149fe3a0e3c4d09a8419a4924d23b99f2b205caffc9&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 30,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:0c24d8238e847651bf2f5673c26dc6a534a2b210344dd986010fe8141ed5a04b&quot;
+}</pre></details></details><details><summary>SkillGrad · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exceltable-in-ppt/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exceltable-in-ppt/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exceltable-in-ppt/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exceltable-in-ppt/skills">上传修复包</a></p><p>仍为 6/8；反向汇率和无关单元格均读到 NaN，未解决修改范围与结果回读问题。</p><details><summary>::test_inverse_rate_updated</summary><pre>def test_inverse_rate_updated():
+        &quot;&quot;&quot;Test that the inverse exchange rate cell was also updated.&quot;&quot;&quot;
+        df = extract_embedded_excel(RESULT_FILE)
+    
+        # Find the cell for to_currency -&gt; from_currency (the inverse)
+        first_col = df.columns[0]
+        row_mask = df[first_col] == EXPECTED_TO_CURRENCY
+    
+        assert row_mask.any(), f&quot;Currency {EXPECTED_TO_CURRENCY} not found in table rows&quot;
+    
+        row = df[row_mask].iloc[0]
+    
+        assert EXPECTED_FROM_CURRENCY in df.columns, f&quot;Currency {EXPECTED_FROM_CURRENCY} not found in table columns&quot;
+    
+        actual_inverse_rate = row[EXPECTED_FROM_CURRENCY]
+    
+        # Allow some tolerance for rounding
+&gt;       assert abs(actual_inverse_rate - EXPECTED_INVERSE_RATE) &lt; 0.01, (
+            f&quot;Inverse rate {EXPECTED_TO_CURRENCY} -&gt; {EXPECTED_FROM_CURRENCY} &quot;
+            f&quot;was not updated correctly. Expected: {EXPECTED_INVERSE_RATE}, Got: {actual_inverse_rate}&quot;
+        )
+E       AssertionError: Inverse rate CNY -&gt; USD was not updated correctly. Expected: 0.142, Got: nan
+E       assert np.float64(nan) &lt; 0.01
+E        +  where np.float64(nan) = abs((np.float64(nan) - 0.142))
+
+/verifier/test_outputs.py:123: AssertionError</pre></details><details><summary>::test_other_cells_unchanged</summary><pre>def test_other_cells_unchanged():
+        &quot;&quot;&quot;Test that other exchange rates in the table were not modified.&quot;&quot;&quot;
+        input_df = extract_embedded_excel(INPUT_FILE)
+        output_df = extract_embedded_excel(RESULT_FILE)
+    
+        first_col = input_df.columns[0]
+    
+        # Check all cells except the ones we expect to change
+        for _idx, row in input_df.iterrows():
+            from_currency = row[first_col]
+    
+            for col in input_df.columns[1:]:  # Skip the first column (currency names)
+                to_currency = col
+    
+                # Skip the cells we expect to change
+                if from_currency == EXPECTED_FROM_CURRENCY and to_currency == EXPECTED_TO_CURRENCY:
+                    continue
+                if from_currency == EXPECTED_TO_CURRENCY and to_currency == EXPECTED_FROM_CURRENCY:
+                    continue
+    
+                input_value = input_df[input_df[first_col] == from_currency].iloc[0][col]
+                output_value = output_df[output_df[first_col] == from_currency].iloc[0][col]
+    
+&gt;               assert abs(input_value - output_value) &lt; 0.001, (
+                    f&quot;Cell ({from_currency}, {to_currency}) was unexpectedly modified. &quot; f&quot;Original: {input_value}, New: {output_value}&quot;
+                )
+E               AssertionError: Cell (CNY, EUR) was unexpectedly modified. Original: 0.127, New: nan
+E               assert np.float64(nan) &lt; 0.001
+E                +  where np.float64(nan) = abs((np.float64(0.127) - np.float64(nan)))
+
+/verifier/test_outputs.py:152: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exceltable-in-ppt-formal-6-aefc2f2ec995&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:dae3cb414f9ac36a40caf98a0af19ffc34c99f352645238dd53e0107d1fb66df&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 8,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:1d583404678d6c9cf4373c3186d1f57e417dbd0a388b865e02f754e5aeb0cbc9&quot;
+}</pre></details></details><details><summary>SkillOpt · 实际 GPT-5.5 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exceltable-in-ppt/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exceltable-in-ppt/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exceltable-in-ppt/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exceltable-in-ppt/repaired_skill">上传修复包</a></p><p>所选执行达到任务通过标准。是否改中了人工 Gold 缺陷，应另查内容判断与具体改动。</p><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exceltable-in-ppt-skillopt-20260920T230722Z&quot;,
+  &quot;model&quot;: &quot;tatu/gpt-5.5@CODING_TATU&quot;,
+  &quot;provider_route&quot;: &quot;tatu&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:dae3cb414f9ac36a40caf98a0af19ffc34c99f352645238dd53e0107d1fb66df&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 27,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:f7a3064749f82956f3d17c4eea7d3af88db3ecac937451caec6ce84c1c4261e5&quot;
+}</pre></details></details><details><summary>MMG2Skill · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/exceltable-in-ppt-mmg2skill-gpt52-r001/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/exceltable-in-ppt-mmg2skill-gpt52-r001/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/exceltable-in-ppt-mmg2skill-gpt52-r001/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/exceltable-in-ppt-mmg2skill-gpt52-r001/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exceltable-in-ppt/skills">上传修复包</a></p><p>仍为 6/8；反向汇率和无关单元格均读到 NaN。</p><details><summary>::test_inverse_rate_updated</summary><pre>def test_inverse_rate_updated():
+        &quot;&quot;&quot;Test that the inverse exchange rate cell was also updated.&quot;&quot;&quot;
+        df = extract_embedded_excel(RESULT_FILE)
+    
+        # Find the cell for to_currency -&gt; from_currency (the inverse)
+        first_col = df.columns[0]
+        row_mask = df[first_col] == EXPECTED_TO_CURRENCY
+    
+        assert row_mask.any(), f&quot;Currency {EXPECTED_TO_CURRENCY} not found in table rows&quot;
+    
+        row = df[row_mask].iloc[0]
+    
+        assert EXPECTED_FROM_CURRENCY in df.columns, f&quot;Currency {EXPECTED_FROM_CURRENCY} not found in table columns&quot;
+    
+        actual_inverse_rate = row[EXPECTED_FROM_CURRENCY]
+    
+        # Allow some tolerance for rounding
+&gt;       assert abs(actual_inverse_rate - EXPECTED_INVERSE_RATE) &lt; 0.01, (
+            f&quot;Inverse rate {EXPECTED_TO_CURRENCY} -&gt; {EXPECTED_FROM_CURRENCY} &quot;
+            f&quot;was not updated correctly. Expected: {EXPECTED_INVERSE_RATE}, Got: {actual_inverse_rate}&quot;
+        )
+E       AssertionError: Inverse rate CNY -&gt; USD was not updated correctly. Expected: 0.142, Got: nan
+E       assert np.float64(nan) &lt; 0.01
+E        +  where np.float64(nan) = abs((np.float64(nan) - 0.142))
+
+/verifier/test_outputs.py:123: AssertionError</pre></details><details><summary>::test_other_cells_unchanged</summary><pre>def test_other_cells_unchanged():
+        &quot;&quot;&quot;Test that other exchange rates in the table were not modified.&quot;&quot;&quot;
+        input_df = extract_embedded_excel(INPUT_FILE)
+        output_df = extract_embedded_excel(RESULT_FILE)
+    
+        first_col = input_df.columns[0]
+    
+        # Check all cells except the ones we expect to change
+        for _idx, row in input_df.iterrows():
+            from_currency = row[first_col]
+    
+            for col in input_df.columns[1:]:  # Skip the first column (currency names)
+                to_currency = col
+    
+                # Skip the cells we expect to change
+                if from_currency == EXPECTED_FROM_CURRENCY and to_currency == EXPECTED_TO_CURRENCY:
+                    continue
+                if from_currency == EXPECTED_TO_CURRENCY and to_currency == EXPECTED_FROM_CURRENCY:
+                    continue
+    
+                input_value = input_df[input_df[first_col] == from_currency].iloc[0][col]
+                output_value = output_df[output_df[first_col] == from_currency].iloc[0][col]
+    
+&gt;               assert abs(input_value - output_value) &lt; 0.001, (
+                    f&quot;Cell ({from_currency}, {to_currency}) was unexpectedly modified. &quot; f&quot;Original: {input_value}, New: {output_value}&quot;
+                )
+E               AssertionError: Cell (CNY, EUR) was unexpectedly modified. Original: 0.127, New: nan
+E               assert np.float64(nan) &lt; 0.001
+E                +  where np.float64(nan) = abs((np.float64(0.127) - np.float64(nan)))
+
+/verifier/test_outputs.py:152: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exceltable-in-ppt-mmg2skill-gpt52-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:1ed92db339072dccf8053c49ac2b9a08d5d01f3ae7fd205efc9bdafcf3023c54&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 10,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:7fa3800c4e0c2dbdbf19cdb64c97a3fb51c96bd0788c3b22f0534bcaba6ea258&quot;
+}</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_skill">上传修复包</a></p><p>仍为 6/8；反向汇率 CNY→USD 为 NaN，参考为 0.142；无关的 CNY→EUR 也由 0.127 变为 NaN。</p><details><summary>::test_inverse_rate_updated</summary><pre>def test_inverse_rate_updated():
+        &quot;&quot;&quot;Test that the inverse exchange rate cell was also updated.&quot;&quot;&quot;
+        df = extract_embedded_excel(RESULT_FILE)
+    
+        # Find the cell for to_currency -&gt; from_currency (the inverse)
+        first_col = df.columns[0]
+        row_mask = df[first_col] == EXPECTED_TO_CURRENCY
+    
+        assert row_mask.any(), f&quot;Currency {EXPECTED_TO_CURRENCY} not found in table rows&quot;
+    
+        row = df[row_mask].iloc[0]
+    
+        assert EXPECTED_FROM_CURRENCY in df.columns, f&quot;Currency {EXPECTED_FROM_CURRENCY} not found in table columns&quot;
+    
+        actual_inverse_rate = row[EXPECTED_FROM_CURRENCY]
+    
+        # Allow some tolerance for rounding
+&gt;       assert abs(actual_inverse_rate - EXPECTED_INVERSE_RATE) &lt; 0.01, (
+            f&quot;Inverse rate {EXPECTED_TO_CURRENCY} -&gt; {EXPECTED_FROM_CURRENCY} &quot;
+            f&quot;was not updated correctly. Expected: {EXPECTED_INVERSE_RATE}, Got: {actual_inverse_rate}&quot;
+        )
+E       AssertionError: Inverse rate CNY -&gt; USD was not updated correctly. Expected: 0.142, Got: nan
+E       assert np.float64(nan) &lt; 0.01
+E        +  where np.float64(nan) = abs((np.float64(nan) - 0.142))
+
+/verifier/test_outputs.py:123: AssertionError</pre></details><details><summary>::test_other_cells_unchanged</summary><pre>def test_other_cells_unchanged():
+        &quot;&quot;&quot;Test that other exchange rates in the table were not modified.&quot;&quot;&quot;
+        input_df = extract_embedded_excel(INPUT_FILE)
+        output_df = extract_embedded_excel(RESULT_FILE)
+    
+        first_col = input_df.columns[0]
+    
+        # Check all cells except the ones we expect to change
+        for _idx, row in input_df.iterrows():
+            from_currency = row[first_col]
+    
+            for col in input_df.columns[1:]:  # Skip the first column (currency names)
+                to_currency = col
+    
+                # Skip the cells we expect to change
+                if from_currency == EXPECTED_FROM_CURRENCY and to_currency == EXPECTED_TO_CURRENCY:
+                    continue
+                if from_currency == EXPECTED_TO_CURRENCY and to_currency == EXPECTED_FROM_CURRENCY:
+                    continue
+    
+                input_value = input_df[input_df[first_col] == from_currency].iloc[0][col]
+                output_value = output_df[output_df[first_col] == from_currency].iloc[0][col]
+    
+&gt;               assert abs(input_value - output_value) &lt; 0.001, (
+                    f&quot;Cell ({from_currency}, {to_currency}) was unexpectedly modified. &quot; f&quot;Original: {input_value}, New: {output_value}&quot;
+                )
+E               AssertionError: Cell (CNY, EUR) was unexpectedly modified. Original: 0.127, New: nan
+E               assert np.float64(nan) &lt; 0.001
+E                +  where np.float64(nan) = abs((np.float64(0.127) - np.float64(nan)))
+
+/verifier/test_outputs.py:152: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exceltable-in-ppt-bundle-2-published-original-revi-078db369e616&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:34b78ab4ffa530adebed9cd8e52cc89e020d7be0e97b6da325b2878b9cb3e684&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 7,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:33fd8de73f4c9fc7860f9a99c0ffc0a445c6e25d831c9ad7e2f377ac8b701010&quot;
+}</pre></details></details><details><summary>SkillTTA · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exceltable-in-ppt/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exceltable-in-ppt/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exceltable-in-ppt/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exceltable-in-ppt/repaired_skill">上传修复包</a></p><p>6/8；倒数汇率没有按要求更新，其他单元格保持不变的检查也失败。</p><details><summary>::test_inverse_rate_updated</summary><pre>def test_inverse_rate_updated():
+        &quot;&quot;&quot;Test that the inverse exchange rate cell was also updated.&quot;&quot;&quot;
+        df = extract_embedded_excel(RESULT_FILE)
+    
+        # Find the cell for to_currency -&gt; from_currency (the inverse)
+        first_col = df.columns[0]
+        row_mask = df[first_col] == EXPECTED_TO_CURRENCY
+    
+        assert row_mask.any(), f&quot;Currency {EXPECTED_TO_CURRENCY} not found in table rows&quot;
+    
+        row = df[row_mask].iloc[0]
+    
+        assert EXPECTED_FROM_CURRENCY in df.columns, f&quot;Currency {EXPECTED_FROM_CURRENCY} not found in table columns&quot;
+    
+        actual_inverse_rate = row[EXPECTED_FROM_CURRENCY]
+    
+        # Allow some tolerance for rounding
+&gt;       assert abs(actual_inverse_rate - EXPECTED_INVERSE_RATE) &lt; 0.01, (
+            f&quot;Inverse rate {EXPECTED_TO_CURRENCY} -&gt; {EXPECTED_FROM_CURRENCY} &quot;
+            f&quot;was not updated correctly. Expected: {EXPECTED_INVERSE_RATE}, Got: {actual_inverse_rate}&quot;
+        )
+E       AssertionError: Inverse rate CNY -&gt; USD was not updated correctly. Expected: 0.142, Got: nan
+E       assert np.float64(nan) &lt; 0.01
+E        +  where np.float64(nan) = abs((np.float64(nan) - 0.142))
+
+/verifier/test_outputs.py:123: AssertionError</pre></details><details><summary>::test_other_cells_unchanged</summary><pre>def test_other_cells_unchanged():
+        &quot;&quot;&quot;Test that other exchange rates in the table were not modified.&quot;&quot;&quot;
+        input_df = extract_embedded_excel(INPUT_FILE)
+        output_df = extract_embedded_excel(RESULT_FILE)
+    
+        first_col = input_df.columns[0]
+    
+        # Check all cells except the ones we expect to change
+        for _idx, row in input_df.iterrows():
+            from_currency = row[first_col]
+    
+            for col in input_df.columns[1:]:  # Skip the first column (currency names)
+                to_currency = col
+    
+                # Skip the cells we expect to change
+                if from_currency == EXPECTED_FROM_CURRENCY and to_currency == EXPECTED_TO_CURRENCY:
+                    continue
+                if from_currency == EXPECTED_TO_CURRENCY and to_currency == EXPECTED_FROM_CURRENCY:
+                    continue
+    
+                input_value = input_df[input_df[first_col] == from_currency].iloc[0][col]
+                output_value = output_df[output_df[first_col] == from_currency].iloc[0][col]
+    
+&gt;               assert abs(input_value - output_value) &lt; 0.001, (
+                    f&quot;Cell ({from_currency}, {to_currency}) was unexpectedly modified. &quot; f&quot;Original: {input_value}, New: {output_value}&quot;
+                )
+E               AssertionError: Cell (CNY, EUR) was unexpectedly modified. Original: 0.127, New: nan
+E               assert np.float64(nan) &lt; 0.001
+E                +  where np.float64(nan) = abs((np.float64(0.127) - np.float64(nan)))
+
+/verifier/test_outputs.py:152: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;exceltable-in-ppt-skilltta-gpt52-r001&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:1ed92db339072dccf8053c49ac2b9a08d5d01f3ae7fd205efc9bdafcf3023c54&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 13,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:12935230da20a407f9b4ae52329a039a14506eafab5a2dc0015fa5725dbe88ab&quot;
+}</pre></details></details><h2>人工 Gold 要求修哪里</h2><p>人工标注与参考修复用于定位已知缺陷。它们主要针对 GPT 原始失败；换模型后应重新核对这一缺陷是否仍在轨迹中出现。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">编号 / 主类型</th><th scope="col">原始缺陷</th><th scope="col">定位</th><th scope="col">要求的修复</th></tr></thead><tbody><tr><td>D001<br>执行、写盘与回读</td><td>Original-Skill Agent 正确更新了嵌入 workbook 的硬编码汇率并保留公式文本，但在 openpyxl 保存后没有重算便重新嵌入 PPTX，只用 data_only=False 检查公式存在；结果所有公式缓存被清空，逆向汇率和一个非目标依赖换算均变为 NaN，官方 verifier 仅通过 6/8。</td><td>xlsx/SKILL.md<br><small>Recalculating formulas；Working with openpyxl</small></td><td>明确任何包含公式的 workbook 经 openpyxl 保存后都必须视为缓存失效，即使只修改硬编码输入。嵌入文件必须按提取、编辑、保存、运行 recalc.py、双视图验证、重新嵌入的顺序执行；使用 data_only=False 验证公式仍存在，并用独立的 data_only=True 只读视图验证缓存值非空、有限且已更新，任一门失败不得交付或结束。</td></tr></tbody></table></div><details><summary>人工参考修复如何验证，以及原标注记录的限制</summary><div class="table-wrap"><table class=""><thead><tr><th scope="col">缺陷</th><th scope="col">验证方式原文</th><th scope="col">验证证据原文</th><th scope="col">verifier 说明原文</th></tr></thead><tbody><tr><td>D001</td><td>agent-validated (1/1; guard-enabled)</td><td>Round 1 fresh rollout exceltable-in-ppt-round-1-r001 正式通过：execution_ok=true、task_passed=true、reward=1.0、官方 verifier 8/8；21/60 iterations、21 provider requests、19 tool calls，正常 end_turn。Agent 明确运行 /skills/xlsx/recalc.py，得到 status=success、0 errors、6 formulas，并在重新嵌入前后分别用 data_only=False/True 检查公式和计算缓存。两份 Skill 正文通过 persistent AgentContext 完整预载，expected/observed bundle digest 均为 sha256:3d57d0e7ab189e48572f8b4024dde2de69a6fa96b23e3a5d6ecfda1326720c87；n_skill_invocations=0 仅表示没有额外 Skill 工具调用。Guard 实际续跑 1 次；顶层 artifacts 为空，但 verifier/results.pptx 已导出并完成官方评测。</td><td>此字段未记录冲突；不等于已排除所有冲突</td></tr></tbody></table></div></details><div class="note warning">参考验证使用统一 completion guard，并实际续跑 1 次；按当前评测规则正常计分。一次有效 fresh rollout 验证完整候选 bundle，不代表跨随机种子稳定性。<br>官方 verifier 已导出 results.pptx 并通过 8/8；顶层 artifacts 为空，保留 evidence-archive caveat。</div><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/gold.json">人工 Gold 与参考修复来源</a></p><details><summary>参考修复的实际文件差异</summary><p>缺失文件可能来自打包不完整，不能直接认定为有意删除；修改行数也不代表最小修复量。</p><details><summary>xlsx/SKILL.md · modified</summary><pre>--- xlsx/SKILL.md
+
++++ xlsx/SKILL.md
+
+@@ -222,4 +222,11 @@
+
+ - Works on both Linux and macOS
+ 
++### Mandatory gate for existing or embedded formula workbooks
++
++- Treat every `openpyxl` save of a workbook containing formulas as invalidating its cached formula values, even when you changed only a hard-coded input and did not edit any formula text.
++- For a workbook embedded inside another package, use this exact order: extract the workbook, edit it, save it, run `python /skills/xlsx/recalc.py &lt;excel_file&gt; 60`, verify it, and only then re-embed or repackage it. Never re-embed the workbook before recalculation succeeds.
++- Verify both views after recalculation: load once with `data_only=False` to confirm the formulas remain intact, and load a separate read-only copy with `data_only=True` to confirm the calculated values are present, finite, and updated. Never save a workbook opened with `data_only=True`.
++- Recalculation and both verification views are blocking delivery gates. If recalculation fails, a formula cache is empty, or a calculated value is non-finite or stale, fix the workbook and repeat the gate instead of continuing or ending the task.
++
+ ## Formula Verification Checklist
+ </pre></details></details><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;exceltable-in-ppt&quot;,
+  &quot;file_count&quot;: 59,
+  &quot;total_bytes&quot;: 1251029,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:1e7a70a1ad1337891c58952475910db77c9c1006f8784f658253411f31dfb9ae&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:1e7a70a1ad1337891c58952475910db77c9c1006f8784f658253411f31dfb9ae&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_skill&quot;
+}</pre></details><p>字节变化文件 2 个；排除仅空白变化后 2 个。</p><details><summary>pptx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_skill/pptx/SKILL.md">修改后</a></p><pre>--- original/pptx/SKILL.md
++++ repaired/pptx/SKILL.md
+@@ -72,7 +72,7 @@
+ - **Build your palette**: Pick 3-5 colors that work together (dominant colors + supporting tones + accent)
+ - **Ensure contrast**: Text must be clearly readable on backgrounds
+ 
+-**Example color palettes** (use these to spark creativity - choose one, adapt it, or create your own):
++**Example color palettes** (use these to spark creativity - choose one, adapt it, or create one of your own):
+ 
+ 1. **Classic Blue**: Deep navy (#1C2833), slate gray (#2E4053), silver (#AAB7B8), off-white (#F4F6F6)
+ 2. **Teal &amp; Coral**: Teal (#5EA8A7), deep teal (#277884), coral (#FE4447), white (#FFFFFF)
+@@ -178,6 +178,31 @@
+ 3. Edit the XML files (primarily `ppt/slides/slide{N}.xml` and related files)
+ 4. **CRITICAL**: Validate immediately after each edit and fix any validation errors before proceeding: `python ooxml/scripts/validate.py &lt;dir&gt; --original &lt;file&gt;`
+ 5. Pack the final presentation: `python ooxml/scripts/pack.py &lt;input_directory&gt; &lt;office_file&gt;`
++
++### Editing embedded Office objects (e.g., embedded Excel)
++
++Sometimes the content you must update is not in slide XML, but in embedded documents stored under `ppt/embeddings/` (commonly `.xlsx`, `.xlsm`, `.docx`). In these cases you must update the embedded file **without breaking relationships** and while keeping the rest of the PPTX unchanged.
++
++**Common pattern**: currency tables and charts are embedded as `ppt/embeddings/*.xlsx` and the slide contains an OLE object plus a preview image.
++
++#### Safe workflow for embedded Excel updates
++1. **Locate embedded files**: list ZIP members and identify candidates in `ppt/embeddings/`.
++2. **Extract the embedded workbook bytes** and edit it using the XLSX skill guidance (openpyxl is fine).
++3. **Preserve formulas**: do not overwrite formula cells with values.
++4. **CRITICAL: Recalculate / refresh cached results**
++   - Even if formulas are preserved, dependent cells may have stale or missing cached results after editing.
++   - After modifying inputs, run a formula recalculation step on the workbook (see `xlsx` skill: `recalc.py`).
++   - Goal: when the embedded workbook is read by external extractors, numeric cells are not blank/NaN.
++5. **Replace only the embedded workbook member** in the PPTX ZIP.
++   - Do **not** rename the embedded file.
++   - Do **not** change `.rels` targets.
++6. **Post-edit verification (MANDATORY for embedded Excel tasks)**:
++   - Re-extract the embedded workbook from the output PPTX and check:
++     - the directly edited cell value is correct;
++     - formula cells are still formulas (`cell.value` starts with `=`);
++     - a small sample of other numeric cells are still numeric (not empty/NaN).
++
++**Note**: Preview images (`ppt/media/*.emf/png`) may not update automatically when you only update the embedded workbook. Only update preview images if the task explicitly requires the visible slide rendering to change.
+ 
+ ## Creating a new PowerPoint presentation **using a template**
+ </pre></details><details><summary>xlsx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/exceltable-in-ppt/repaired_skill/xlsx/SKILL.md">修改后</a></p><pre>--- original/xlsx/SKILL.md
++++ repaired/xlsx/SKILL.md
+@@ -221,6 +221,17 @@
+ - Returns JSON with detailed error locations and counts
+ - Works on both Linux and macOS
+ 
++### CRITICAL for embedded Excel workbooks (inside PPTX/DOCX)
++
++When an `.xlsx` is embedded inside another Office file (e.g., `ppt/embeddings/*.xlsx`), downstream extractors/verifiers may read **cached cell results** rather than evaluating formulas on the fly. If you edit a precedent cell and do not recalculate, many cells can appear blank/NaN even though formulas are preserved.
++
++**Therefore**: after any edit to an embedded workbook that affects formulas, you MUST:
++1. Save the workbook.
++2. Run `python recalc.py &lt;that_workbook&gt;.xlsx` to refresh cached results.
++3. Re-open and sanity-check that key dependent cells now have numeric values (and formula cells still start with `=`).
++
++This requirement applies even if you did not edit the formula strings.
++
+ ## Formula Verification Checklist
+ 
+ Quick checks to ensure formulas work correctly:</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>xlsx/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;pptx_embedded_excel_requires_cached_value_update_or_recalc&quot;,
+    &quot;description&quot;: &quot;Updating a precedent value in an embedded Excel workbook inside PPTX can leave dependent cells’ cached results blank/stale unless you recalculate or update cached values. Verifier observed NaNs in other numeric cells (including a non-formula cell) after the edit, despite formulas being preserved, implying the embedded workbook as extracted by verifier did not yield numeric values post-edit.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Recalculating formulas&quot;
+      },
+      {
+        &quot;file&quot;: &quot;pptx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Editing an existing PowerPoint presentation&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;pptx_skill_missing_guidance_for_embedded_office_objects&quot;,
+    &quot;description&quot;: &quot;The PPTX skill lacks a workflow for editing embedded Office documents (ppt/embeddings/*.xlsx) while keeping slide structure unchanged. Without explicit guidance, agent used ad-hoc zip manipulation and did not ensure workbook recalculation/cached values integrity.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;pptx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Editing an existing PowerPoint presentation&quot;
+      },
+      {
+        &quot;file&quot;: &quot;pptx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Overview&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;instruction_compliance_gap_no_post_edit_value_verification&quot;,
+    &quot;description&quot;: &quot;Skills do not instruct the agent to verify that both direct and inverse rates resolve to numeric values after updating inputs, or to compare output vs input for unintended changes when formulas/cached results are involved.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;pptx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Editing an existing PowerPoint presentation&quot;
+      },
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Formula Verification Checklist&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exceltable-in-ppt/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;exceltable-in-ppt&quot;,
+  &quot;file_count&quot;: 59,
+  &quot;total_bytes&quot;: 1249258,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:0c24d8238e847651bf2f5673c26dc6a534a2b210344dd986010fe8141ed5a04b&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:0c24d8238e847651bf2f5673c26dc6a534a2b210344dd986010fe8141ed5a04b&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exceltable-in-ppt/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>xlsx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/exceltable-in-ppt/repaired_skill/xlsx/SKILL.md">修改后</a></p><pre>--- original/xlsx/SKILL.md
++++ repaired/xlsx/SKILL.md
+@@ -221,6 +221,16 @@
+ - Returns JSON with detailed error locations and counts
+ - Works on both Linux and macOS
+ 
++### Delivery note (embedded workbooks / formula consumers)
++If the edited .xlsx will be **embedded inside another OOXML container** (e.g., .pptx/.docx) or consumed by an extractor that reads **computed values** (not formula text), preserving the formula strings is not enough.
++
++- After edits, **run `recalc.py` on the exact .xlsx artifact you will deliver/embed** so dependent/formula cells have materialized numeric results.
++- Then **re-open and sanity-check computed values** (not formulas) using the same mode a consumer would use:
++  - Load with `data_only=True` and confirm key dependent cells are finite numbers (not blank/None/NaN).
++  - For reciprocal/derived tables, check both the edited input cell(s) and any dependent inverse/linked cell(s) that must remain numeric.
++
++This step is a fallback for environments where openpyxl preserves formulas but does not compute their results.
++
+ ## Formula Verification Checklist
+ 
+ Quick checks to ensure formulas work correctly:</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>xlsx/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details></details><details><summary>SkillGrad · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exceltable-in-ppt/skills">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillgrad_gpt52&quot;,
+  &quot;task_id&quot;: &quot;exceltable-in-ppt&quot;,
+  &quot;file_count&quot;: 59,
+  &quot;total_bytes&quot;: 1250469,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:1d583404678d6c9cf4373c3186d1f57e417dbd0a388b865e02f754e5aeb0cbc9&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:1d583404678d6c9cf4373c3186d1f57e417dbd0a388b865e02f754e5aeb0cbc9&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exceltable-in-ppt/skills&quot;
+}</pre></details><p>字节变化文件 2 个；排除仅空白变化后 2 个。</p><details><summary>pptx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exceltable-in-ppt/skills/pptx/SKILL.md">修改后</a></p><pre>--- original/pptx/SKILL.md
++++ repaired/pptx/SKILL.md
+@@ -1,10 +1,42 @@
+ ---
+ name: pptx
+-description: &quot;Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for: (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layouts, (4) Adding comments or speaker notes, or any other presentation tasks&quot;
++description: &quot;Presentation creation, editing, and analysis across OOXML and html2pptx workflows.&quot;
+ license: Proprietary. LICENSE.txt has complete terms
+ ---
+ 
+ # PPTX creation, editing, and analysis
++
++## Workflow: Confirm sandboxed artifact I/O before operating
++
++1. Resolve every input/output path to an in-root location you can read/write (avoid absolute paths outside the project root).
++2. Before any heavy processing, list the expected inputs and check they exist; fail early if any are missing.
++3. Write all generated artifacts (working files, final deliverable, thumbnails, inventories, JSON reports) under the workspace/output directory that the harness collects.
++4. If a tool/script requires a path, prefer passing a path under the current workspace rather than a system location.
++5. Treat **writeback** as part of correctness: if you edit extracted parts (e.g., an embedded workbook/OLE package), you must re-embed them into the container file, then pack/save the updated container as the deliverable.
++6. **End-of-run deliverable gate (MANDATORY, STOP CONDITION)**: immediately before `end_turn`, you MUST:
++   - Name the exact required deliverable path.
++   - Perform the final pack/save/copy to that path.
++   - Show the existence+non-empty assertion you ran for that path.
++   If the assertion fails (or you cannot execute it), do not `end_turn`; perform the missing writeback step(s) and re-check, or explicitly report being blocked.
++
++```python
++from pathlib import Path
++
++root = Path.cwd()
++paths = {
++    &quot;input&quot;: root / &quot;workspace&quot; / &quot;input.pptx&quot;,
++    &quot;output&quot;: root / &quot;workspace&quot; / &quot;output.pptx&quot;,
++}
++assert paths[&quot;input&quot;].exists(), &quot;missing input&quot;
++paths[&quot;output&quot;].parent.mkdir(parents=True, exist_ok=True)
++
++# No-op guard: if you haven&#x27;t written any file yet, you are not allowed to terminate.
++# ... edit parts; re-embed/pack/save the container to paths[&quot;output&quot;] ...
++
++assert paths[&quot;output&quot;].exists() and paths[&quot;output&quot;].stat().st_size &gt; 0, &quot;missing/empty deliverable&quot;
++```
++
++Decision rule: If you cannot read the trace/evidence paths or cannot write the expected deliverable under the sandbox root, stop and treat it as a harness/environment issue, not an OOXML/html2pptx procedure choice.
+ 
+ ## Overview
+ 
+@@ -293,12 +325,12 @@
+ 
+    * Key features:
+      - **Slides**: Named as &quot;slide-0&quot;, &quot;slide-1&quot;, etc.
+-     - **Shapes**: Ordered by visual position (top-to-bottom, left-to-right) as &quot;shape-0&quot;, &quot;shape-1&quot;, etc.
++     - **Shapes**: Ordered by visual position (top-to-bottom, left-to-right) as &quot;shape-0&quot;, &quot;shape--1&quot;, etc.
+      - **Placeholder types**: TITLE, CENTER_TITLE, SUBTITLE, BODY, OBJECT, or null
+      - **Default font size**: `default_font_size` in points extracted from layout placeholders (when available)
+      - **Slide numbers are filtered**: Shapes with SLIDE_NUMBER placeholder type are automatically excluded from inventory
+      - **Bullets**: When `bullet: true`, `level` is always included (even if 0)
+-     - **Spacing**: `space_before`, `space_after`, and `line_spacing` in points (only included when set)
++     - **Spacing**: `space_before`, `space_after`, and `line_spacing` in points (only when set)
+      - **Colors**: `color` for RGB (e.g., &quot;FF0000&quot;), `theme_color` for theme colors (e.g., &quot;DARK_1&quot;)
+      - **Properties**: Only non-default values are included in the output
+ 
+@@ -358,26 +390,6 @@
+        &quot;text&quot;: &quot;Regular paragraph text without special formatting&quot;
+      }
+    ]
+-   ```
+-
+-   **Shapes not listed in the replacement JSON are automatically cleared**:
+-   ```json
+-   {
+-     &quot;slide-0&quot;: {
+-       &quot;shape-0&quot;: {
+-         &quot;paragraphs&quot;: [...] // This shape gets new text
+-       }
+-       // shape-1 and shape-2 from inventory will be cleared automatically
+-     }
+-   }
+-   ```
+-
+-   **Common formatting patterns for presentations**:
+-   - Title slides: Bold text, sometimes centered
+-   - Section headers within slides: Bold text
+-   - Bullet lists: Each item needs `&quot;bullet&quot;: true, &quot;level&quot;: 0`
+-   - Body text: Usually no special properties needed
+-   - Quotes: May have special alignment or font properties
+ 
+ 7. **Apply replacements using the `replace.py` script**
+    ```bash
+@@ -386,7 +398,7 @@
+ 
+    The script will:
+    - First extract the inventory of ALL text shapes using functions from inventory.py
+-   - Validate that all shapes in the replacement JSON exist in the inventory
++   - Validate that all shapes in your replacement JSON exist in the inventory
+    - Clear text from ALL shapes identified in the inventory
+    - Apply new text only to shapes with &quot;paragraphs&quot; defined in the replacement JSON
+    - Preserve formatting by applying paragraph properties from the JSON
+@@ -454,7 +466,7 @@
+ 
+ Options:
+ - `-r 150`: Sets resolution to 150 DPI (adjust for quality/size balance)
+-- `-jpeg`: Output JPEG format (use `-png` for PNG if preferred)
++- `-jpeg`: Output JPEG format (use `-png` if preferred)
+ - `-f N`: First page to convert (e.g., `-f 2` starts from page 2)
+ - `-l N`: Last page to convert (e.g., `-l 5` stops at page 5)
+ - `slide`: Prefix for output files</pre></details><details><summary>xlsx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/00f43526f24bdaadb86263542b126930d2b31bea/evaluation/results/SkillGrad/tasks/exceltable-in-ppt/skills/xlsx/SKILL.md">修改后</a></p><pre>--- original/xlsx/SKILL.md
++++ repaired/xlsx/SKILL.md
+@@ -1,6 +1,6 @@
+ ---
+ name: xlsx
+-description: &quot;Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas&quot;
++description: &quot;Spreadsheet creation, editing, and analysis with formulas, formatting, and verification.&quot;
+ license: Proprietary. LICENSE.txt has complete terms
+ ---
+ 
+@@ -61,6 +61,27 @@
+   - &quot;Source: FactSet, 8/20/2025, Consensus Estimates Screen&quot;
+ 
+ # XLSX creation, editing, and analysis
++
++## Workflow: Confirm sandboxed artifact I/O before operating
++
++1. Resolve every input/output path to an in-root location you can read/write (avoid absolute paths outside the project root).
++2. Before any heavy processing, check the input spreadsheet exists and the output directory is creatable.
++3. Write all generated artifacts (intermediate files, final deliverable, recalc reports) under the workspace/output directory that the harness collects.
++4. **End-of-run deliverable gate (STOP CONDITION)**: before terminating, you MUST (a) name the exact required deliverable path, then (b) assert it exists and is non-empty; if it does not, do not end the turn—perform the missing save/copy step and re-check (or report being blocked).
++
++```python
++from pathlib import Path
++
++root = Path.cwd()
++in_path = root / &quot;workspace&quot; / &quot;input.xlsx&quot;
++out_path = root / &quot;workspace&quot; / &quot;output.xlsx&quot;
++assert in_path.exists(), &quot;missing input&quot;
++out_path.parent.mkdir(parents=True, exist_ok=True)
++# ... write workbook ...
++assert out_path.exists() and out_path.stat().st_size &gt; 0, &quot;missing/empty deliverable&quot;
++```
++
++Decision rule: If you cannot access evidence paths or cannot write the deliverable under the sandbox root, stop and escalate as a harness/environment issue rather than proceeding with spreadsheet edits.
+ 
+ ## Overview
+ </pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>xlsx/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P001&quot;,
+    &quot;description&quot;: &quot;&lt;label&gt;Missing evidence due to sandbox&lt;/label&gt;\n\n(1) **First observable failure:** No actionable execution evidence is available to diagnose the agent’s behavior. The trace file that should contain the agent trajectory is empty, and other required artifacts (skill files, verifier evidence, result.json) are inaccessible or missing within the allowed project root. With no steps/logs, the earliest “failure” we can observe is the absence of recorded actions/output.\n\n(2) **Trajectory step that produced it:** Not attributable to any specific agent step, because the trajectory content is unavailable (empty trace). The failure occurs at the harness/artifact-availability level before we can inspect any agent decision.\n\n(3) **Relevant skill rule or missing rule:** None. This is **not skill-controllable**: it’s an **evaluation sandbox / file-path permission** issue (paths in the prompt point outside the permitted root), plus missing/empty trace artifacts. There is no skill rule that can correct unavailable logs after the run.\n\n(4) **General corrective behavior:** Treat as **harness/environment fix**, not a skill edit:\n- Ensure the run exports the trajectory trace and outputs into the permitted project root.\n- Ensure verifier evidence and skill registry/files are copied/linked into the same sandboxed root used by the diagnoser.\n- Use consistent in-root paths for `trace.jsonl`, `result.json`, and evolved skill definitions so postmortem tools can read them.&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P002&quot;,
+    &quot;description&quot;: &quot;&lt;label&gt;Skipped required PPTX writeback&lt;/label&gt;\n\n(1) First observable failure:\nNo updated output presentation was produced. The output inventory contains only the original `input.pptx`, indicating the agent never saved `/root/results.pptx` after updating the embedded Excel object.\n\n(2) Trajectory step that produced it:\nThe final agent step ended the turn without executing a “save updated pptx” action (i.e., no tool-driven writeback of the modified embedded workbook back into the PPTX and no export to the required results path). This is the earliest externally observable failure because the verifier expects the updated pptx artifact.\n\n(3) Relevant skill rule or missing rule:\nMissing/violated rule in the PPTX+XLSX handling skills: after extracting and modifying an embedded Excel workbook, the agent must re-embed/replace the OLE package (or linked part) inside the PPTX and then save a new PPTX to the specified output path. Also missing a “final artifact check” rule: verify `/root/results.pptx` exists before finishing.\n\n(4) General corrective behavior:\nAlways implement an end-to-end pipeline with explicit persistence checkpoints:\n- Extract embedded workbook → parse textbox value → update only the targeted non-formula cell(s) (preserve formula cells) → write workbook back into the embedded object/part → save PPTX as the requested output file.\nBefore ending, confirm the output file exists and is non-empty; if not, do not terminate and instead perform the save/re-embed step.&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P003&quot;,
+    &quot;description&quot;: &quot;&lt;label&gt;Missing writeback and deliverable&lt;/label&gt;\n\n(1) First observable failure:\n- No updated output PPTX was produced at the required deliverable location (`/root/results.pptx`). The output inventory only contains the original input artifact, indicating the agent never saved/repacked an updated presentation.\n\n(2) Trajectory step that produced it:\n- The final termination step (“end_turn”) occurred without performing the required “pack/save” writeback. This is the first point where the missing deliverable becomes observable: the run ends while no results file exists.\n\n(3) Relevant skill rule or missing rule:\n- Relevant rule exists in `pptx/SKILL.md`:\n  - “Treat writeback as part of correctness… you must repack/re-embed them into the container file and save the updated container as the deliverable.”\n  - “End-of-run deliverable gate: before terminating, assert the required deliverable path exists and is non-empty; if it does not, do not end the turn…”\n- Failure indicates the agent did not follow this gate and/or did not execute the repack/re-embed workflow after updating extracted embedded content.\n\n(4) General corrective behavior:\n- Always implement a deliverable gate: after any extraction/edit of embedded OLE/Excel content, re-embed it into the PPTX container, save to the required output path, then assert the file exists and is non-empty before ending the run. If the file is missing, continue by performing the pack/save step rather than terminating.\n\nControllability:\n- Skill-controllable error (workflow omission). No evidence of API/dependency/permission/harness/grader malfunction; the run completed successfully but failed to emit the required deliverable.&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P004&quot;,
+    &quot;description&quot;: &quot;&lt;label&gt;Deliverable not produced&lt;/label&gt;\n\n(1) **First observable failure:** No updated PPTX deliverable was written. The output inventory contains only the original `input.pptx`, and the run terminated without creating `/root/results.pptx` (or an in-sandbox equivalent).\n\n(2) **Trajectory step that produced it:** The final agent step ending in `end_turn` occurred without performing a “save/repack and assert output exists” action. In other words, the last observable action was termination rather than writing and validating the required output file.\n\n(3) **Relevant skill rule or missing rule:** **pptx skill – “End-of-run deliverable gate (MANDATORY)”** and **“Treat writeback as part of correctness: … must repack/re-embed … and save the updated container as the deliverable.”** These rules require an existence+non-empty assertion for the deliverable immediately before ending the turn; that did not happen.\n\n(4) **General corrective behavior:** Always complete the pipeline through **writeback + repack + save**, then **assert the expected output path exists and is non-empty** immediately before `end_turn`. If the file is missing, do not terminate—perform the missing save/copy/repack step and re-check. This is skill-controllable (not an API/harness/grader issue).&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P005&quot;,
+    &quot;description&quot;: &quot;&lt;label&gt;Did not produce required output&lt;/label&gt;\n\n(1) First observable failure:\nNo updated PowerPoint was generated at the required location. The output inventory contains only the original presentation, and there is no `/root/results.pptx`.\n\n(2) Trajectory step that produced it:\nThe final agent step ended the turn without performing any file extraction/update/save actions (the run contains no skill invocations and no substantive tool-driven edits). This “end_turn without writing results file” is the first concrete point where the task becomes impossible to pass.\n\n(3) Relevant skill rule or missing rule:\nMissing/violated core completion rule: for file-transformation tasks, the agent must (a) open the input artifact, (b) apply the requested transformation while preserving constraints (here: keep formula cells as formulas), and (c) write the modified artifact to the explicitly required output path. No skill-controlled procedure for “embedded Excel in PPTX: locate OLE object, extract workbook, edit only target value while preserving formulas, re-embed, save PPTX” was executed.\n\n(4) General corrective behavior:\nBefore finishing, always ensure an output artifact is actually written to the required path and verify it exists. For PPTX-with-embedded-Excel tasks: programmatically locate the embedded workbook (OLE object), parse the nearby textbox to get the update value, edit only the intended input cell(s) (do not overwrite any cell containing a formula), repackage/re-embed the workbook into the PPTX, save to the required output filename, and optionally re-open to confirm the embedded workbook reflects the update.&quot;,
+    &quot;locations&quot;: []
+  }
+]</pre></details></details><details><summary>SkillOpt · 实际 GPT-5.5 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exceltable-in-ppt/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillopt_gpt55&quot;,
+  &quot;task_id&quot;: &quot;exceltable-in-ppt&quot;,
+  &quot;file_count&quot;: 59,
+  &quot;total_bytes&quot;: 1252844,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:f7a3064749f82956f3d17c4eea7d3af88db3ecac937451caec6ce84c1c4261e5&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:f7a3064749f82956f3d17c4eea7d3af88db3ecac937451caec6ce84c1c4261e5&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exceltable-in-ppt/repaired_skill&quot;
+}</pre></details><p>字节变化文件 2 个；排除仅空白变化后 2 个。</p><details><summary>pptx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exceltable-in-ppt/repaired_skill/pptx/SKILL.md">修改后</a></p><pre>--- original/pptx/SKILL.md
++++ repaired/pptx/SKILL.md
+@@ -172,12 +172,24 @@
+ 
+ When edit slides in an existing PowerPoint presentation, you need to work with the raw Office Open XML (OOXML) format. This involves unpacking the .pptx file, editing the XML content, and repacking it.
+ 
++
++
++### Editing an embedded Excel table without rebuilding the presentation
++
++For an embedded Excel table, resolve and edit the object in place rather than recreating the presentation or saving it through a presentation library:
++
++1. Inventory the original PPTX ZIP members and record the relevant slide XML, relationship files, and object metadata. In the target `ppt/slides/slideN.xml`, locate the embedded object and its relationship ID; resolve that ID through `ppt/slides/_rels/slideN.xml.rels` and follow the relationship target. Determine whether it resolves directly to a workbook part such as `ppt/embeddings/*.xlsx`, or to an OLE compound container such as an embedded `.bin`/`.ole` object. For an OLE container, inspect its compound streams to locate the workbook payload and retain the container.
++2. Read all `&lt;a:t&gt;` runs in the slide text boxes adjacent to the object to identify the requested currency pair and updated rate. Interpret the table deterministically as row currency to column currency, then map the pair to the exact workbook row and column labels; do not select a cell based only on visual position.
++3. Read the resolved workbook with formulas preserved (`data_only=False` for an `openpyxl` read/write path). Change only the intended hardcoded input cell. Preserve formula expressions, styles, workbook structure, cached values where possible, and all unrelated worksheets and cells; never replace a formula with its displayed result. If the target is inside an OLE compound object, update only the workbook stream using an OLE-aware method and preserve the compound container and its metadata.
++4. Write the edited workbook bytes to a temporary stream and replace only the necessary payload at its original resolved location. Preserve the original slide XML, relationship IDs and targets, object metadata, preview/content parts, and every unrelated ZIP member. Do not broadly resave or rebuild the PPTX.
++5. Reopen the output ZIP, resolve the same slide relationship again, and verify that the workbook is readable, the requested row/column intersection has the updated value, and every cell that originally contained a formula still contains its formula. Confirm the adjacent slide text and all non-target presentation content are unchanged; compare hashes or exact bytes for unrelated ZIP members and inspect any intentionally changed container member at the stream level.
++
+ ### Workflow
+ 1. **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~500 lines) completely from start to finish.  **NEVER set any range limits when reading this file.**  Read the full file content for detailed guidance on OOXML structure and editing workflows before any presentation editing.
+ 2. Unpack the presentation: `python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_dir&gt;`
+-3. Edit the XML files (primarily `ppt/slides/slide{N}.xml` and related files)
+-4. **CRITICAL**: Validate immediately after each edit and fix any validation errors before proceeding: `python ooxml/scripts/validate.py &lt;dir&gt; --original &lt;file&gt;`
+-5. Pack the final presentation: `python ooxml/scripts/pack.py &lt;input_directory&gt; &lt;office_file&gt;`
++3. Edit only the resolved target XML or embedded workbook payload. For embedded Excel/OLE objects, follow the relationship-resolution workflow above and do not use a presentation-library save or broad package rewrite.
++4. **CRITICAL**: Validate immediately after each edit and fix any validation errors before proceeding: `python ooxml/scripts/validate.py &lt;dir&gt; --original &lt;file&gt;`. Before delivery, reopen the packed output, resolve the original relationship again, verify the updated workbook cell and preserved formulas, and confirm the adjacent slide text and all unrelated presentation content remain unchanged.
++5. Pack the final presentation while preserving the original ZIP member names, relationships, metadata, previews, and unrelated bytes; replace only the necessary embedded workbook payload.
+ 
+ ## Creating a new PowerPoint presentation **using a template**
+ </pre></details><details><summary>xlsx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/exceltable-in-ppt/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillOpt-adapted-gpt52-n3L4R2-v25/tasks/exceltable-in-ppt/repaired_skill/xlsx/SKILL.md">修改后</a></p><pre>--- original/xlsx/SKILL.md
++++ repaired/xlsx/SKILL.md
+@@ -287,3 +287,15 @@
+ - Add comments to cells with complex formulas or important assumptions
+ - Document data sources for hardcoded values
+ - Include notes for key calculations and model sections
++
++
++
++## Editing an Embedded Excel Workbook in a Presentation
++
++When updating an Excel table embedded in a PPTX, edit the workbook inside the presentation rather than creating a standalone replacement. Identify the embedded workbook package member and keep the original PPTX relationships and all unrelated package parts unchanged.
++
++For a currency-rate table, inspect the actual row-currency headers and column-currency headers, then map the requested direction as **row currency to column currency** and verify the exact intersection coordinate. Keep displayed cached results separate from formula expressions: use a data-only read only for inspecting cached values, never for the write copy. Load the write copy with formulas preserved (`data_only=False`).
++
++Change only the intended literal exchange-rate input. If the requested intersection contains a formula, preserve that formula and identify and update its appropriate hardcoded precedent/input instead of replacing the formula with a constant. Preserve styles, shared strings, defined names, calculation settings, comments, workbook relationships, and unrelated sheets and cells.
++
++Before and after saving, compare formula text outside the intended change and record the target coordinate/value. Reopen the embedded workbook and output PPTX to confirm the target update, formula preservation, workbook readability, unchanged adjacent presentation text, and that no unintended PPTX or workbook package parts changed. Recalculate only when required for validation and do not use recalculation as a reason to overwrite formulas or unrelated cached content.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>xlsx/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P001&quot;,
+    &quot;description&quot;: &quot;The skill does not sufficiently distinguish a directly embedded XLSX package from an OLE compound object or define a deterministic way to resolve the slide object to the actual editable workbook. It also needs stronger guidance against rebuilding or broadly resaving the presentation, which can alter unrelated package parts.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;pptx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;pptx&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P002&quot;,
+    &quot;description&quot;: &quot;The skill&#x27;s general formula and template requirements do not provide enough protection against updating the wrong exchange-rate cell or flattening formulas when the workbook is extracted from a presentation. It should explicitly separate displayed cached results from formula expressions and define what to do when the requested intersection is formula-driven.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;xlsx&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>MMG2Skill · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exceltable-in-ppt/skills">完整上传修复包</a></p><p>以同任务其他归档保存的原始包为对照，完整包哈希已与共享原始运行核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;mmg2skill_gpt52&quot;,
+  &quot;task_id&quot;: &quot;exceltable-in-ppt&quot;,
+  &quot;file_count&quot;: 59,
+  &quot;total_bytes&quot;: 1215135,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:7fa3800c4e0c2dbdbf19cdb64c97a3fb51c96bd0788c3b22f0534bcaba6ea258&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:7fa3800c4e0c2dbdbf19cdb64c97a3fb51c96bd0788c3b22f0534bcaba6ea258&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/runs/mmg2skill-gpt52-gold31-20260923/exceltable-in-ppt-mmg2skill-gpt52-r001/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exceltable-in-ppt/skills&quot;
+}</pre></details><p>字节变化文件 2 个；排除仅空白变化后 2 个。</p><details><summary>pptx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/exceltable-in-ppt/skills/pptx/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exceltable-in-ppt/skills/pptx/SKILL.md">修改后</a></p><p>差异较长，下面预览前 80 行（最多 14000 字符）。<a href="../evidence/diffs/617c06c58a71fbb17fb1410ae81acb0f0cdd21d5254d00c81ceb5604cab95134.diff">打开完整差异，共 499 行</a></p><pre>--- original/pptx/SKILL.md
++++ repaired/pptx/SKILL.md
+@@ -1,484 +1,17 @@
+ ---
+ name: pptx
+-description: &quot;Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for: (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layouts, (4) Adding comments or speaker notes, or any other presentation tasks&quot;
++description: Presentation (.pptx) inspection and targeted edits via OOXML/ZIP, including
++  embedded objects (e.g., Excel workbooks), while keeping everything else unchanged.
+ license: Proprietary. LICENSE.txt has complete terms
+ ---
+ 
+-# PPTX creation, editing, and analysis
+-
+-## Overview
+-
+-A user may ask you to create, edit, or analyze the contents of a .pptx file. A .pptx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
+-
+-## Reading and analyzing content
+-
+-### Text extraction
+-If you just need to read the text contents of a presentation, you should convert the document to markdown:
+-
+-```bash
+-# Convert document to markdown
+-python -m markitdown path-to-file.pptx
+-```
+-
+-### Raw XML access
+-You need raw XML access for: comments, speaker notes, slide layouts, animations, design elements, and complex formatting. For any of these features, you&#x27;ll need to unpack a presentation and read its raw XML contents.
+-
+-#### Unpacking a file
+-`python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_dir&gt;`
+-
+-**Note**: The unpack.py script is located at `skills/pptx/ooxml/scripts/unpack.py` relative to the project root. If the script doesn&#x27;t exist at this path, use `find . -name &quot;unpack.py&quot;` to locate it.
+-
+-#### Key file structures
+-* `ppt/presentation.xml` - Main presentation metadata and slide references
+-* `ppt/slides/slide{N}.xml` - Individual slide contents (slide1.xml, slide2.xml, etc.)
+-* `ppt/notesSlides/notesSlide{N}.xml` - Speaker notes for each slide
+-* `ppt/comments/modernComment_*.xml` - Comments for specific slides
+-* `ppt/slideLayouts/` - Layout templates for slides
+-* `ppt/slideMasters/` - Master slide templates
+-* `ppt/theme/` - Theme and styling information
+-* `ppt/media/` - Images and other media files
+-
+-#### Typography and color extraction
+-**When given an example design to emulate**: Always analyze the presentation&#x27;s typography and colors first using the methods below:
+-1. **Read theme file**: Check `ppt/theme/theme1.xml` for colors (`&lt;a:clrScheme&gt;`) and fonts (`&lt;a:fontScheme&gt;`)
+-2. **Sample slide content**: Examine `ppt/slides/slide1.xml` for actual font usage (`&lt;a:rPr&gt;`) and colors
+-3. **Search for patterns**: Use grep to find color (`&lt;a:solidFill&gt;`, `&lt;a:srgbClr&gt;`) and font references across all XML files
+-
+-## Creating a new PowerPoint presentation **without a template**
+-
+-When creating a new PowerPoint presentation from scratch, use the **html2pptx** workflow to convert HTML slides to PowerPoint with accurate positioning.
+-
+-### Design Principles
+-
+-**CRITICAL**: Before creating any presentation, analyze the content and choose appropriate design elements:
+-1. **Consider the subject matter**: What is this presentation about? What tone, industry, or mood does it suggest?
+-2. **Check for branding**: If the user mentions a company/organization, consider their brand colors and identity
+-3. **Match palette to content**: Select colors that reflect the subject
+-4. **State your approach**: Explain your design choices before writing code
+-
+-**Requirements**:
+-- ✅ State your content-informed design approach BEFORE writing code
+-- ✅ Use web-safe fonts only: Arial, Helvetica, Times New Roman, Georgia, Courier New, Verdana, Tahoma, Trebuchet MS, Impact
+-- ✅ Create clear visual hierarchy through size, weight, and color
+-- ✅ Ensure readability: strong contrast, appropriately sized text, clean alignment
+-- ✅ Be consistent: repeat patterns, spacing, and visual language across slides
+-
+-#### Color Palette Selection
+-
+-**Choosing colors creatively**:
+-- **Think beyond defaults**: What colors genuinely match this specific topic? Avoid autopilot choices.
+-- **Consider multiple angles**: Topic, industry, mood, energy level, target audience, brand identity (if mentioned)
+-- **Be adventurous**: Try unexpected combinations - a healthcare presentation doesn&#x27;t have to be green, finance doesn&#x27;t have to be navy
+-- **Build your palette**: Pick 3-5 colors that work together (dominant colors + supporting tones + accent)
+-- **Ensure contrast**: Text must be clearly readable on backgrounds
+-
+-**Example color palettes** (use these to spark creativity - choose one, adapt it, or create your own):</pre></details><details><summary>xlsx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/exceltable-in-ppt/skills/xlsx/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/submission/tasks/exceltable-in-ppt/skills/xlsx/SKILL.md">修改后</a></p><pre>--- original/xlsx/SKILL.md
++++ repaired/xlsx/SKILL.md
+@@ -1,289 +1,17 @@
+ ---
+ name: xlsx
+-description: &quot;Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas&quot;
++description: Spreadsheet (.xlsx) reading and editing with preservation of formulas
++  and formatting, avoiding accidental conversion of formulas to hardcoded values.
+ license: Proprietary. LICENSE.txt has complete terms
+ ---
+ 
+-# Requirements for Outputs
+-
+-## All Excel files
+-
+-### Zero Formula Errors
+-- Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)
+-
+-### Preserve Existing Templates (when updating templates)
+-- Study and EXACTLY match existing format, style, and conventions when modifying files
+-- Never impose standardized formatting on files with established patterns
+-- Existing template conventions ALWAYS override these guidelines
+-
+-## Financial models
+-
+-### Color Coding Standards
+-Unless otherwise stated by the user or existing template
+-
+-#### Industry-Standard Color Conventions
+-- **Blue text (RGB: 0,0,255)**: Hardcoded inputs, and numbers users will change for scenarios
+-- **Black text (RGB: 0,0,0)**: ALL formulas and calculations
+-- **Green text (RGB: 0,128,0)**: Links pulling from other worksheets within same workbook
+-- **Red text (RGB: 255,0,0)**: External links to other files
+-- **Yellow background (RGB: 255,255,0)**: Key assumptions needing attention or cells that need to be updated
+-
+-### Number Formatting Standards
+-
+-#### Required Format Rules
+-- **Years**: Format as text strings (e.g., &quot;2024&quot; not &quot;2,024&quot;)
+-- **Currency**: Use $#,##0 format; ALWAYS specify units in headers (&quot;Revenue ($mm)&quot;)
+-- **Zeros**: Use number formatting to make all zeros &quot;-&quot;, including percentages (e.g., &quot;$#,##0;($#,##0);-&quot;)
+-- **Percentages**: Default to 0.0% format (one decimal)
+-- **Multiples**: Format as 0.0x for valuation multiples (EV/EBITDA, P/E)
+-- **Negative numbers**: Use parentheses (123) not minus -123
+-
+-### Formula Construction Rules
+-
+-#### Assumptions Placement
+-- Place ALL assumptions (growth rates, margins, multiples, etc.) in separate assumption cells
+-- Use cell references instead of hardcoded values in formulas
+-- Example: Use =B5*(1+$B$6) instead of =B5*1.05
+-
+-#### Formula Error Prevention
+-- Verify all cell references are correct
+-- Check for off-by-one errors in ranges
+-- Ensure consistent formulas across all projection periods
+-- Test with edge cases (zero values, negative numbers)
+-- Verify no unintended circular references
+-
+-#### Documentation Requirements for Hardcodes
+-- Comment or in cells beside (if end of table). Format: &quot;Source: [System/Document], [Date], [Specific Reference], [URL if applicable]&quot;
+-- Examples:
+-  - &quot;Source: Company 10-K, FY2024, Page 45, Revenue Note, [SEC EDGAR URL]&quot;
+-  - &quot;Source: Company 10-Q, Q2 2025, Exhibit 99.1, [SEC EDGAR URL]&quot;
+-  - &quot;Source: Bloomberg Terminal, 8/15/2025, AAPL US Equity&quot;
+-  - &quot;Source: FactSet, 8/20/2025, Consensus Estimates Screen&quot;
+-
+-# XLSX creation, editing, and analysis
+-
+-## Overview
+-
+-A user may ask you to create, edit, or analyze the contents of an .xlsx file. You have different tools and workflows available for different tasks.
+-
+-## Important Requirements
+-
+-**LibreOffice Required for Formula Recalculation**: You can assume LibreOffice is installed for recalculating formula values using the `recalc.py` script. The script automatically configures LibreOffice on first run
+-
+-## Reading and analyzing data
+-
+-### Data analysis with pandas
+-For data analysis, visualization, and basic operations, use **pandas** which provides powerful data manipulation capabilities:
+-
+-```python
+-import pandas as pd
+-
+-# Read Excel
+-df = pd.read_excel(&#x27;file.xlsx&#x27;)  # Default: first sheet
+-all_sheets = pd.read_excel(&#x27;file.xlsx&#x27;, sheet_name=None)  # All sheets as dict
+-
+-# Analyze
+-df.head()      # Preview data
+-df.info()      # Column info
+-df.describe()  # Statistics
+-
+-# Write Excel
+-df.to_excel(&#x27;output.xlsx&#x27;, index=False)
+-```
+-
+-## Excel File Workflows
+-
+-## CRITICAL: Use Formulas, Not Hardcoded Values
+-
+-**Always use Excel formulas instead of calculating values in Python and hardcoding them.** This ensures the spreadsheet remains dynamic and updateable.
+-
+-### ❌ WRONG - Hardcoding Calculated Values
+-```python
+-# Bad: Calculating in Python and hardcoding result
+-total = df[&#x27;Sales&#x27;].sum()
+-sheet[&#x27;B10&#x27;] = total  # Hardcodes 5000
+-
+-# Bad: Computing growth rate in Python
+-growth = (df.iloc[-1][&#x27;Revenue&#x27;] - df.iloc[0][&#x27;Revenue&#x27;]) / df.iloc[0][&#x27;Revenue&#x27;]
+-sheet[&#x27;C5&#x27;] = growth  # Hardcodes 0.15
+-
+-# Bad: Python calculation for average
+-avg = sum(values) / len(values)
+-sheet[&#x27;D20&#x27;] = avg  # Hardcodes 42.5
+-```
+-
+-### ✅ CORRECT - Using Excel Formulas
+-```python
+-# Good: Let Excel calculate the sum
+-sheet[&#x27;B10&#x27;] = &#x27;=SUM(B2:B9)&#x27;
+-
+-# Good: Growth rate as Excel formula
+-sheet[&#x27;C5&#x27;] = &#x27;=(C4-C2)/C2&#x27;
+-
+-# Good: Average using Excel function
+-sheet[&#x27;D20&#x27;] = &#x27;=AVERAGE(D2:D19)&#x27;
+-```
+-
+-This applies to ALL calculations - totals, percentages, ratios, differences, etc. The spreadsheet should be able to recalculate when source data changes.
+-
+-## Common Workflow
+-1. **Choose tool**: pandas for data, openpyxl for formulas/formatting
+-2. **Create/Load**: Create new workbook or load existing file
+-3. **Modify**: Add/edit data, formulas, and formatting
+-4. **Save**: Write to file
+-5. **Recalculate formulas (MANDATORY IF USING FORMULAS)**: Use the recalc.py script
+-   ```bash
+-   python recalc.py output.xlsx
+-   ```
+-6. **Verify and fix any errors**:
+-   - The script returns JSON with error details
+-   - If `status` is `errors_found`, check `error_summary` for specific error types and locations
+-   - Fix the identified errors and recalculate again
+-   - Common errors to fix:
+-     - `#REF!`: Invalid cell references
+-     - `#DIV/0!`: Division by zero
+-     - `#VALUE!`: Wrong data type in formula
+-     - `#NAME?`: Unrecognized formula name
+-
+-### Creating new Excel files
+-
+-```python
+-# Using openpyxl for formulas and formatting
+-from openpyxl import Workbook
+-from openpyxl.styles import Font, PatternFill, Alignment
+-
+-wb = Workbook()
+-sheet = wb.active
+-
+-# Add data
+-sheet[&#x27;A1&#x27;] = &#x27;Hello&#x27;
+-sheet[&#x27;B1&#x27;] = &#x27;World&#x27;
+-sheet.append([&#x27;Row&#x27;, &#x27;of&#x27;, &#x27;data&#x27;])
+-
+-# Add formula
+-sheet[&#x27;B2&#x27;] = &#x27;=SUM(A1:A10)&#x27;
+-
+-# Formatting
+-sheet[&#x27;A1&#x27;].font = Font(bold=True, color=&#x27;FF0000&#x27;)
+-sheet[&#x27;A1&#x27;].fill = PatternFill(&#x27;solid&#x27;, start_color=&#x27;FFFF00&#x27;)
+-sheet[&#x27;A1&#x27;].alignment = Alignment(horizontal=&#x27;center&#x27;)
+-
+-# Column width
+-sheet.column_dimensions[&#x27;A&#x27;].width = 20
+-
+-wb.save(&#x27;output.xlsx&#x27;)
+-```
+-
+-### Editing existing Excel files
+-
+-```python
+-# Using openpyxl to preserve formulas and formatting
+-from openpyxl import load_workbook
+-
+-# Load existing file
+-wb = load_workbook(&#x27;existing.xlsx&#x27;)
+-sheet = wb.active  # or wb[&#x27;SheetName&#x27;] for specific sheet
+-
+-# Working with multiple sheets
+-for sheet_name in wb.sheetnames:
+-    sheet = wb[sheet_name]
+-    print(f&quot;Sheet: {sheet_name}&quot;)
+-
+-# Modify cells
+-sheet[&#x27;A1&#x27;] = &#x27;New Value&#x27;
+-sheet.insert_rows(2)  # Insert row at position 2
+-sheet.delete_cols(3)  # Delete column 3
+-
+-# Add new sheet
+-new_sheet = wb.create_sheet(&#x27;NewSheet&#x27;)
+-new_sheet[&#x27;A1&#x27;] = &#x27;Data&#x27;
+-
+-wb.save(&#x27;modified.xlsx&#x27;)
+-```
+-
+-## Recalculating formulas
+-
+-Excel files created or modified by openpyxl contain formulas as strings but not calculated values. Use the provided `recalc.py` script to recalculate formulas:
+-
+-```bash
+-python recalc.py &lt;excel_file&gt; [timeout_seconds]
+-```
+-
+-Example:
+-```bash
+-python recalc.py output.xlsx 30
+-```
+-
+-The script:
+-- Automatically sets up LibreOffice macro on first run
+-- Recalculates all formulas in all sheets
+-- Scans ALL cells for Excel errors (#REF!, #DIV/0!, etc.)
+-- Returns JSON with detailed error locations and counts
+-- Works on both Linux and macOS
+-
+-## Formula Verification Checklist
+-
+-Quick checks to ensure formulas work correctly:
+-
+-### Essential Verification
+-- [ ] **Test 2-3 sample references**: Verify they pull correct values before building full model
+-- [ ] **Column mapping**: Confirm Excel columns match (e.g., column 64 = BL, not BK)
+-- [ ] **Row offset**: Remember Excel rows are 1-indexed (DataFrame row 5 = Excel row 6)
+-
+-### Common Pitfalls
+-- [ ] **NaN handling**: Check for null values with `pd.notna()`
+-- [ ] **Far-right columns**: FY data often in columns 50+
+-- [ ] **Multiple matches**: Search all occurrences, not just first
+-- [ ] **Division by zero**: Check denominators before using `/` in formulas (#DIV/0!)
+-- [ ] **Wrong references**: Verify all cell references point to intended cells (#REF!)
+-- [ ] **Cross-sheet references**: Use correct format (Sheet1!A1) for linking sheets
+-
+-### Formula Testing Strategy
+-- [ ] **Start small**: Test formulas on 2-3 cells before applying broadly
+-- [ ] **Verify dependencies**: Check all cells referenced in formulas exist
+-- [ ] **Test edge cases**: Include zero, negative, and very large values
+-
+-### Interpreting recalc.py Output
+-The script returns JSON with error details:
+-```json
+-{
+-  &quot;status&quot;: &quot;success&quot;,           // or &quot;errors_found&quot;
+-  &quot;total_errors&quot;: 0,              // Total error count
+-  &quot;total_formulas&quot;: 42,           // Number of formulas in file
+-  &quot;error_summary&quot;: {              // Only present if errors found
+-    &quot;#REF!&quot;: {
+-      &quot;count&quot;: 2,
+-      &quot;locations&quot;: [&quot;Sheet1!B5&quot;, &quot;Sheet1!C10&quot;]
+-    }
+-  }
+-}
+-```
+-
+-## Best Practices
+-
+-### Library Selection
+-- **pandas**: Best for data analysis, bulk operations, and simple data export
+-- **openpyxl**: Best for complex formatting, formulas, and Excel-specific features
+-
+-### Working with openpyxl
+-- Cell indices are 1-based (row=1, column=1 refers to cell A1)
+-- Use `data_only=True` to read calculated values: `load_workbook(&#x27;file.xlsx&#x27;, data_only=True)`
+-- **Warning**: If opened with `data_only=True` and saved, formulas are replaced with values and permanently lost
+-- For large files: Use `read_only=True` for reading or `write_only=True` for writing
+-- Formulas are preserved but not evaluated - use recalc.py to update values
+-
+-### Working with pandas
+-- Specify data types to avoid inference issues: `pd.read_excel(&#x27;file.xlsx&#x27;, dtype={&#x27;id&#x27;: str})`
+-- For large files, read specific columns: `pd.read_excel(&#x27;file.xlsx&#x27;, usecols=[&#x27;A&#x27;, &#x27;C&#x27;, &#x27;E&#x27;])`
+-- Handle dates properly: `pd.read_excel(&#x27;file.xlsx&#x27;, parse_dates=[&#x27;date_column&#x27;])`
+-
+-## Code Style Guidelines
+-**IMPORTANT**: When generating Python code for Excel operations:
+-- Write minimal, concise Python code without unnecessary comments
+-- Avoid verbose variable names and redundant operations
+-- Avoid unnecessary print statements
+-
+-**For Excel files themselves**:
+-- Add comments to cells with complex formulas or important assumptions
+-- Document data sources for hardcoded values
+-- Include notes for key calculations and model sections
++## Steps
++1. Load the workbook for editing with `openpyxl.load_workbook(path)` (do **not** use `data_only=True` when you intend to preserve formulas).
++2. Inspect the sheet to identify which cells are formulas vs hardcoded inputs (e.g., `cell.value` starts with `=` / `cell.data_type == &quot;f&quot;`), especially around the target currency pair.
++3. Update only the intended **non-formula** cell(s); leave any formula cell values untouched so formulas remain formulas.
++4. Save the workbook and re-open it to confirm:
++   - updated input cell has the new numeric value, and
++   - representative dependent cells still contain formula strings (start with `=`), not computed hardcoded numbers.
++5. Recalculate with `python recalc.py file.xlsx` only when you need refreshed cached results; do not replace formulas with computed values in Python.
++## Expected Result
++The workbook reflects the updated input(s) while all original formula cells remain formulas and formatting is preserved.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>xlsx/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;MMG-001&quot;,
+    &quot;description&quot;: &quot;Tool invocation formatting error: multiple shell commands were submitted without chaining via &amp;&amp; or ;, which this terminal tool disallows.\nEvidence: The tool rejected the command because two separate commands were sent in one tool call (python heredoc plus “ls -l …”), returning: “Cannot execute multiple commands at once.”\nTrajectory location: turn 20&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;MMG-002&quot;,
+    &quot;description&quot;: &quot;Same tool invocation formatting mistake was repeated before being corrected in subsequent turns.\nEvidence: Repeated the same multi-command submission pattern and received the same error: “Cannot execute multiple commands at once.”\nTrajectory location: turn 21&quot;,
+    &quot;locations&quot;: []
+  },
+  {
+    &quot;prediction_id&quot;: &quot;MMG-003&quot;,
+    &quot;description&quot;: &quot;The repacking method used default ZIP settings (stored/no compression) for all members, altering packaging characteristics even though file contents were intended to be unchanged except for the embedded workbook.\nEvidence: The initially produced /root/results.pptx was much larger than input (turn 17: 467561 vs 71685 bytes) and had all entries stored uncompressed (turn 19: “compress types Counter({0: 40})”).\nTrajectory location: turns 17-19 (intermediate artifact)&quot;,
+    &quot;locations&quot;: []
+  }
+]</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_skill">完整上传修复包</a></p><p>以同任务其他归档保存的原始包为对照，完整包哈希已与共享原始运行核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillrevise_gpt52&quot;,
+  &quot;task_id&quot;: &quot;exceltable-in-ppt&quot;,
+  &quot;file_count&quot;: 59,
+  &quot;total_bytes&quot;: 1221369,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:33fd8de73f4c9fc7860f9a99c0ffc0a445c6e25d831c9ad7e2f377ac8b701010&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:33fd8de73f4c9fc7860f9a99c0ffc0a445c6e25d831c9ad7e2f377ac8b701010&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_skill&quot;
+}</pre></details><p>字节变化文件 2 个；排除仅空白变化后 2 个。</p><details><summary>pptx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/exceltable-in-ppt/skills/pptx/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_skill/pptx/SKILL.md">修改后</a></p><p>差异较长，下面预览前 80 行（最多 14000 字符）。<a href="../evidence/diffs/8be46bc24ec73f1c437ba8128c3402a486f68fdf90cb73d50a78d4bc829c0027.diff">打开完整差异，共 525 行</a></p><pre>--- original/pptx/SKILL.md
++++ repaired/pptx/SKILL.md
+@@ -1,484 +1,42 @@
+----
+-name: pptx
+-description: &quot;Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for: (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layouts, (4) Adding comments or speaker notes, or any other presentation tasks&quot;
+-license: Proprietary. LICENSE.txt has complete terms
+----
++# PPTX Embedded Spreadsheet Update (OOXML)
+ 
+-# PPTX creation, editing, and analysis
++## Purpose
++Safely locate, verify, and update values inside an embedded spreadsheet (OLE/Excel) within a PPTX by discovering which embedding is shown on which slide, finding the associated annotation text, editing only validated non-formula input cells, and repacking with verifier-visible checks.
+ 
+-## Overview
++## When to Use
++Use when a task requires changing data shown in a PowerPoint table/chart that is backed by an embedded spreadsheet object (not regular slide text), especially when there may be multiple slides and multiple embedded objects and the correct update must match a nearby label (for example, an &quot;updated rate&quot; text box).
+ 
+-A user may ask you to create, edit, or analyze the contents of a .pptx file. A .pptx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
++## Procedure
++- Step 1: Validate inputs and prepare a reversible workspace
++- Confirm you have the PPTX path and the intended output PPTX path/name (do not overwrite the input unless explicitly required).
++- Create a temporary working directory and copy the PPTX there.
++- Check tool availability by discovery, not assumptions: locate any helper scripts (unpack/pack/validate/thumbnail) with find/ls; if missing, plan to use standard ZIP operations instead.
++- Step 2: Discover and map embedded objects to slides (do this before reading any specific slide)
++- Unpack the PPTX (via the environment-provided OOXML unpacker if present; otherwise treat it as a ZIP and extract).
++- Enumerate candidate embeddings by listing ppt/embeddings/ and noting all parts (do not assume a specific filename).
++- For each slide:
++- Inspect ppt/slides/_rels/slideN.xml.rels and record any relationships whose Target points into ppt/embeddings/ (or other OLE-related parts).
++- Cross-check slide XML (ppt/slides/slideN.xml) for object references that use those rIds.
++- Save a short mapping artifact (e.g., mapping.md): slideN -&gt; rId -&gt; Target part path.
++- Decision point: If multiple embeddings exist, select the embedding to edit only after also identifying the slide context (next step) rather than choosing the first file.
++- Step 3: Select the correct embedding using slide context, then locate the correct editable cell
++- On the mapped slide(s), extract all visible text runs from the slide XML and identify the annotation text relevant to the requested update (for example, the text containing the new rate). If multiple candidates exist, prefer those spatially near the embedded object:
++- Use shape coordinates in slide XML (x/y extents) to estimate proximity between the embedded object shape and text boxes; do not assume they are on slide1.
++- Open the selected embedding only if it is a directly readable workbook format (for example, an .xlsx part). If the embedding is an OLE binary (for example, .bin) and no extractor is available, stop and report the slide-&gt;embedding mapping evidence and what additional tooling/input is needed.
++- In the workbook, discover the table schema rather than assuming it:
++- Search for the requested row/column headers (currency codes/names) across a bounded region (used range or first N rows/cols).
++- Determine the intersection cell for the requested pair and direction, and confirm it matches exactly one plausible location.
++- Pre-edit checkpoint (mandatory):
++- Confirm the chosen write cell is a non-formula input (not a formula string). If it is a formula, do not overwrite it and do not redirect to an &quot;inverse&quot; cell by heuristic. Instead, locate the upstream input cell that drives it (if clear), or stop and request clarification about which input cell is intended.
++- Step 4: Apply the minimal change, then ground the result in the packed PPTX
++- Write only the validated target input cell(s); keep all other cells unchanged.
++- Save the workbook back into the same embedding part path selected in Step 2 (do not create a new random part name unless you also update relationships accordingly).
++- Repack the PPTX and run validation if a validator is available.
++- Post-edit grounding checks (mandatory):
++- Re-open the output PPTX as a ZIP and confirm the specific embedding part path exists and has changed compared to the original (hash/size).
++- Re-unpack/read the output embedding and confirm the target cell now contains the intended value and that formula cells remain formulas.
++- If thumbnail tooling exists, generate thumbnails to visually confirm the slide showing the object reflects the updated value.
+ 
+-## Reading and analyzing content
+-
+-### Text extraction
+-If you just need to read the text contents of a presentation, you should convert the document to markdown:
+-
+-```bash
+-# Convert document to markdown
+-python -m markitdown path-to-file.pptx
+-```
+-
+-### Raw XML access
+-You need raw XML access for: comments, speaker notes, slide layouts, animations, design elements, and complex formatting. For any of these features, you&#x27;ll need to unpack a presentation and read its raw XML contents.
+-
+-#### Unpacking a file
+-`python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_dir&gt;`
+-
+-**Note**: The unpack.py script is located at `skills/pptx/ooxml/scripts/unpack.py` relative to the project root. If the script doesn&#x27;t exist at this path, use `find . -name &quot;unpack.py&quot;` to locate it.
+-
+-#### Key file structures
+-* `ppt/presentation.xml` - Main presentation metadata and slide references
+-* `ppt/slides/slide{N}.xml` - Individual slide contents (slide1.xml, slide2.xml, etc.)
+-* `ppt/notesSlides/notesSlide{N}.xml` - Speaker notes for each slide
+-* `ppt/comments/modernComment_*.xml` - Comments for specific slides
+-* `ppt/slideLayouts/` - Layout templates for slides
+-* `ppt/slideMasters/` - Master slide templates
+-* `ppt/theme/` - Theme and styling information
+-* `ppt/media/` - Images and other media files
+-
+-#### Typography and color extraction
+-**When given an example design to emulate**: Always analyze the presentation&#x27;s typography and colors first using the methods below:</pre></details><details><summary>xlsx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/71ce154e2bb3fdfbc730e53f24fee2386aa5c1c6/evaluation/results/MMG2Skill-GPT52-Gold31-20260923/originals/exceltable-in-ppt/skills/xlsx/SKILL.md">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/exceltable-in-ppt/repaired_skill/xlsx/SKILL.md">修改后</a></p><pre>--- original/xlsx/SKILL.md
++++ repaired/xlsx/SKILL.md
+@@ -1,289 +1,46 @@
+----
+-name: xlsx
+-description: &quot;Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas&quot;
+-license: Proprietary. LICENSE.txt has complete terms
+----
++# XLSX and Embedded OOXML Spreadsheet Editing (Python-first)
+ 
+-# Requirements for Outputs
++## Purpose
++Create, read, modify, and validate spreadsheet files (xlsx/xlsm/csv/tsv) and spreadsheets embedded inside OOXML containers (for example, pptx with embedded workbooks) using environment-safe, dependency-light workflows that preserve formulas and formatting.
+ 
+-## All Excel files
++## When to Use
++Use this skill when the task requires programmatic spreadsheet edits (values, formulas, sheets, basic formatting) or when a spreadsheet is embedded inside a zip-based OOXML file (pptx/docx/xlsx) and must be updated without relying on system tools like unzip or root package installs. Do not use this skill for pure chart redesign in PowerPoint unless it explicitly depends on editing embedded workbook data.
+ 
+-### Zero Formula Errors
+-- Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)
++## Procedure
++- 1) Preflight and discovery (before any write)
++- Confirm the target file(s) exist and are readable; identify the user-required output location (if unspecified, ask).
++- Execution anchor: in one shell command, probe that the input is a zip-based OOXML container:
++- `python -c &quot;import sys,zipfile; p=sys.argv[1]; print(&#x27;is_zip&#x27;, zipfile.is_zipfile(p))&quot; &lt;path&gt;`
++- If `is_zip` is False, stop and ask whether the file is the correct input (or whether it is password-protected/corrupt).
++- Check Python libraries: try importing `openpyxl`; if missing, plan a CSV-based edit only if the user confirms the output may be downgraded to CSV (otherwise stop and request an allowed tool).
++- 2) Choose the minimal tool route (decision point)
++- If editing a standalone xlsx/xlsm: use openpyxl for cell edits, formulas, and light formatting.
++- If editing an embedded workbook inside pptx/docx (OOXML container):
++- Prefer Python `zipfile` to inspect and extract only the needed members.
++- Discover likely embedded workbooks by listing members and focusing on:
++- `ppt/embeddings/` (PowerPoint)
++- `word/embeddings/` (Word)
++- Any member ending in `.xlsx` or `.xlsm` inside the container
++- If no candidate embedded workbook is found, stop and ask for clarification (the deck may link externally or use chart caches instead of embeddings).
++- 3) Edit workbook content safely (no irreversible actions yet)
++- For each target workbook:
++- Load with openpyxl without `data_only=True` to avoid destroying formulas on save.
++- Make the smallest required changes:
++- Prefer writing Excel formulas (strings beginning with `=`) rather than computed Python values when the user expects a dynamic spreadsheet.
++- Preserve existing sheet names, structure, and cell formats unless the user explicitly requests changes.
++- Validate edits locally:
++- Re-open the saved workbook and spot-check a few edited cells for expected formulas/values presence (not calculated results).
++- Scan formulas you touched for obvious divide-by-zero or missing references (lightweight checks; do not assume a full recalc engine exists).
++- 4) Repack and verify (bounded checks, then finalize)
++- If editing an OOXML container (pptx/docx):
++- Write a new output file rather than modifying in place unless the user requests in-place edits.
++- Replace only the edited embedded member(s) in the zip, leaving all other members untouched.
++- Execution anchor: verify the output is a valid zip and still contains expected structure:
++- `python -c &quot;import sys,zipfile; z=zipfile.ZipFile(sys.argv[1]); print(&#x27;members&#x27;,len(z.namelist())); print(&#x27;has_embeddings&#x27;,any(n.startswith(&#x27;ppt/embeddings/&#x27;) for n in z.namelist()))&quot; &lt;output&gt;`
++- If any verification fails (cannot open zip, missing members, missing embeddings unexpectedly), stop and revert to the last known-good artifact; re-run only the smallest failing check after adjusting the approach.
+ 
+-### Preserve Existing Templates (when updating templates)
+-- Study and EXACTLY match existing format, style, and conventions when modifying files
+-- Never impose standardized formatting on files with established patterns
+-- Existing template conventions ALWAYS override these guidelines
+-
+-## Financial models
+-
+-### Color Coding Standards
+-Unless otherwise stated by the user or existing template
+-
+-#### Industry-Standard Color Conventions
+-- **Blue text (RGB: 0,0,255)**: Hardcoded inputs, and numbers users will change for scenarios
+-- **Black text (RGB: 0,0,0)**: ALL formulas and calculations
+-- **Green text (RGB: 0,128,0)**: Links pulling from other worksheets within same workbook
+-- **Red text (RGB: 255,0,0)**: External links to other files
+-- **Yellow background (RGB: 255,255,0)**: Key assumptions needing attention or cells that need to be updated
+-
+-### Number Formatting Standards
+-
+-#### Required Format Rules
+-- **Years**: Format as text strings (e.g., &quot;2024&quot; not &quot;2,024&quot;)
+-- **Currency**: Use $#,##0 format; ALWAYS specify units in headers (&quot;Revenue ($mm)&quot;)
+-- **Zeros**: Use number formatting to make all zeros &quot;-&quot;, including percentages (e.g., &quot;$#,##0;($#,##0);-&quot;)
+-- **Percentages**: Default to 0.0% format (one decimal)
+-- **Multiples**: Format as 0.0x for valuation multiples (EV/EBITDA, P/E)
+-- **Negative numbers**: Use parentheses (123) not minus -123
+-
+-### Formula Construction Rules
+-
+-#### Assumptions Placement
+-- Place ALL assumptions (growth rates, margins, multiples, etc.) in separate assumption cells
+-- Use cell references instead of hardcoded values in formulas
+-- Example: Use =B5*(1+$B$6) instead of =B5*1.05
+-
+-#### Formula Error Prevention
+-- Verify all cell references are correct
+-- Check for off-by-one errors in ranges
+-- Ensure consistent formulas across all projection periods
+-- Test with edge cases (zero values, negative numbers)
+-- Verify no unintended circular references
+-
+-#### Documentation Requirements for Hardcodes
+-- Comment or in cells beside (if end of table). Format: &quot;Source: [System/Document], [Date], [Specific Reference], [URL if applicable]&quot;
+-- Examples:
+-  - &quot;Source: Company 10-K, FY2024, Page 45, Revenue Note, [SEC EDGAR URL]&quot;
+-  - &quot;Source: Company 10-Q, Q2 2025, Exhibit 99.1, [SEC EDGAR URL]&quot;
+-  - &quot;Source: Bloomberg Terminal, 8/15/2025, AAPL US Equity&quot;
+-  - &quot;Source: FactSet, 8/20/2025, Consensus Estimates Screen&quot;
+-
+-# XLSX creation, editing, and analysis
+-
+-## Overview
+-
+-A user may ask you to create, edit, or analyze the contents of an .xlsx file. You have different tools and workflows available for different tasks.
+-
+-## Important Requirements
+-
+-**LibreOffice Required for Formula Recalculation**: You can assume LibreOffice is installed for recalculating formula values using the `recalc.py` script. The script automatically configures LibreOffice on first run
+-
+-## Reading and analyzing data
+-
+-### Data analysis with pandas
+-For data analysis, visualization, and basic operations, use **pandas** which provides powerful data manipulation capabilities:
+-
+-```python
+-import pandas as pd
+-
+-# Read Excel
+-df = pd.read_excel(&#x27;file.xlsx&#x27;)  # Default: first sheet
+-all_sheets = pd.read_excel(&#x27;file.xlsx&#x27;, sheet_name=None)  # All sheets as dict
+-
+-# Analyze
+-df.head()      # Preview data
+-df.info()      # Column info
+-df.describe()  # Statistics
+-
+-# Write Excel
+-df.to_excel(&#x27;output.xlsx&#x27;, index=False)
+-```
+-
+-## Excel File Workflows
+-
+-## CRITICAL: Use Formulas, Not Hardcoded Values
+-
+-**Always use Excel formulas instead of calculating values in Python and hardcoding them.** This ensures the spreadsheet remains dynamic and updateable.
+-
+-### ❌ WRONG - Hardcoding Calculated Values
+-```python
+-# Bad: Calculating in Python and hardcoding result
+-total = df[&#x27;Sales&#x27;].sum()
+-sheet[&#x27;B10&#x27;] = total  # Hardcodes 5000
+-
+-# Bad: Computing growth rate in Python
+-growth = (df.iloc[-1][&#x27;Revenue&#x27;] - df.iloc[0][&#x27;Revenue&#x27;]) / df.iloc[0][&#x27;Revenue&#x27;]
+-sheet[&#x27;C5&#x27;] = growth  # Hardcodes 0.15
+-
+-# Bad: Python calculation for average
+-avg = sum(values) / len(values)
+-sheet[&#x27;D20&#x27;] = avg  # Hardcodes 42.5
+-```
+-
+-### ✅ CORRECT - Using Excel Formulas
+-```python
+-# Good: Let Excel calculate the sum
+-sheet[&#x27;B10&#x27;] = &#x27;=SUM(B2:B9)&#x27;
+-
+-# Good: Growth rate as Excel formula
+-sheet[&#x27;C5&#x27;] = &#x27;=(C4-C2)/C2&#x27;
+-
+-# Good: Average using Excel function
+-sheet[&#x27;D20&#x27;] = &#x27;=AVERAGE(D2:D19)&#x27;
+-```
+-
+-This applies to ALL calculations - totals, percentages, ratios, differences, etc. The spreadsheet should be able to recalculate when source data changes.
+-
+-## Common Workflow
+-1. **Choose tool**: pandas for data, openpyxl for formulas/formatting
+-2. **Create/Load**: Create new workbook or load existing file
+-3. **Modify**: Add/edit data, formulas, and formatting
+-4. **Save**: Write to file
+-5. **Recalculate formulas (MANDATORY IF USING FORMULAS)**: Use the recalc.py script
+-   ```bash
+-   python recalc.py output.xlsx
+-   ```
+-6. **Verify and fix any errors**:
+-   - The script returns JSON with error details
+-   - If `status` is `errors_found`, check `error_summary` for specific error types and locations
+-   - Fix the identified errors and recalculate again
+-   - Common errors to fix:
+-     - `#REF!`: Invalid cell references
+-     - `#DIV/0!`: Division by zero
+-     - `#VALUE!`: Wrong data type in formula
+-     - `#NAME?`: Unrecognized formula name
+-
+-### Creating new Excel files
+-
+-```python
+-# Using openpyxl for formulas and formatting
+-from openpyxl import Workbook
+-from openpyxl.styles import Font, PatternFill, Alignment
+-
+-wb = Workbook()
+-sheet = wb.active
+-
+-# Add data
+-sheet[&#x27;A1&#x27;] = &#x27;Hello&#x27;
+-sheet[&#x27;B1&#x27;] = &#x27;World&#x27;
+-sheet.append([&#x27;Row&#x27;, &#x27;of&#x27;, &#x27;data&#x27;])
+-
+-# Add formula
+-sheet[&#x27;B2&#x27;] = &#x27;=SUM(A1:A10)&#x27;
+-
+-# Formatting
+-sheet[&#x27;A1&#x27;].font = Font(bold=True, color=&#x27;FF0000&#x27;)
+-sheet[&#x27;A1&#x27;].fill = PatternFill(&#x27;solid&#x27;, start_color=&#x27;FFFF00&#x27;)
+-sheet[&#x27;A1&#x27;].alignment = Alignment(horizontal=&#x27;center&#x27;)
+-
+-# Column width
+-sheet.column_dimensions[&#x27;A&#x27;].width = 20
+-
+-wb.save(&#x27;output.xlsx&#x27;)
+-```
+-
+-### Editing existing Excel files
+-
+-```python
+-# Using openpyxl to preserve formulas and formatting
+-from openpyxl import load_workbook
+-
+-# Load existing file
+-wb = load_workbook(&#x27;existing.xlsx&#x27;)
+-sheet = wb.active  # or wb[&#x27;SheetName&#x27;] for specific sheet
+-
+-# Working with multiple sheets
+-for sheet_name in wb.sheetnames:
+-    sheet = wb[sheet_name]
+-    print(f&quot;Sheet: {sheet_name}&quot;)
+-
+-# Modify cells
+-sheet[&#x27;A1&#x27;] = &#x27;New Value&#x27;
+-sheet.insert_rows(2)  # Insert row at position 2
+-sheet.delete_cols(3)  # Delete column 3
+-
+-# Add new sheet
+-new_sheet = wb.create_sheet(&#x27;NewSheet&#x27;)
+-new_sheet[&#x27;A1&#x27;] = &#x27;Data&#x27;
+-
+-wb.save(&#x27;modified.xlsx&#x27;)
+-```
+-
+-## Recalculating formulas
+-
+-Excel files created or modified by openpyxl contain formulas as strings but not calculated values. Use the provided `recalc.py` script to recalculate formulas:
+-
+-```bash
+-python recalc.py &lt;excel_file&gt; [timeout_seconds]
+-```
+-
+-Example:
+-```bash
+-python recalc.py output.xlsx 30
+-```
+-
+-The script:
+-- Automatically sets up LibreOffice macro on first run
+-- Recalculates all formulas in all sheets
+-- Scans ALL cells for Excel errors (#REF!, #DIV/0!, etc.)
+-- Returns JSON with detailed error locations and counts
+-- Works on both Linux and macOS
+-
+-## Formula Verification Checklist
+-
+-Quick checks to ensure formulas work correctly:
+-
+-### Essential Verification
+-- [ ] **Test 2-3 sample references**: Verify they pull correct values before building full model
+-- [ ] **Column mapping**: Confirm Excel columns match (e.g., column 64 = BL, not BK)
+-- [ ] **Row offset**: Remember Excel rows are 1-indexed (DataFrame row 5 = Excel row 6)
+-
+-### Common Pitfalls
+-- [ ] **NaN handling**: Check for null values with `pd.notna()`
+-- [ ] **Far-right columns**: FY data often in columns 50+
+-- [ ] **Multiple matches**: Search all occurrences, not just first
+-- [ ] **Division by zero**: Check denominators before using `/` in formulas (#DIV/0!)
+-- [ ] **Wrong references**: Verify all cell references point to intended cells (#REF!)
+-- [ ] **Cross-sheet references**: Use correct format (Sheet1!A1) for linking sheets
+-
+-### Formula Testing Strategy
+-- [ ] **Start small**: Test formulas on 2-3 cells before applying broadly
+-- [ ] **Verify dependencies**: Check all cells referenced in formulas exist
+-- [ ] **Test edge cases**: Include zero, negative, and very large values
+-
+-### Interpreting recalc.py Output
+-The script returns JSON with error details:
+-```json
+-{
+-  &quot;status&quot;: &quot;success&quot;,           // or &quot;errors_found&quot;
+-  &quot;total_errors&quot;: 0,              // Total error count
+-  &quot;total_formulas&quot;: 42,           // Number of formulas in file
+-  &quot;error_summary&quot;: {              // Only present if errors found
+-    &quot;#REF!&quot;: {
+-      &quot;count&quot;: 2,
+-      &quot;locations&quot;: [&quot;Sheet1!B5&quot;, &quot;Sheet1!C10&quot;]
+-    }
+-  }
+-}
+-```
+-
+-## Best Practices
+-
+-### Library Selection
+-- **pandas**: Best for data analysis, bulk operations, and simple data export
+-- **openpyxl**: Best for complex formatting, formulas, and Excel-specific features
+-
+-### Working with openpyxl
+-- Cell indices are 1-based (row=1, column=1 refers to cell A1)
+-- Use `data_only=True` to read calculated values: `load_workbook(&#x27;file.xlsx&#x27;, data_only=True)`
+-- **Warning**: If opened with `data_only=True` and saved, formulas are replaced with values and permanently lost
+-- For large files: Use `read_only=True` for reading or `write_only=True` for writing
+-- Formulas are preserved but not evaluated - use recalc.py to update values
+-
+-### Working with pandas
+-- Specify data types to avoid inference issues: `pd.read_excel(&#x27;file.xlsx&#x27;, dtype={&#x27;id&#x27;: str})`
+-- For large files, read specific columns: `pd.read_excel(&#x27;file.xlsx&#x27;, usecols=[&#x27;A&#x27;, &#x27;C&#x27;, &#x27;E&#x27;])`
+-- Handle dates properly: `pd.read_excel(&#x27;file.xlsx&#x27;, parse_dates=[&#x27;date_column&#x27;])`
+-
+-## Code Style Guidelines
+-**IMPORTANT**: When generating Python code for Excel operations:
+-- Write minimal, concise Python code without unnecessary comments
+-- Avoid verbose variable names and redundant operations
+-- Avoid unnecessary print statements
+-
+-**For Excel files themselves**:
+-- Add comments to cells with complex formulas or important assumptions
+-- Document data sources for hardcoded values
+-- Include notes for key calculations and model sections
++## Constraints / Pitfalls
++- Never attempt system package installs (apt-get, brew, yum) or assume tools like unzip/LibreOffice exist unless you have explicit permission and have verified they are available and usable in the environment. Default to pure-Python (`zipfile`, `openpyxl`) methods.
++- Do not save workbooks loaded with `data_only=True`; it can permanently replace formulas with values. Preserve formulas by loading normally and only writing the minimal required cells.
++- Shell interface constraint: issue single-command executions or explicitly chain within one command using `&amp;&amp;` or `;` (do not rely on multi-command submissions being accepted).
++- Do not hard-code container member paths; always discover members via zip listing first, then operate only on confirmed matches.</pre></details><details><summary>实际修改与人工 Gold 定位是否重合</summary><p>Gold 定位文件 1 个，其中 1 个发生实质修改。路径重合不等于修对；其他文件也可能承担相同修复功能。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Gold 定位文件</th><th scope="col">本次是否修改</th></tr></thead><tbody><tr><td>xlsx/SKILL.md</td><td>已修改</td></tr></tbody></table></div></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;Failure stems from brittle, over-specific assumptions (fixed slide and embedding path) and operating at the wrong abstraction level for OLE Excel editing (no reliable mapping between slide/table/textbox and workbook cell), compounded by false certainty when reporting a specific successful update without robust validation. The skill guidance focuses on generic PPTX OOXML workflows and does not cover the key abstraction needed for this task: reliably linking an embedded Excel OLE object to (a) the slide and shape displaying it and (b) the nearby text box that specifies the updated rate. In execution, the agent used hard-coded file and slide literals (slide1.xml, Microsoft_Excel_Worksheet.xlsx) and a fixed table schema assumption, then applied a heuristic for formula cells that may update an unintended location. These brittle assumptions can easily lead to updating the wrong embedded object/cell or missing the correct update text, yielding verifier failure.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;pptx/SKILL.md&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P2&quot;,
+    &quot;description&quot;: &quot;The skill failed because it assumed system utilities could be installed/used (`unzip` via apt-get) in a restricted environment, and it lacked a default pure-Python PPTX extraction/edit/repack workflow. The skill is also bloated with Excel financial-model guidance that doesn’t help with PPTX embedded workbook editing and omits constraints about the terminal tool’s command-format limitations. The failure is primarily due to an environment mismatch: the agent assumed it could use/install `unzip` (and, by extension, other system dependencies) but the sandbox disallowed it. The skill provides no PPTX-embedded-spreadsheet-specific, dependency-light workflow (e.g., always use Python zipfile, avoid apt-get), so the agent initially took a brittle path and hit permission/tooling constraints. Additionally, the skill’s excessive Excel-modeling guidance polluted action selection for a PPTX+embedded-OLE task and omitted constraints for the terminal tool’s single-command limitation, increasing error rate and iteration cost.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>SkillTTA · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/c9ca883d1af68fe12bb7e07275999543bd1cd963/evaluation/results/SkillTTA-GPT52-Gold31-Local30-20260924/tasks/exceltable-in-ppt/repaired_skill">完整上传修复包</a></p><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The OOXML unpack script pretty-prints XML using ASCII encoding (`toprettyxml(..., encoding=\&quot;ascii\&quot;)`). This can rewrite non-ASCII text into character references and changes the XML encoding declaration, reducing round-trip fidelity and risking unintended changes when the task requires keeping everything else unchanged.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;pptx/ooxml/scripts/unpack.py&quot;,
+        &quot;section&quot;: &quot;Pretty print all XML files (dom.toprettyxml(..., encoding=\&quot;ascii\&quot;))&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P2&quot;,
+    &quot;description&quot;: &quot;The PPTX skill documentation is generic about editing PPTX via OOXML, but provides no workflow guidance for the task’s core requirement: extracting/updating/re-embedding an embedded Excel worksheet/table (OLE object under `ppt/embeddings/*`) while preserving formulas and avoiding full-deck rewrites. This misalignment can lead to using inappropriate approaches (e.g., editing only slide XML or saving via python-pptx) that won’t update the embedded workbook correctly or may rewrite unrelated parts.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;pptx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Editing an existing PowerPoint presentation (OOXML unpack/edit/pack workflow) and overall Overview/Reading sections (no embedded Excel/OLE handling)&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P3&quot;,
+    &quot;description&quot;: &quot;There is an internal validation inconsistency: `pack.py` supports validating `.xlsx` outputs via soffice conversion, but `validate.py` explicitly treats `.xlsx` as unsupported and exits with an error. This mismatch can confuse/impede validation workflows when editing an embedded workbook for this task.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;pptx/ooxml/scripts/pack.py&quot;,
+        &quot;section&quot;: &quot;validate_document(): includes case \&quot;.xlsx\&quot; with filter \&quot;html:HTML (StarCalc)\&quot;&quot;
+      },
+      {
+        &quot;file&quot;: &quot;pptx/ooxml/scripts/validate.py&quot;,
+        &quot;section&quot;: &quot;Validator selection match-case: default branch prints \&quot;Validation not supported\&quot; for .xlsx&quot;
+      }
+    ]
+  }
+]</pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

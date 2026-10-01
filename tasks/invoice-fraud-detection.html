@@ -1,0 +1,377 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>发票欺诈识别 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>发票欺诈识别</h1><p class="lead">对照发票、供应商表、PO 表，按规则优先级输出 fraud_report.json。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/invoice-fraud-detection/task.md">原始任务要求</a></div><p class="meta">invoice-fraud-detection · 金融与经济 · 3 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>对照发票、供应商表、PO 表，按规则优先级输出 fraud_report.json。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>fuzzy-match</td><td>对齐拼写变体和近似名称，协调不同表中的实体。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/invoice-fraud-detection/environment/skills/fuzzy-match/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr><tr><td>pdf</td><td>提取 PDF 文本和表格，修改、填表及生成 PDF。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/invoice-fraud-detection/environment/skills/pdf/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr><tr><td>xlsx</td><td>读取和修改工作簿，保留公式与格式，并重算和核查数值。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/invoice-fraud-detection/environment/skills/xlsx/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>1 项通过 / 2 项检查</td><td>第 4 页 Invalid PO 判断正确，但 po_number 保留 PO-INVALID，verifier 要求 null。此题存在题面与标准答案口径冲突。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status PASS">通过</span></td><td>1.0</td><td>2 项通过 / 2 项检查</td><td>按现有 verifier 通过；该题被人工 Gold 排除，不能据通过反推原始 Skill 存在无争议缺陷。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>1 项通过 / 2 项检查</td><td>仍在第 4 页保留 PO-INVALID，未满足 verifier 的 null 要求。</td></tr><tr><td>SkillRevise · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>1 项通过 / 2 项检查</td><td>报告存在，1/2 项通过；把正常发票第 52 页误报为欺诈。校验在首个误报断言停止，不能据此推断其他页已全部正确。</td></tr></tbody></table></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>pdf/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr><tr><td>xlsx/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr><tr><td>fuzzy-match/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/invoice-fraud-detection/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/invoice-fraud-detection/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/invoice-fraud-detection/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/invoice-fraud-detection/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>第 4 页 Invalid PO 判断正确，但 po_number 保留 PO-INVALID，verifier 要求 null。此题存在题面与标准答案口径冲突。</p><details><summary>::TestOutputs::test_content</summary><pre>self = &lt;test_outputs.TestOutputs object at 0x7d4a54ea6420&gt;
+
+    def test_content(self):
+        &quot;&quot;&quot;
+        Check content of fraud report against a comprehensive static ground truth.
+        This test verifies two things:
+        1. The agent correctly identifies all fraudulent invoices.
+        2. The agent does not incorrectly flag any clean invoices as fraudulent.
+        &quot;&quot;&quot;
+        # Load Comprehensive Ground Truth
+        gt_path = os.path.join(os.path.dirname(__file__), &quot;ground_truth.json&quot;)
+        with open(gt_path) as f:
+            all_invoices = json.load(f)
+    
+        # Separate ground truth into expected fraud and clean lists
+        expected_fraud = [inv for inv in all_invoices if inv[&quot;reason&quot;] != &quot;Clean&quot;]
+        expected_clean_pages = {inv[&quot;invoice_page_number&quot;] for inv in all_invoices if inv[&quot;reason&quot;] == &quot;Clean&quot;}
+    
+        # Load Agent&#x27;s Actual Output (which should only contain fraud cases)
+        with open(&quot;/root/fraud_report.json&quot;) as f:
+            actual_fraud = json.load(f)
+    
+        # Sort reports for consistent comparison
+        expected_fraud.sort(key=lambda x: x[&quot;invoice_page_number&quot;])
+        actual_fraud.sort(key=lambda x: x[&quot;invoice_page_number&quot;])
+    
+        # --- Verification ---
+    
+        # 1. Check for False Positives (flagging clean invoices as fraud)
+        actual_fraud_pages = {inv[&quot;invoice_page_number&quot;] for inv in actual_fraud}
+        false_positives = actual_fraud_pages.intersection(expected_clean_pages)
+    
+        assert not false_positives, f&quot;False Positives: Agent incorrectly flagged these clean pages as fraudulent: &quot; f&quot;{sorted(false_positives)}&quot;
+    
+        # 2. Check for Missed Fraud and Incorrect Details
+        expected_fraud_pages = {inv[&quot;invoice_page_number&quot;] for inv in expected_fraud}
+        missing_pages = expected_fraud_pages - actual_fraud_pages
+    
+        assert not missing_pages, f&quot;Missed Fraud: Agent failed to detect fraud on these pages: &quot; f&quot;{sorted(missing_pages)}&quot;
+    
+        # 3. Check for consistent length (catches unexpected fraud pages not in ground truth)
+        assert len(actual_fraud) == len(expected_fraud), (
+            f&quot;Mismatch in number of fraud cases. Expected: {len(expected_fraud)}, Got: {len(actual_fraud)}. &quot;
+            f&quot;This could be due to unexpected pages being flagged.&quot;
+        )
+    
+        # 4. Detailed field-by-field comparison for correctly identified fraud cases
+        for exp, act in zip(expected_fraud, actual_fraud):
+            assert act[&quot;invoice_page_number&quot;] == exp[&quot;invoice_page_number&quot;]  # Should be guaranteed by sorting
+    
+            assert act[&quot;reason&quot;] == exp[&quot;reason&quot;], (
+                f&quot;Reason mismatch for page {act[&#x27;invoice_page_number&#x27;]}: &quot; f&quot;Expected &#x27;{exp[&#x27;reason&#x27;]}&#x27;, Got &#x27;{act[&#x27;reason&#x27;]}&#x27;&quot;
+            )
+    
+            vendor_score = fuzz.ratio(act[&quot;vendor_name&quot;], exp[&quot;vendor_name&quot;])
+            assert vendor_score &gt; 85, (
+                f&quot;Vendor name mismatch for page {act[&#x27;invoice_page_number&#x27;]}: &quot;
+                f&quot;Expected &#x27;{exp[&#x27;vendor_name&#x27;]}&#x27;, Got &#x27;{act[&#x27;vendor_name&#x27;]}&#x27; (Score: {vendor_score})&quot;
+            )
+    
+            assert act[&quot;iban&quot;] == exp[&quot;iban&quot;], (
+                f&quot;IBAN mismatch for page {act[&#x27;invoice_page_number&#x27;]}: &quot; f&quot;Expected &#x27;{exp[&#x27;iban&#x27;]}&#x27;, Got &#x27;{act[&#x27;iban&#x27;]}&#x27;&quot;
+            )
+    
+&gt;           assert act[&quot;po_number&quot;] == exp[&quot;po_number&quot;], (
+                f&quot;PO Number mismatch for page {act[&#x27;invoice_page_number&#x27;]}: &quot; f&quot;Expected &#x27;{exp[&#x27;po_number&#x27;]}&#x27;, Got &#x27;{act[&#x27;po_number&#x27;]}&#x27;&quot;
+            )
+E           AssertionError: PO Number mismatch for page 4: Expected &#x27;None&#x27;, Got &#x27;PO-INVALID&#x27;
+E           assert &#x27;PO-INVALID&#x27; == None
+
+/verifier/test_outputs.py:74: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;invoice-fraud-detection-original-skill-r004&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:7355f35c7a0bd44ad9f4dd933a357c49d1b4906679ccd7e822e98c8909d237ec&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 11,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:5a528789430fceb057e49ebad07fd0218a06c80f50b8a066939b639b633e804e&quot;
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/invoice-fraud-detection/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/invoice-fraud-detection/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/invoice-fraud-detection/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/invoice-fraud-detection/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/invoice-fraud-detection/repaired_skill">上传修复包</a></p><p>按现有 verifier 通过；该题被人工 Gold 排除，不能据通过反推原始 Skill 存在无争议缺陷。</p><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>::TestOutputs::test_content</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;invoice-fraud-detection-a05&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:7355f35c7a0bd44ad9f4dd933a357c49d1b4906679ccd7e822e98c8909d237ec&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 19,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:e4d36969219cd1d845c9949b0bb4ef6489f021e88b0795cd274db438d80ff575&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/invoice-fraud-detection/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/invoice-fraud-detection/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/invoice-fraud-detection/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/invoice-fraud-detection/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/invoice-fraud-detection/repaired_skill">上传修复包</a></p><p>仍在第 4 页保留 PO-INVALID，未满足 verifier 的 null 要求。</p><details><summary>::TestOutputs::test_content</summary><pre>self = &lt;test_outputs.TestOutputs object at 0xffff8211ff20&gt;
+
+    def test_content(self):
+        &quot;&quot;&quot;
+        Check content of fraud report against a comprehensive static ground truth.
+        This test verifies two things:
+        1. The agent correctly identifies all fraudulent invoices.
+        2. The agent does not incorrectly flag any clean invoices as fraudulent.
+        &quot;&quot;&quot;
+        # Load Comprehensive Ground Truth
+        gt_path = os.path.join(os.path.dirname(__file__), &quot;ground_truth.json&quot;)
+        with open(gt_path) as f:
+            all_invoices = json.load(f)
+    
+        # Separate ground truth into expected fraud and clean lists
+        expected_fraud = [inv for inv in all_invoices if inv[&quot;reason&quot;] != &quot;Clean&quot;]
+        expected_clean_pages = {inv[&quot;invoice_page_number&quot;] for inv in all_invoices if inv[&quot;reason&quot;] == &quot;Clean&quot;}
+    
+        # Load Agent&#x27;s Actual Output (which should only contain fraud cases)
+        with open(&quot;/root/fraud_report.json&quot;) as f:
+            actual_fraud = json.load(f)
+    
+        # Sort reports for consistent comparison
+        expected_fraud.sort(key=lambda x: x[&quot;invoice_page_number&quot;])
+        actual_fraud.sort(key=lambda x: x[&quot;invoice_page_number&quot;])
+    
+        # --- Verification ---
+    
+        # 1. Check for False Positives (flagging clean invoices as fraud)
+        actual_fraud_pages = {inv[&quot;invoice_page_number&quot;] for inv in actual_fraud}
+        false_positives = actual_fraud_pages.intersection(expected_clean_pages)
+    
+        assert not false_positives, f&quot;False Positives: Agent incorrectly flagged these clean pages as fraudulent: &quot; f&quot;{sorted(false_positives)}&quot;
+    
+        # 2. Check for Missed Fraud and Incorrect Details
+        expected_fraud_pages = {inv[&quot;invoice_page_number&quot;] for inv in expected_fraud}
+        missing_pages = expected_fraud_pages - actual_fraud_pages
+    
+        assert not missing_pages, f&quot;Missed Fraud: Agent failed to detect fraud on these pages: &quot; f&quot;{sorted(missing_pages)}&quot;
+    
+        # 3. Check for consistent length (catches unexpected fraud pages not in ground truth)
+        assert len(actual_fraud) == len(expected_fraud), (
+            f&quot;Mismatch in number of fraud cases. Expected: {len(expected_fraud)}, Got: {len(actual_fraud)}. &quot;
+            f&quot;This could be due to unexpected pages being flagged.&quot;
+        )
+    
+        # 4. Detailed field-by-field comparison for correctly identified fraud cases
+        for exp, act in zip(expected_fraud, actual_fraud):
+            assert act[&quot;invoice_page_number&quot;] == exp[&quot;invoice_page_number&quot;]  # Should be guaranteed by sorting
+    
+            assert act[&quot;reason&quot;] == exp[&quot;reason&quot;], (
+                f&quot;Reason mismatch for page {act[&#x27;invoice_page_number&#x27;]}: &quot; f&quot;Expected &#x27;{exp[&#x27;reason&#x27;]}&#x27;, Got &#x27;{act[&#x27;reason&#x27;]}&#x27;&quot;
+            )
+    
+            vendor_score = fuzz.ratio(act[&quot;vendor_name&quot;], exp[&quot;vendor_name&quot;])
+            assert vendor_score &gt; 85, (
+                f&quot;Vendor name mismatch for page {act[&#x27;invoice_page_number&#x27;]}: &quot;
+                f&quot;Expected &#x27;{exp[&#x27;vendor_name&#x27;]}&#x27;, Got &#x27;{act[&#x27;vendor_name&#x27;]}&#x27; (Score: {vendor_score})&quot;
+            )
+    
+            assert act[&quot;iban&quot;] == exp[&quot;iban&quot;], (
+                f&quot;IBAN mismatch for page {act[&#x27;invoice_page_number&#x27;]}: &quot; f&quot;Expected &#x27;{exp[&#x27;iban&#x27;]}&#x27;, Got &#x27;{act[&#x27;iban&#x27;]}&#x27;&quot;
+            )
+    
+&gt;           assert act[&quot;po_number&quot;] == exp[&quot;po_number&quot;], (
+                f&quot;PO Number mismatch for page {act[&#x27;invoice_page_number&#x27;]}: &quot; f&quot;Expected &#x27;{exp[&#x27;po_number&#x27;]}&#x27;, Got &#x27;{act[&#x27;po_number&#x27;]}&#x27;&quot;
+            )
+E           AssertionError: PO Number mismatch for page 4: Expected &#x27;None&#x27;, Got &#x27;PO-INVALID&#x27;
+E           assert &#x27;PO-INVALID&#x27; == None
+
+/verifier/test_outputs.py:74: AssertionError</pre></details><details><summary>与原始结果相比，哪些同名检查改变了状态</summary><p>两次任务摘要相同，但仍可能存在模型、provider、代理配置或执行随机性差异。这里只记录检查表现，不能直接归因于补丁。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">变化</th><th scope="col">检查名称</th></tr></thead><tbody><tr><td>未通过 → 通过</td><td>无</td></tr><tr><td>通过 → 未通过</td><td>无</td></tr></tbody></table></div></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;invoice-fraud-detection-a02&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:7355f35c7a0bd44ad9f4dd933a357c49d1b4906679ccd7e822e98c8909d237ec&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 14,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:e9678c6387d874894cdfd4df243b4775893826b61268f0eccb69deb6536d1d91&quot;
+}</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_skill">上传修复包</a></p><p>报告存在，1/2 项通过；把正常发票第 52 页误报为欺诈。校验在首个误报断言停止，不能据此推断其他页已全部正确。</p><details><summary>::TestOutputs::test_content</summary><pre>self = &lt;test_outputs.TestOutputs object at 0x70571295f9b0&gt;
+
+    def test_content(self):
+        &quot;&quot;&quot;
+        Check content of fraud report against a comprehensive static ground truth.
+        This test verifies two things:
+        1. The agent correctly identifies all fraudulent invoices.
+        2. The agent does not incorrectly flag any clean invoices as fraudulent.
+        &quot;&quot;&quot;
+        # Load Comprehensive Ground Truth
+        gt_path = os.path.join(os.path.dirname(__file__), &quot;ground_truth.json&quot;)
+        with open(gt_path) as f:
+            all_invoices = json.load(f)
+    
+        # Separate ground truth into expected fraud and clean lists
+        expected_fraud = [inv for inv in all_invoices if inv[&quot;reason&quot;] != &quot;Clean&quot;]
+        expected_clean_pages = {inv[&quot;invoice_page_number&quot;] for inv in all_invoices if inv[&quot;reason&quot;] == &quot;Clean&quot;}
+    
+        # Load Agent&#x27;s Actual Output (which should only contain fraud cases)
+        with open(&quot;/root/fraud_report.json&quot;) as f:
+            actual_fraud = json.load(f)
+    
+        # Sort reports for consistent comparison
+        expected_fraud.sort(key=lambda x: x[&quot;invoice_page_number&quot;])
+        actual_fraud.sort(key=lambda x: x[&quot;invoice_page_number&quot;])
+    
+        # --- Verification ---
+    
+        # 1. Check for False Positives (flagging clean invoices as fraud)
+        actual_fraud_pages = {inv[&quot;invoice_page_number&quot;] for inv in actual_fraud}
+        false_positives = actual_fraud_pages.intersection(expected_clean_pages)
+    
+&gt;       assert not false_positives, f&quot;False Positives: Agent incorrectly flagged these clean pages as fraudulent: &quot; f&quot;{sorted(false_positives)}&quot;
+E       AssertionError: False Positives: Agent incorrectly flagged these clean pages as fraudulent: [52]
+E       assert not {52}
+
+/verifier/test_outputs.py:42: AssertionError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;invoice-fraud-detection-bundle-3-published-original-revi-99e390281c4b&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:cbb122669edb54e3f4caccafb2530748ca6384d4e4d0090b9f6569c5b903d44d&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 14,
+  &quot;termination_reason&quot;: &quot;end_turn&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:3f4142ed3bad9556d9f7045f7120830ac7603171fd23b0659ea32e0dc09efd42&quot;
+}</pre></details></details><h2>人工 Gold 范围</h2><p>该题属于原始失败但排除出人工 Gold 的 8 题之一。“排除”只表示未纳入这一 Gold 评分集合，不表示任务已解决或不值得分析。</p><div class="note warning"><strong>该题为何被排除出人工 Gold</strong><p>对于非空但无效的 PO，任务没有要求改成 null，官方 oracle 也保留原 PO；verifier 的标准答案却要求 null。</p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/exclusions.json">发布者的排除说明</a></div><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/invoice-fraud-detection/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;invoice-fraud-detection&quot;,
+  &quot;file_count&quot;: 16,
+  &quot;total_bytes&quot;: 87044,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:e4d36969219cd1d845c9949b0bb4ef6489f021e88b0795cd274db438d80ff575&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:e4d36969219cd1d845c9949b0bb4ef6489f021e88b0795cd274db438d80ff575&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/invoice-fraud-detection/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/invoice-fraud-detection/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>fuzzy-match/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/invoice-fraud-detection/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/invoice-fraud-detection/repaired_skill/fuzzy-match/SKILL.md">修改后</a></p><pre>--- original/fuzzy-match/SKILL.md
++++ repaired/fuzzy-match/SKILL.md
+@@ -127,3 +127,39 @@
+ 
+     results[dirty] = match
+ ```
++
++## Reconciliation Output Hygiene (IDs, nulls, and fraud-style rules)
++
++Fuzzy matching is often one step in a larger reconciliation pipeline (e.g., matching an invoice vendor name to an approved vendor list, then validating PO/amount/IBAN).
++
++### Treat identifiers as data with explicit validity
++
++When an identifier (PO number, vendor id, etc.) is **missing or invalid under the task rules**, represent it as **null** in JSON outputs rather than propagating an unrecognized string.
++
++Why: downstream evaluators and consumers typically interpret `null` as “not present / not valid”, whereas a string like `&quot;PO-INVALID&quot;` looks like a real PO value. In the representative run, a report entry used reason `&quot;Invalid PO&quot;` but kept `po_number: &quot;PO-INVALID&quot;`, and the verifier expected `po_number: null`.
++
++### Make reason-driven field setting explicit
++
++If your pipeline chooses a fraud `reason` from an ordered set of criteria, apply consistent field conventions:
++
++- If the selected reason implies the PO is not usable (e.g., **Invalid PO**), set `po_number` to `null` even if the raw invoice text contained a token.
++- If the selected reason is **Unknown Vendor**, still record the raw vendor name string for transparency, but ensure any dependent IDs that cannot be validated are `null` unless the task explicitly asks otherwise.
++
++### Minimal pattern for safe structured output
++
++```python
++# pseudo-code
++if reason == &quot;Invalid PO&quot;:
++    out_po_number = None
++elif po_number_present:
++    out_po_number = po_number
++else:
++    out_po_number = None
++
++record = {
++  &quot;po_number&quot;: out_po_number,
++  # ... other fields
++}
++```
++
++This is not task-instance specific; it is a general reconciliation best practice: **don’t echo invalid identifiers as if they were validated keys**.</pre></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;invoice-fraud-po-null-on-invalid&quot;,
+    &quot;description&quot;: &quot;For invoices flagged as \&quot;Invalid PO\&quot;, the output should set `po_number` to `null` (not the invalid string) to match evaluation expectations; the representative run output kept the invalid PO string, causing verifier failure.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;fuzzy-match/SKILL.md&quot;,
+        &quot;section&quot;: &quot;(missing) Task-specific pattern guidance for reconciliation outputs / null-handling for missing/invalid identifiers&quot;
+      },
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;(missing) JSON output conventions / null vs string guidance (even though skill is spreadsheet-focused)&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/invoice-fraud-detection/repaired_skill">完整上传修复包</a></p><p>missing。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;invoice-fraud-detection&quot;,
+  &quot;file_count&quot;: 16,
+  &quot;total_bytes&quot;: 87679,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:e9678c6387d874894cdfd4df243b4775893826b61268f0eccb69deb6536d1d91&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:e9678c6387d874894cdfd4df243b4775893826b61268f0eccb69deb6536d1d91&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/invoice-fraud-detection/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/invoice-fraud-detection/repaired_skill&quot;
+}</pre></details><p>缺少可信原包，不能把无法比较记成“没有修改”。</p></details><details><summary>SkillRevise · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_skill">完整上传修复包</a></p><p>missing。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillrevise_gpt52&quot;,
+  &quot;task_id&quot;: &quot;invoice-fraud-detection&quot;,
+  &quot;file_count&quot;: 16,
+  &quot;total_bytes&quot;: 80141,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:3f4142ed3bad9556d9f7045f7120830ac7603171fd23b0659ea32e0dc09efd42&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:3f4142ed3bad9556d9f7045f7120830ac7603171fd23b0659ea32e0dc09efd42&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/invoice-fraud-detection/repaired_skill&quot;
+}</pre></details><p>缺少可信原包，不能把无法比较记成“没有修改”。</p><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The skill is a long, generic PDF manipulation guide that operates at the wrong abstraction level for invoice fraud detection; it over-includes irrelevant PDF editing material, lacks an explicit fraud-check workflow and constraints, and pollutes context—contributing to inefficient execution and a verifier score of 0.0. The skill failed because it is a broad PDF-manipulation tutorial rather than a task-level workflow for invoice fraud detection. Its excessive, irrelevant content (PDF creation/editing, many tools, references) polluted the context and did not provide explicit steps, checkpoints, or constraints for correctly extracting invoice fields, performing fuzzy vendor matching, enforcing the specified rule precedence, and validating against XLSX/CSV sources. This mismatch in abstraction and specificity likely contributed to inefficient execution and an incorrect final output per the verifier (score 0.0).&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;pdf/SKILL.md&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P2&quot;,
+    &quot;description&quot;: &quot;The xlsx skill is mis-scoped for invoice fraud detection and includes大量 spreadsheet-modeling guidance that distracts from the needed PDF/lookup/JSON pipeline. It also bakes in irrelevant environment assumptions (LibreOffice/recalc, shell utilities), offering no task-specific validation guardrails—leading to a verifier failure despite producing a report. The skill failed because it is primarily an Excel modeling/formatting workflow and pollutes the context with spreadsheet-specific constraints (formulas, LibreOffice recalc, color conventions) that are unrelated to the invoice-fraud task. This misalignment leaves the agent without task-relevant guardrails (PDF extraction schema, fuzzy vendor matching thresholds, rule-priority enforcement, output-schema validation). Additionally, environment assumptions embedded in the skill (and lack of fallback guidance) contributed to brittleness when basic tooling like `file` was missing.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;P3&quot;,
+    &quot;description&quot;: &quot;The skill is a broad fuzzy-matching guide, not a constrained workflow for invoice fraud detection, causing wrong abstraction and over-general execution. It also assumes tooling/library availability without checks, and its verbosity lacks concrete checkpoints for verifier-facing output requirements. The skill failed because it is a generic fuzzy-matching tutorial rather than an executable, constrained workflow for invoice fraud detection. This mismatch pushed the agent to improvise the end-to-end pipeline (PDF parsing, rule precedence, output contract). Additionally, the run hit an environment gap (`file` missing) that the skill neither anticipates nor mitigates. The skill&#x27;s verbosity and lack of hard constraints/checkpoints increases the chance of missing verifier-required end conditions (e.g., what must be returned vs. merely written to disk), contributing to a verifier score of 0.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;fuzzy-match/SKILL.md&quot;
+      }
+    ]
+  }
+]</pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>

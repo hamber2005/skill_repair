@@ -1,0 +1,836 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>需求冲击模型 · Skill 修复实测分析</title><link rel="stylesheet" href="../assets/style.css"></head><body><header><a class="brand" href="../index.html">Skill 修复实测分析</a><nav class="topnav" aria-label="主导航"><a href="../index.html">总览</a><a href="../methods.html">方法与题型</a><a href="../gold.html">人工 Gold</a><a href="../protocol.html">评测口径</a><a href="../backbones.html">模型对比</a><a href="../comparisons.html">方法对照</a><a href="../cases.html">关键案例</a><a href="../tasks.html" aria-current="page">87 题</a><a href="../history.html">版本核对</a><a href="../audit.html">自查</a></nav></header><main><div class="eyebrow">2026.09.28 固定数据 · 逐题证据</div><h1>需求冲击模型</h1><p class="lead">汇集 Georgia／IMF 数据，建 8 年投资需求冲击模型并填模板。</p><div class="pilllinks"><a href="../tasks.html">返回任务列表</a><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/shock-analysis-demand/task.md">原始任务要求</a></div><p class="meta">shock-analysis-demand · 金融与经济 · 1 个 Skill</p><h2>这些 Skill 要协同完成什么</h2><p>汇集 Georgia／IMF 数据，建 8 年投资需求冲击模型并填模板。</p><div class="table-wrap"><table class=""><thead><tr><th scope="col">Skill</th><th scope="col">功能</th><th scope="col">原文与来源</th></tr></thead><tbody><tr><td>xlsx</td><td>读取和修改工作簿，保留公式与格式，并重算和核查数值。</td><td><a href="https://github.com/benchflow-ai/skillsbench/blob/b63b7b2850226b6aa4fb5929a8c1ac7bc4d9a6af/tasks/shock-analysis-demand/environment/skills/xlsx/SKILL.md">原 Skill 正文</a><br><small>上游固定版本的任务Skill；运行内是否逐字一致需查输入快照</small></td></tr></tbody></table></div><h2>原始执行与修复结果</h2><div class="note">“通过 X/Y 项检查”表示校验器报告的检查项数量，不等于任务完成百分比。一项检查可能比较整张表，或覆盖多个测试环境；一个错误也可能触发多项失败。reward=1 表示任务按该次协议通过，其他值不能自动解释为完成比例。</div><div class="table-wrap"><table class=""><thead><tr><th scope="col">方法 / 模型</th><th scope="col">任务状态</th><th scope="col">reward</th><th scope="col">分项检查</th><th scope="col">具体差距</th></tr></thead><tbody><tr><td>原始 GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>2 项通过 / 5 项检查</td><td>仅有 NA 表，WEO_Data 与 SUT Calc 均缺失；人工排除说明指出实际输入模板与题面前提不符。</td></tr><tr><td>SkillAxe · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>2 项通过 / 5 项检查</td><td>仍只有 NA 表，缺少 WEO_Data 与 SUT Calc。</td></tr><tr><td>WML · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>2 项通过 / 5 项检查</td><td>仍只有 NA 表，缺少 WEO_Data 与 SUT Calc。</td></tr><tr><td>SkillRevise · GPT-5.2</td><td><span class="status FAIL">未通过</span></td><td>0.0</td><td>2 项通过 / 5 项检查</td><td>2/5 项通过；工作簿仅有 NA 工作表，缺少 WEO_Data 和 SUT Calc，后续公式检查无法进行。</td></tr></tbody></table></div><details><summary>SkillRevise 如何选择该题的最终包</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/provenance.json">provenance JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_skill">最终上传包</a></p><div class="table-wrap"><table class=""><thead><tr><th scope="col">目标 Skill</th><th scope="col">处理结果</th><th scope="col">修改前 reward</th><th scope="col">候选 reward</th></tr></thead><tbody><tr><td>xlsx/SKILL.md</td><td>接受修改</td><td>0.0</td><td>0.0</td></tr></tbody></table></div><p>每行是目标 Skill 的选择记录，可能含多个内部修订；公开目录只保留最终所选执行，不能据行数推算总 rollout 数。</p></details><h2>每个结果的原始证据</h2><details><summary>原始 GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/shock-analysis-demand/selected_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/shock-analysis-demand/selected_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/shock-analysis-demand/selected_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/shock-analysis-demand/selected_run/agent/acp_trajectory.jsonl">执行轨迹</a></p><p>仅有 NA 表，WEO_Data 与 SUT Calc 均缺失；人工排除说明指出实际输入模板与题面前提不符。</p><details><summary>::test_required_sheets_exist</summary><pre>def test_required_sheets_exist():
+        &quot;&quot;&quot;Test that all required sheets exist in the workbook.&quot;&quot;&quot;
+        wb = load_workbook_with_formulas()
+        sheet_names = [s.lower().strip() for s in wb.sheetnames]
+    
+        for required in REQUIRED_SHEETS:
+            # Case-insensitive and whitespace-tolerant matching
+            required_lower = required.lower().strip()
+            found = any(required_lower == s for s in sheet_names)
+&gt;           assert found, f&quot;Required sheet &#x27;{required}&#x27; not found. Available: {wb.sheetnames}&quot;
+E           AssertionError: Required sheet &#x27;WEO_Data&#x27; not found. Available: [&#x27;NA&#x27;]
+E           assert False
+
+/verifier/test_outputs.py:115: AssertionError</pre></details><details><summary>::test_weo_data_has_formulas</summary><pre>def test_weo_data_has_formulas():
+        &quot;&quot;&quot;Test that WEO_Data sheet has formulas for projected years (not hardcoded).&quot;&quot;&quot;
+        wb = load_workbook_with_formulas()
+&gt;       weo = get_sheet_case_insensitive(wb, &quot;WEO_Data&quot;)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/verifier/test_outputs.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wb = &lt;openpyxl.workbook.workbook.Workbook object at 0x709d0ab91b20&gt;
+name = &#x27;WEO_Data&#x27;
+
+    def get_sheet_case_insensitive(wb, name):
+        &quot;&quot;&quot;Get sheet by name with case-insensitive matching.&quot;&quot;&quot;
+        name_lower = name.lower().strip()
+        for sheet_name in wb.sheetnames:
+            if sheet_name.lower().strip() == name_lower:
+                return wb[sheet_name]
+&gt;       raise KeyError(f&quot;Sheet &#x27;{name}&#x27; not found&quot;)
+E       KeyError: &quot;Sheet &#x27;WEO_Data&#x27; not found&quot;
+
+/verifier/test_outputs.py:124: KeyError</pre></details><details><summary>::test_sut_calc_formulas_and_import_share</summary><pre>def test_sut_calc_formulas_and_import_share():
+        &quot;&quot;&quot;Test that SUT Calc sheet has proper formulas linking to SUPPLY/USE and calculates import share correctly.&quot;&quot;&quot;
+        wb_formulas = load_workbook_with_formulas()
+        wb_values = load_workbook_with_values()
+    
+&gt;       sut_formulas = get_sheet_case_insensitive(wb_formulas, &quot;SUT Calc&quot;)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/verifier/test_outputs.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wb = &lt;openpyxl.workbook.workbook.Workbook object at 0x709d0ab73560&gt;
+name = &#x27;SUT Calc&#x27;
+
+    def get_sheet_case_insensitive(wb, name):
+        &quot;&quot;&quot;Get sheet by name with case-insensitive matching.&quot;&quot;&quot;
+        name_lower = name.lower().strip()
+        for sheet_name in wb.sheetnames:
+            if sheet_name.lower().strip() == name_lower:
+                return wb[sheet_name]
+&gt;       raise KeyError(f&quot;Sheet &#x27;{name}&#x27; not found&quot;)
+E       KeyError: &quot;Sheet &#x27;SUT Calc&#x27; not found&quot;
+
+/verifier/test_outputs.py:124: KeyError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;shock-analysis-demand-original-skill-v11x-20260908-guarddiag-infra-r003&quot;,
+  &quot;model&quot;: &quot;openrouter/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;openrouter&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 1,
+  &quot;task_digest&quot;: &quot;sha256:6d1ee94a0c9ce1bec020b115022208f889111d70cb8eb2acd4521c2368a176dd&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 60,
+  &quot;termination_reason&quot;: &quot;max_iterations&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: null,
+  &quot;archive_guard_used&quot;: false,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:d63388fec63e8aa1bed7e9484ff2413cd7e767602e7ed4a59c335509fcef1731&quot;
+}</pre></details></details><details><summary>SkillAxe · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-demand/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-demand/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-demand/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-demand/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-demand/repaired_skill">上传修复包</a></p><p>仍只有 NA 表，缺少 WEO_Data 与 SUT Calc。</p><details><summary>::test_required_sheets_exist</summary><pre>def test_required_sheets_exist():
+        &quot;&quot;&quot;Test that all required sheets exist in the workbook.&quot;&quot;&quot;
+        wb = load_workbook_with_formulas()
+        sheet_names = [s.lower().strip() for s in wb.sheetnames]
+    
+        for required in REQUIRED_SHEETS:
+            # Case-insensitive and whitespace-tolerant matching
+            required_lower = required.lower().strip()
+            found = any(required_lower == s for s in sheet_names)
+&gt;           assert found, f&quot;Required sheet &#x27;{required}&#x27; not found. Available: {wb.sheetnames}&quot;
+E           AssertionError: Required sheet &#x27;WEO_Data&#x27; not found. Available: [&#x27;NA&#x27;]
+E           assert False
+
+/verifier/test_outputs.py:115: AssertionError</pre></details><details><summary>::test_weo_data_has_formulas</summary><pre>def test_weo_data_has_formulas():
+        &quot;&quot;&quot;Test that WEO_Data sheet has formulas for projected years (not hardcoded).&quot;&quot;&quot;
+        wb = load_workbook_with_formulas()
+&gt;       weo = get_sheet_case_insensitive(wb, &quot;WEO_Data&quot;)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/verifier/test_outputs.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wb = &lt;openpyxl.workbook.workbook.Workbook object at 0xffff82750d40&gt;
+name = &#x27;WEO_Data&#x27;
+
+    def get_sheet_case_insensitive(wb, name):
+        &quot;&quot;&quot;Get sheet by name with case-insensitive matching.&quot;&quot;&quot;
+        name_lower = name.lower().strip()
+        for sheet_name in wb.sheetnames:
+            if sheet_name.lower().strip() == name_lower:
+                return wb[sheet_name]
+&gt;       raise KeyError(f&quot;Sheet &#x27;{name}&#x27; not found&quot;)
+E       KeyError: &quot;Sheet &#x27;WEO_Data&#x27; not found&quot;
+
+/verifier/test_outputs.py:124: KeyError</pre></details><details><summary>::test_sut_calc_formulas_and_import_share</summary><pre>def test_sut_calc_formulas_and_import_share():
+        &quot;&quot;&quot;Test that SUT Calc sheet has proper formulas linking to SUPPLY/USE and calculates import share correctly.&quot;&quot;&quot;
+        wb_formulas = load_workbook_with_formulas()
+        wb_values = load_workbook_with_values()
+    
+&gt;       sut_formulas = get_sheet_case_insensitive(wb_formulas, &quot;SUT Calc&quot;)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/verifier/test_outputs.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wb = &lt;openpyxl.workbook.workbook.Workbook object at 0xffff81bebe60&gt;
+name = &#x27;SUT Calc&#x27;
+
+    def get_sheet_case_insensitive(wb, name):
+        &quot;&quot;&quot;Get sheet by name with case-insensitive matching.&quot;&quot;&quot;
+        name_lower = name.lower().strip()
+        for sheet_name in wb.sheetnames:
+            if sheet_name.lower().strip() == name_lower:
+                return wb[sheet_name]
+&gt;       raise KeyError(f&quot;Sheet &#x27;{name}&#x27; not found&quot;)
+E       KeyError: &quot;Sheet &#x27;SUT Calc&#x27; not found&quot;
+
+/verifier/test_outputs.py:124: KeyError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;shock-analysis-demand-a09&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:8074b606e7d9f8dcd843bfe85994c6cf7b1da9285ee141dca756a664a4549142&quot;,
+  &quot;max_parent_iterations&quot;: 40,
+  &quot;iterations&quot;: 40,
+  &quot;termination_reason&quot;: &quot;max_iterations&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:a8dae79131420b176f4351524d4da6820eb2d55b1c32ba499844733da623b8a3&quot;
+}</pre></details></details><details><summary>WML · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/shock-analysis-demand/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/shock-analysis-demand/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/shock-analysis-demand/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/shock-analysis-demand/repaired_run/trajectory/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/shock-analysis-demand/repaired_skill">上传修复包</a></p><p>仍只有 NA 表，缺少 WEO_Data 与 SUT Calc。</p><details><summary>::test_required_sheets_exist</summary><pre>def test_required_sheets_exist():
+        &quot;&quot;&quot;Test that all required sheets exist in the workbook.&quot;&quot;&quot;
+        wb = load_workbook_with_formulas()
+        sheet_names = [s.lower().strip() for s in wb.sheetnames]
+    
+        for required in REQUIRED_SHEETS:
+            # Case-insensitive and whitespace-tolerant matching
+            required_lower = required.lower().strip()
+            found = any(required_lower == s for s in sheet_names)
+&gt;           assert found, f&quot;Required sheet &#x27;{required}&#x27; not found. Available: {wb.sheetnames}&quot;
+E           AssertionError: Required sheet &#x27;WEO_Data&#x27; not found. Available: [&#x27;NA&#x27;]
+E           assert False
+
+/verifier/test_outputs.py:115: AssertionError</pre></details><details><summary>::test_weo_data_has_formulas</summary><pre>def test_weo_data_has_formulas():
+        &quot;&quot;&quot;Test that WEO_Data sheet has formulas for projected years (not hardcoded).&quot;&quot;&quot;
+        wb = load_workbook_with_formulas()
+&gt;       weo = get_sheet_case_insensitive(wb, &quot;WEO_Data&quot;)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/verifier/test_outputs.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wb = &lt;openpyxl.workbook.workbook.Workbook object at 0xffff97bc75c0&gt;
+name = &#x27;WEO_Data&#x27;
+
+    def get_sheet_case_insensitive(wb, name):
+        &quot;&quot;&quot;Get sheet by name with case-insensitive matching.&quot;&quot;&quot;
+        name_lower = name.lower().strip()
+        for sheet_name in wb.sheetnames:
+            if sheet_name.lower().strip() == name_lower:
+                return wb[sheet_name]
+&gt;       raise KeyError(f&quot;Sheet &#x27;{name}&#x27; not found&quot;)
+E       KeyError: &quot;Sheet &#x27;WEO_Data&#x27; not found&quot;
+
+/verifier/test_outputs.py:124: KeyError</pre></details><details><summary>::test_sut_calc_formulas_and_import_share</summary><pre>def test_sut_calc_formulas_and_import_share():
+        &quot;&quot;&quot;Test that SUT Calc sheet has proper formulas linking to SUPPLY/USE and calculates import share correctly.&quot;&quot;&quot;
+        wb_formulas = load_workbook_with_formulas()
+        wb_values = load_workbook_with_values()
+    
+&gt;       sut_formulas = get_sheet_case_insensitive(wb_formulas, &quot;SUT Calc&quot;)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/verifier/test_outputs.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wb = &lt;openpyxl.workbook.workbook.Workbook object at 0xffff9741bb30&gt;
+name = &#x27;SUT Calc&#x27;
+
+    def get_sheet_case_insensitive(wb, name):
+        &quot;&quot;&quot;Get sheet by name with case-insensitive matching.&quot;&quot;&quot;
+        name_lower = name.lower().strip()
+        for sheet_name in wb.sheetnames:
+            if sheet_name.lower().strip() == name_lower:
+                return wb[sheet_name]
+&gt;       raise KeyError(f&quot;Sheet &#x27;{name}&#x27; not found&quot;)
+E       KeyError: &quot;Sheet &#x27;SUT Calc&#x27; not found&quot;
+
+/verifier/test_outputs.py:124: KeyError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;shock-analysis-demand-a08&quot;,
+  &quot;model&quot;: &quot;zenmux/openai/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;zenmux&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:8074b606e7d9f8dcd843bfe85994c6cf7b1da9285ee141dca756a664a4549142&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 60,
+  &quot;termination_reason&quot;: &quot;max_iterations&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:28e1fb8f6ee7e2e808f14aebd567b265d19fe3349a2698c803c1c9c4d0d9f445&quot;
+}</pre></details></details><details><summary>SkillRevise · GPT-5.2 · 未通过</summary><p class="refs"><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_run/benchmark_result.json">执行 JSON</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_run/verifier/ctrf.json">检查明细</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_run/verifier/test-stdout.txt">校验日志</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_run/agent/acp_trajectory.jsonl">执行轨迹</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_skill">上传修复包</a></p><p>2/5 项通过；工作簿仅有 NA 工作表，缺少 WEO_Data 和 SUT Calc，后续公式检查无法进行。</p><details><summary>::test_required_sheets_exist</summary><pre>def test_required_sheets_exist():
+        &quot;&quot;&quot;Test that all required sheets exist in the workbook.&quot;&quot;&quot;
+        wb = load_workbook_with_formulas()
+        sheet_names = [s.lower().strip() for s in wb.sheetnames]
+    
+        for required in REQUIRED_SHEETS:
+            # Case-insensitive and whitespace-tolerant matching
+            required_lower = required.lower().strip()
+            found = any(required_lower == s for s in sheet_names)
+&gt;           assert found, f&quot;Required sheet &#x27;{required}&#x27; not found. Available: {wb.sheetnames}&quot;
+E           AssertionError: Required sheet &#x27;WEO_Data&#x27; not found. Available: [&#x27;NA&#x27;]
+E           assert False
+
+/verifier/test_outputs.py:115: AssertionError</pre></details><details><summary>::test_weo_data_has_formulas</summary><pre>def test_weo_data_has_formulas():
+        &quot;&quot;&quot;Test that WEO_Data sheet has formulas for projected years (not hardcoded).&quot;&quot;&quot;
+        wb = load_workbook_with_formulas()
+&gt;       weo = get_sheet_case_insensitive(wb, &quot;WEO_Data&quot;)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/verifier/test_outputs.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wb = &lt;openpyxl.workbook.workbook.Workbook object at 0x71cff49383e0&gt;
+name = &#x27;WEO_Data&#x27;
+
+    def get_sheet_case_insensitive(wb, name):
+        &quot;&quot;&quot;Get sheet by name with case-insensitive matching.&quot;&quot;&quot;
+        name_lower = name.lower().strip()
+        for sheet_name in wb.sheetnames:
+            if sheet_name.lower().strip() == name_lower:
+                return wb[sheet_name]
+&gt;       raise KeyError(f&quot;Sheet &#x27;{name}&#x27; not found&quot;)
+E       KeyError: &quot;Sheet &#x27;WEO_Data&#x27; not found&quot;
+
+/verifier/test_outputs.py:124: KeyError</pre></details><details><summary>::test_sut_calc_formulas_and_import_share</summary><pre>def test_sut_calc_formulas_and_import_share():
+        &quot;&quot;&quot;Test that SUT Calc sheet has proper formulas linking to SUPPLY/USE and calculates import share correctly.&quot;&quot;&quot;
+        wb_formulas = load_workbook_with_formulas()
+        wb_values = load_workbook_with_values()
+    
+&gt;       sut_formulas = get_sheet_case_insensitive(wb_formulas, &quot;SUT Calc&quot;)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/verifier/test_outputs.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wb = &lt;openpyxl.workbook.workbook.Workbook object at 0x71cff41ca8d0&gt;
+name = &#x27;SUT Calc&#x27;
+
+    def get_sheet_case_insensitive(wb, name):
+        &quot;&quot;&quot;Get sheet by name with case-insensitive matching.&quot;&quot;&quot;
+        name_lower = name.lower().strip()
+        for sheet_name in wb.sheetnames:
+            if sheet_name.lower().strip() == name_lower:
+                return wb[sheet_name]
+&gt;       raise KeyError(f&quot;Sheet &#x27;{name}&#x27; not found&quot;)
+E       KeyError: &quot;Sheet &#x27;SUT Calc&#x27; not found&quot;
+
+/verifier/test_outputs.py:124: KeyError</pre></details><details><summary>运行配置与终止原因</summary><pre>{
+  &quot;rollout_id&quot;: &quot;shock-analysis-demand-bundle-1-published-original-revi-e967f571fb5e&quot;,
+  &quot;model&quot;: &quot;vllm/gpt-5.2&quot;,
+  &quot;provider_route&quot;: &quot;vllm&quot;,
+  &quot;protocol_id&quot;: &quot;skillrepair-v1&quot;,
+  &quot;protocol_version&quot;: 2,
+  &quot;task_digest&quot;: &quot;sha256:18c033e0f8446d7506ab5233d6127c0edfafc392a91c1fa51d80baad3b46fa33&quot;,
+  &quot;max_parent_iterations&quot;: 60,
+  &quot;iterations&quot;: 60,
+  &quot;termination_reason&quot;: &quot;max_iterations&quot;,
+  &quot;max_output_tokens_recorded&quot;: null,
+  &quot;completion_guard&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;scope&quot;: &quot;openhands-root-agent-text-only-finish&quot;,
+    &quot;text_only_retry_limit_per_step&quot;: 1,
+    &quot;uses_remaining_parent_iteration_budget&quot;: true
+  },
+  &quot;archive_guard_used&quot;: null,
+  &quot;execution_ok&quot;: true,
+  &quot;error&quot;: null,
+  &quot;verifier_error&quot;: null,
+  &quot;skill_bundle_sha256&quot;: &quot;sha256:57d367100ae0499ccaa21d7f3b6939f9ac1d51736527a25be8bc74ed8c12f288&quot;
+}</pre></details></details><h2>人工 Gold 范围</h2><p>该题属于原始失败但排除出人工 Gold 的 8 题之一。“排除”只表示未纳入这一 Gold 评分集合，不表示任务已解决或不值得分析。</p><div class="note warning"><strong>该题为何被排除出人工 Gold</strong><p>任务假定已有 WEO_Data、SUT Calc 等工作表及布局，但实际输入模板只有一个较小的 NA 表，oracle 使用另一套多表模板。</p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/data/skillsbench87/exclusions.json">发布者的排除说明</a></div><h2>最终 Skill 包究竟改了什么</h2><details><summary>SkillAxe · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-demand/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillaxe_gpt52&quot;,
+  &quot;task_id&quot;: &quot;shock-analysis-demand&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 20476,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:a8dae79131420b176f4351524d4da6820eb2d55b1c32ba499844733da623b8a3&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:a8dae79131420b176f4351524d4da6820eb2d55b1c32ba499844733da623b8a3&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-demand/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-demand/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>xlsx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/shock-analysis-demand/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/SkillAxe/tasks/shock-analysis-demand/repaired_skill/xlsx/SKILL.md">修改后</a></p><pre>--- original/xlsx/SKILL.md
++++ repaired/xlsx/SKILL.md
+@@ -15,6 +15,18 @@
+ - Study and EXACTLY match existing format, style, and conventions when modifying files
+ - Never impose standardized formatting on files with established patterns
+ - Existing template conventions ALWAYS override these guidelines
++
++### Workbook Structure MUST Be Preserved (Sheets)
++When the task starts from a provided workbook/template, you MUST preserve its overall worksheet structure unless the user explicitly requests structural changes.
++- **Do not delete worksheets** (even if they look empty) unless explicitly instructed.
++- If the task requires additional worksheets (e.g., importing &quot;SUPPLY&quot;/&quot;USE&quot; into a model), **create/copy them with the exact required names**.
++- **Before saving the final file, verify sheet names** (case/whitespace-insensitive) include all task-required sheets.
++
++**Preflight (before edits):**
++- Load workbook and record `wb.sheetnames`.
++
++**Postflight (before submission):**
++- Re-open the saved workbook and confirm required sheets still exist and are named correctly.
+ 
+ ## Financial models
+ 
+@@ -91,6 +103,8 @@
+ df.to_excel(&#x27;output.xlsx&#x27;, index=False)
+ ```
+ 
++**Environment note:** pandas may not be installed in some sandboxes. If `import pandas` fails, use **openpyxl-only inspection** (e.g., `wb.sheetnames`, printing cell values) rather than stopping.
++
+ ## Excel File Workflows
+ 
+ ## CRITICAL: Use Formulas, Not Hardcoded Values
+@@ -127,7 +141,7 @@
+ This applies to ALL calculations - totals, percentages, ratios, differences, etc. The spreadsheet should be able to recalculate when source data changes.
+ 
+ ## Common Workflow
+-1. **Choose tool**: pandas for data, openpyxl for formulas/formatting
++1. **Choose tool**: pandas for data (if available), openpyxl for formulas/formatting
+ 2. **Create/Load**: Create new workbook or load existing file
+ 3. **Modify**: Add/edit data, formulas, and formatting
+ 4. **Save**: Write to file
+@@ -145,6 +159,12 @@
+      - `#VALUE!`: Wrong data type in formula
+      - `#NAME?`: Unrecognized formula name
+ 
++7. **Workbook-structure postflight (MANDATORY when tasks require specific sheets)**:
++   - Re-open the saved file with `data_only=False` and confirm:
++     - required worksheets exist (names match exactly, ignoring case/whitespace)
++     - expected sheets are not accidentally dropped during editing
++   - If formulas are required in a sheet/range, spot-check a few cells are formulas (start with `=`) rather than values.
++
+ ### Creating new Excel files
+ 
+ ```python
+@@ -200,6 +220,13 @@
+ 
+ wb.save(&#x27;modified.xlsx&#x27;)
+ ```
++
++**Template safety rules (editing existing workbooks):**
++- Prefer **editing in-place** over reconstructing a workbook from scratch.
++- Avoid workflows that accidentally create a new workbook with only one sheet (common cause: saving a newly created Workbook instead of the loaded template).
++- If you must add/copy sheets (e.g., bringing in external tables), ensure:
++  - the new sheets use the **exact required names** (e.g., &quot;SUPPLY&quot;, &quot;USE&quot;)
++  - any downstream model sheets (e.g., &quot;SUT Calc&quot;) reference them via **sheet links** (e.g., `=SUPPLY!C10`) not pasted values.
+ 
+ ## Recalculating formulas
+ 
+@@ -226,12 +253,13 @@
+ Quick checks to ensure formulas work correctly:
+ 
+ ### Essential Verification
++- [ ] **Sheet structure check (before and after)**: print `wb.sheetnames` and confirm required sheets exist and are not dropped.
+ - [ ] **Test 2-3 sample references**: Verify they pull correct values before building full model
+ - [ ] **Column mapping**: Confirm Excel columns match (e.g., column 64 = BL, not BK)
+ - [ ] **Row offset**: Remember Excel rows are 1-indexed (DataFrame row 5 = Excel row 6)
+ 
+ ### Common Pitfalls
+-- [ ] **NaN handling**: Check for null values with `pd.notna()`
++- [ ] **NaN handling**: Check for null values (blank cells) before using them as denominators
+ - [ ] **Far-right columns**: FY data often in columns 50+
+ - [ ] **Multiple matches**: Search all occurrences, not just first
+ - [ ] **Division by zero**: Check denominators before using `/` in formulas (#DIV/0!)
+@@ -240,7 +268,7 @@
+ 
+ ### Formula Testing Strategy
+ - [ ] **Start small**: Test formulas on 2-3 cells before applying broadly
+-- [ ] **Verify dependencies**: Check all cells referenced in formulas exist
++- [ ] **Verify dependencies**: Check all cells referenced in formulas exist (including across sheets)
+ - [ ] **Test edge cases**: Include zero, negative, and very large values
+ 
+ ### Interpreting recalc.py Output
+@@ -262,7 +290,7 @@
+ ## Best Practices
+ 
+ ### Library Selection
+-- **pandas**: Best for data analysis, bulk operations, and simple data export
++- **pandas**: Best for data analysis, bulk operations, and simple data export (if available)
+ - **openpyxl**: Best for complex formatting, formulas, and Excel-specific features
+ 
+ ### Working with openpyxl</pre></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;missing_required_sheets_only_NA_present&quot;,
+    &quot;description&quot;: &quot;The produced workbook lacks required sheets (WEO_Data, SUT Calc, SUPPLY, USE, etc.), causing verifier failures for required sheet existence and downstream formula checks.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Excel File Workflows / Editing existing Excel files&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;no_explicit_instruction_to_preserve_and_validate_sheet_structure&quot;,
+    &quot;description&quot;: &quot;Skill guidance focuses on formulas/formatting but does not explicitly require preserving or creating mandated worksheet structure when editing a template, nor verifying required sheets exist before saving. This omission failed to prevent the agent from outputting an incomplete workbook containing only NA.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Requirements for Outputs / Preserve Existing Templates (when updating templates)&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;overreliance_on_python_tools_conflicts_with_excel_only_and_template_tasks&quot;,
+    &quot;description&quot;: &quot;Skill suggests heavy use of pandas/openpyxl for reading/writing Excel. In this run, pandas import failed (`ModuleNotFoundError: No module named &#x27;pandas&#x27;`), contributing to wasted iterations and inability to inspect/modify properly, and the final workbook ended up incomplete. The skill does not warn that pandas may be unavailable and does not provide a no-pandas inspection path.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Reading and analyzing data / Data analysis with pandas&quot;
+      }
+    ]
+  },
+  {
+    &quot;prediction_id&quot;: &quot;missing_mandatory_preflight_postflight_checks_aligned_to_verifier&quot;,
+    &quot;description&quot;: &quot;Skill mandates recalc.py and zero formula errors, but the verifier also checks for presence of specific sheets and for formulas existing in certain ranges. The skill does not instruct doing a structural preflight (sheetnames) and a targeted postflight (confirm formulas exist in expected areas) before final delivery.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;,
+        &quot;section&quot;: &quot;Formula Verification Checklist&quot;
+      }
+    ]
+  }
+]</pre></details></details><details><summary>WML · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/shock-analysis-demand/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。该记录未提供可用于逐文件比对的完整输入快照；这里依靠包哈希核对身份。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;wml_gpt52&quot;,
+  &quot;task_id&quot;: &quot;shock-analysis-demand&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 19429,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:28e1fb8f6ee7e2e808f14aebd567b265d19fe3349a2698c803c1c9c4d0d9f445&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:28e1fb8f6ee7e2e808f14aebd567b265d19fe3349a2698c803c1c9c4d0d9f445&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/shock-analysis-demand/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/shock-analysis-demand/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>xlsx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/shock-analysis-demand/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/WML/tasks/shock-analysis-demand/repaired_skill/xlsx/SKILL.md">修改后</a></p><pre>--- original/xlsx/SKILL.md
++++ repaired/xlsx/SKILL.md
+@@ -15,6 +15,17 @@
+ - Study and EXACTLY match existing format, style, and conventions when modifying files
+ - Never impose standardized formatting on files with established patterns
+ - Existing template conventions ALWAYS override these guidelines
++
++#### REQUIRED: Bind to the template’s worksheet structure before editing
++When a workflow depends on specific worksheet tabs (multi-sheet models, graders, downstream links), **treat sheet names + presence as a hard invariant**.
++
++- **First step after opening/creating a workbook**: list `wb.sheetnames` and compare to the required set from the user/template.
++- **Preserve existing sheets** (do not rename, delete, or replace them unless explicitly instructed).
++- **If a required sheet is missing**, create it immediately **with the exact name** (including spaces/underscores/case as given). This can be a placeholder at first, but it must exist so cross-sheet formulas and references have stable targets.
++- **If you must start from scratch (no template provided)**: create the required sheet set up-front (empty tabs are acceptable initially), then populate/link data.
++
++Concrete verification/fallback step:
++- After creating/preserving the sheet set, **save once**, re-open the workbook, and re-check `wb.sheetnames` to confirm the required tabs exist **before** doing any time-consuming data collection or calculations.
+ 
+ ## Financial models
+ </pre></details></details><details><summary>SkillRevise · GPT-5.2 · 修复包与诊断</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_skill">完整上传修复包</a></p><p>以共享原始轨迹重建的包为对照，完整包哈希已与原始执行记录核对一致。</p><p>上传完整包的哈希与执行记录一致。已进一步核对运行输入快照，文件逐字节相同。</p><details><summary>包哈希核对</summary><pre>{
+  &quot;method&quot;: &quot;skillrevise_gpt52&quot;,
+  &quot;task_id&quot;: &quot;shock-analysis-demand&quot;,
+  &quot;file_count&quot;: 3,
+  &quot;total_bytes&quot;: 11570,
+  &quot;uploaded_bundle_sha256&quot;: &quot;sha256:57d367100ae0499ccaa21d7f3b6939f9ac1d51736527a25be8bc74ed8c12f288&quot;,
+  &quot;recorded_bundle_sha256&quot;: &quot;sha256:57d367100ae0499ccaa21d7f3b6939f9ac1d51736527a25be8bc74ed8c12f288&quot;,
+  &quot;matches_recorded_hash&quot;: true,
+  &quot;execution_ok&quot;: true,
+  &quot;source_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_run/benchmark_result.json&quot;,
+  &quot;bundle_url&quot;: &quot;https://github.com/linyouxue/skill-repair-benchmark/tree/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_skill&quot;
+}</pre></details><p>字节变化文件 1 个；排除仅空白变化后 1 个。</p><details><summary>xlsx/SKILL.md · modified</summary><p><a href="https://github.com/linyouxue/skill-repair-benchmark/blob/edaadf515127f5983855eccf344e8ae6e444a073/evaluation/results/GPT52-AllTasks-RepresentativeRuns-20260916/tasks/shock-analysis-demand/selected_run/agent/acp_trajectory.jsonl">修改前</a> · <a href="https://github.com/linyouxue/skill-repair-benchmark/blob/8c8a7556f9c3f2c9b980af21b5fd2015d613950a/evaluation/results/Skillrevise/tasks/shock-analysis-demand/repaired_skill/xlsx/SKILL.md">修改后</a></p><pre>--- original/xlsx/SKILL.md
++++ repaired/xlsx/SKILL.md
+@@ -1,289 +1,36 @@
+----
+-name: xlsx
+-description: &quot;Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas&quot;
+-license: Proprietary. LICENSE.txt has complete terms
+----
++# Excel-Only Spreadsheet Build and Repair (No-Python Mode)
+ 
+-# Requirements for Outputs
++## Purpose
++Create, modify, and validate spreadsheets using an Excel-only workflow (no programmatic editing), with a focus on linking data, building scenario calculations, and delivering a workbook that recalculates cleanly with zero formula error values.
+ 
+-## All Excel files
++## When to Use
++Use this skill when the task requires working in Excel (or an Excel-compatible UI) and either (a) the user explicitly forbids Python/programmatic edits, or (b) the environment does not support reliable spreadsheet scripting. Do not use this skill for pure data science pipelines where programmatic generation is allowed and preferred.
+ 
+-### Zero Formula Errors
+-- Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)
++## Procedure
++- Step 1: Intake and constraint gate (before touching files)
++- Confirm: (a) &quot;Excel-only&quot; requirement (no Python/macros/scripts), (b) whether hardcoding calculated results is forbidden, (c) required sheets/cells/outputs and how many scenarios/variants are needed.
++- If the task requires programmatic edits or you cannot access an Excel UI/editor, stop and request an alternate allowed method or a user-provided edited workbook.
++- Step 2: Discover the workbook and map dependencies (in Excel)
++- Open the workbook and inventory: sheet list, named ranges (if any), existing formulas vs inputs, and any template conventions already present.
++- Identify the exact target areas: required sheets, specific cell ranges to populate, link, or scenario-toggle.
++- Checkpoint evidence: you can point to the target sheets/ranges and understand which cells are inputs vs formulas/links (no edits yet).
++- Step 3: Acquire required external inputs with bounded effort
++- Prefer deterministic, official sources already specified by the task. If a download link or file is required but not provided:
++- Attempt at most N=5 retrieval actions total (for example: open 1-2 official pages, try 1-2 obvious download buttons/links, search within the page for .xlsx/.csv).
++- If still ambiguous, stop acquisition and request a user-provided direct file or URL, or permission to use a specific alternate source.
++- Checkpoint evidence: the required input file(s) are present and openable in Excel, or you have an explicit user-approved fallback.
++- Step 4: Edit and link (Excel-native; no calculated hardcodes)
++- Make changes in this order to reduce breakage:
++- Populate raw data tables (paste values only where the task expects source data, not where formulas should be).
++- Create links/references from calculation sheets to data sheets (use cell references, structured references, or named ranges as appropriate).
++- Implement scenario inputs as dedicated input cells and have scenario outputs reference those inputs.
++- Decision point: If a value is derived, do not paste a computed number; instead, create an Excel formula or link that computes it from inputs.
++- After each major block (data, then links, then scenarios), do a quick spot-check: open precedent/dependent tracing on a few key cells to confirm links point where intended.
++- Step 5: Verify and finalize (mandatory)
++- Force full recalculation in Excel (application recalculation / calculate workbook).
++- Execution anchor: run workbook-wide Find for each error token (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?) and confirm no matches; if matches exist, navigate to each and fix root cause (bad references, missing inputs, divide-by-zero guards), then recalc and re-check.
++- Save deliverable and re-open once to confirm formulas persist and results remain stable.
+ 
+-### Preserve Existing Templates (when updating templates)
+-- Study and EXACTLY match existing format, style, and conventions when modifying files
+-- Never impose standardized formatting on files with established patterns
+-- Existing template conventions ALWAYS override these guidelines
+-
+-## Financial models
+-
+-### Color Coding Standards
+-Unless otherwise stated by the user or existing template
+-
+-#### Industry-Standard Color Conventions
+-- **Blue text (RGB: 0,0,255)**: Hardcoded inputs, and numbers users will change for scenarios
+-- **Black text (RGB: 0,0,0)**: ALL formulas and calculations
+-- **Green text (RGB: 0,128,0)**: Links pulling from other worksheets within same workbook
+-- **Red text (RGB: 255,0,0)**: External links to other files
+-- **Yellow background (RGB: 255,255,0)**: Key assumptions needing attention or cells that need to be updated
+-
+-### Number Formatting Standards
+-
+-#### Required Format Rules
+-- **Years**: Format as text strings (e.g., &quot;2024&quot; not &quot;2,024&quot;)
+-- **Currency**: Use $#,##0 format; ALWAYS specify units in headers (&quot;Revenue ($mm)&quot;)
+-- **Zeros**: Use number formatting to make all zeros &quot;-&quot;, including percentages (e.g., &quot;$#,##0;($#,##0);-&quot;)
+-- **Percentages**: Default to 0.0% format (one decimal)
+-- **Multiples**: Format as 0.0x for valuation multiples (EV/EBITDA, P/E)
+-- **Negative numbers**: Use parentheses (123) not minus -123
+-
+-### Formula Construction Rules
+-
+-#### Assumptions Placement
+-- Place ALL assumptions (growth rates, margins, multiples, etc.) in separate assumption cells
+-- Use cell references instead of hardcoded values in formulas
+-- Example: Use =B5*(1+$B$6) instead of =B5*1.05
+-
+-#### Formula Error Prevention
+-- Verify all cell references are correct
+-- Check for off-by-one errors in ranges
+-- Ensure consistent formulas across all projection periods
+-- Test with edge cases (zero values, negative numbers)
+-- Verify no unintended circular references
+-
+-#### Documentation Requirements for Hardcodes
+-- Comment or in cells beside (if end of table). Format: &quot;Source: [System/Document], [Date], [Specific Reference], [URL if applicable]&quot;
+-- Examples:
+-  - &quot;Source: Company 10-K, FY2024, Page 45, Revenue Note, [SEC EDGAR URL]&quot;
+-  - &quot;Source: Company 10-Q, Q2 2025, Exhibit 99.1, [SEC EDGAR URL]&quot;
+-  - &quot;Source: Bloomberg Terminal, 8/15/2025, AAPL US Equity&quot;
+-  - &quot;Source: FactSet, 8/20/2025, Consensus Estimates Screen&quot;
+-
+-# XLSX creation, editing, and analysis
+-
+-## Overview
+-
+-A user may ask you to create, edit, or analyze the contents of an .xlsx file. You have different tools and workflows available for different tasks.
+-
+-## Important Requirements
+-
+-**LibreOffice Required for Formula Recalculation**: You can assume LibreOffice is installed for recalculating formula values using the `recalc.py` script. The script automatically configures LibreOffice on first run
+-
+-## Reading and analyzing data
+-
+-### Data analysis with pandas
+-For data analysis, visualization, and basic operations, use **pandas** which provides powerful data manipulation capabilities:
+-
+-```python
+-import pandas as pd
+-
+-# Read Excel
+-df = pd.read_excel(&#x27;file.xlsx&#x27;)  # Default: first sheet
+-all_sheets = pd.read_excel(&#x27;file.xlsx&#x27;, sheet_name=None)  # All sheets as dict
+-
+-# Analyze
+-df.head()      # Preview data
+-df.info()      # Column info
+-df.describe()  # Statistics
+-
+-# Write Excel
+-df.to_excel(&#x27;output.xlsx&#x27;, index=False)
+-```
+-
+-## Excel File Workflows
+-
+-## CRITICAL: Use Formulas, Not Hardcoded Values
+-
+-**Always use Excel formulas instead of calculating values in Python and hardcoding them.** This ensures the spreadsheet remains dynamic and updateable.
+-
+-### ❌ WRONG - Hardcoding Calculated Values
+-```python
+-# Bad: Calculating in Python and hardcoding result
+-total = df[&#x27;Sales&#x27;].sum()
+-sheet[&#x27;B10&#x27;] = total  # Hardcodes 5000
+-
+-# Bad: Computing growth rate in Python
+-growth = (df.iloc[-1][&#x27;Revenue&#x27;] - df.iloc[0][&#x27;Revenue&#x27;]) / df.iloc[0][&#x27;Revenue&#x27;]
+-sheet[&#x27;C5&#x27;] = growth  # Hardcodes 0.15
+-
+-# Bad: Python calculation for average
+-avg = sum(values) / len(values)
+-sheet[&#x27;D20&#x27;] = avg  # Hardcodes 42.5
+-```
+-
+-### ✅ CORRECT - Using Excel Formulas
+-```python
+-# Good: Let Excel calculate the sum
+-sheet[&#x27;B10&#x27;] = &#x27;=SUM(B2:B9)&#x27;
+-
+-# Good: Growth rate as Excel formula
+-sheet[&#x27;C5&#x27;] = &#x27;=(C4-C2)/C2&#x27;
+-
+-# Good: Average using Excel function
+-sheet[&#x27;D20&#x27;] = &#x27;=AVERAGE(D2:D19)&#x27;
+-```
+-
+-This applies to ALL calculations - totals, percentages, ratios, differences, etc. The spreadsheet should be able to recalculate when source data changes.
+-
+-## Common Workflow
+-1. **Choose tool**: pandas for data, openpyxl for formulas/formatting
+-2. **Create/Load**: Create new workbook or load existing file
+-3. **Modify**: Add/edit data, formulas, and formatting
+-4. **Save**: Write to file
+-5. **Recalculate formulas (MANDATORY IF USING FORMULAS)**: Use the recalc.py script
+-   ```bash
+-   python recalc.py output.xlsx
+-   ```
+-6. **Verify and fix any errors**:
+-   - The script returns JSON with error details
+-   - If `status` is `errors_found`, check `error_summary` for specific error types and locations
+-   - Fix the identified errors and recalculate again
+-   - Common errors to fix:
+-     - `#REF!`: Invalid cell references
+-     - `#DIV/0!`: Division by zero
+-     - `#VALUE!`: Wrong data type in formula
+-     - `#NAME?`: Unrecognized formula name
+-
+-### Creating new Excel files
+-
+-```python
+-# Using openpyxl for formulas and formatting
+-from openpyxl import Workbook
+-from openpyxl.styles import Font, PatternFill, Alignment
+-
+-wb = Workbook()
+-sheet = wb.active
+-
+-# Add data
+-sheet[&#x27;A1&#x27;] = &#x27;Hello&#x27;
+-sheet[&#x27;B1&#x27;] = &#x27;World&#x27;
+-sheet.append([&#x27;Row&#x27;, &#x27;of&#x27;, &#x27;data&#x27;])
+-
+-# Add formula
+-sheet[&#x27;B2&#x27;] = &#x27;=SUM(A1:A10)&#x27;
+-
+-# Formatting
+-sheet[&#x27;A1&#x27;].font = Font(bold=True, color=&#x27;FF0000&#x27;)
+-sheet[&#x27;A1&#x27;].fill = PatternFill(&#x27;solid&#x27;, start_color=&#x27;FFFF00&#x27;)
+-sheet[&#x27;A1&#x27;].alignment = Alignment(horizontal=&#x27;center&#x27;)
+-
+-# Column width
+-sheet.column_dimensions[&#x27;A&#x27;].width = 20
+-
+-wb.save(&#x27;output.xlsx&#x27;)
+-```
+-
+-### Editing existing Excel files
+-
+-```python
+-# Using openpyxl to preserve formulas and formatting
+-from openpyxl import load_workbook
+-
+-# Load existing file
+-wb = load_workbook(&#x27;existing.xlsx&#x27;)
+-sheet = wb.active  # or wb[&#x27;SheetName&#x27;] for specific sheet
+-
+-# Working with multiple sheets
+-for sheet_name in wb.sheetnames:
+-    sheet = wb[sheet_name]
+-    print(f&quot;Sheet: {sheet_name}&quot;)
+-
+-# Modify cells
+-sheet[&#x27;A1&#x27;] = &#x27;New Value&#x27;
+-sheet.insert_rows(2)  # Insert row at position 2
+-sheet.delete_cols(3)  # Delete column 3
+-
+-# Add new sheet
+-new_sheet = wb.create_sheet(&#x27;NewSheet&#x27;)
+-new_sheet[&#x27;A1&#x27;] = &#x27;Data&#x27;
+-
+-wb.save(&#x27;modified.xlsx&#x27;)
+-```
+-
+-## Recalculating formulas
+-
+-Excel files created or modified by openpyxl contain formulas as strings but not calculated values. Use the provided `recalc.py` script to recalculate formulas:
+-
+-```bash
+-python recalc.py &lt;excel_file&gt; [timeout_seconds]
+-```
+-
+-Example:
+-```bash
+-python recalc.py output.xlsx 30
+-```
+-
+-The script:
+-- Automatically sets up LibreOffice macro on first run
+-- Recalculates all formulas in all sheets
+-- Scans ALL cells for Excel errors (#REF!, #DIV/0!, etc.)
+-- Returns JSON with detailed error locations and counts
+-- Works on both Linux and macOS
+-
+-## Formula Verification Checklist
+-
+-Quick checks to ensure formulas work correctly:
+-
+-### Essential Verification
+-- [ ] **Test 2-3 sample references**: Verify they pull correct values before building full model
+-- [ ] **Column mapping**: Confirm Excel columns match (e.g., column 64 = BL, not BK)
+-- [ ] **Row offset**: Remember Excel rows are 1-indexed (DataFrame row 5 = Excel row 6)
+-
+-### Common Pitfalls
+-- [ ] **NaN handling**: Check for null values with `pd.notna()`
+-- [ ] **Far-right columns**: FY data often in columns 50+
+-- [ ] **Multiple matches**: Search all occurrences, not just first
+-- [ ] **Division by zero**: Check denominators before using `/` in formulas (#DIV/0!)
+-- [ ] **Wrong references**: Verify all cell references point to intended cells (#REF!)
+-- [ ] **Cross-sheet references**: Use correct format (Sheet1!A1) for linking sheets
+-
+-### Formula Testing Strategy
+-- [ ] **Start small**: Test formulas on 2-3 cells before applying broadly
+-- [ ] **Verify dependencies**: Check all cells referenced in formulas exist
+-- [ ] **Test edge cases**: Include zero, negative, and very large values
+-
+-### Interpreting recalc.py Output
+-The script returns JSON with error details:
+-```json
+-{
+-  &quot;status&quot;: &quot;success&quot;,           // or &quot;errors_found&quot;
+-  &quot;total_errors&quot;: 0,              // Total error count
+-  &quot;total_formulas&quot;: 42,           // Number of formulas in file
+-  &quot;error_summary&quot;: {              // Only present if errors found
+-    &quot;#REF!&quot;: {
+-      &quot;count&quot;: 2,
+-      &quot;locations&quot;: [&quot;Sheet1!B5&quot;, &quot;Sheet1!C10&quot;]
+-    }
+-  }
+-}
+-```
+-
+-## Best Practices
+-
+-### Library Selection
+-- **pandas**: Best for data analysis, bulk operations, and simple data export
+-- **openpyxl**: Best for complex formatting, formulas, and Excel-specific features
+-
+-### Working with openpyxl
+-- Cell indices are 1-based (row=1, column=1 refers to cell A1)
+-- Use `data_only=True` to read calculated values: `load_workbook(&#x27;file.xlsx&#x27;, data_only=True)`
+-- **Warning**: If opened with `data_only=True` and saved, formulas are replaced with values and permanently lost
+-- For large files: Use `read_only=True` for reading or `write_only=True` for writing
+-- Formulas are preserved but not evaluated - use recalc.py to update values
+-
+-### Working with pandas
+-- Specify data types to avoid inference issues: `pd.read_excel(&#x27;file.xlsx&#x27;, dtype={&#x27;id&#x27;: str})`
+-- For large files, read specific columns: `pd.read_excel(&#x27;file.xlsx&#x27;, usecols=[&#x27;A&#x27;, &#x27;C&#x27;, &#x27;E&#x27;])`
+-- Handle dates properly: `pd.read_excel(&#x27;file.xlsx&#x27;, parse_dates=[&#x27;date_column&#x27;])`
+-
+-## Code Style Guidelines
+-**IMPORTANT**: When generating Python code for Excel operations:
+-- Write minimal, concise Python code without unnecessary comments
+-- Avoid verbose variable names and redundant operations
+-- Avoid unnecessary print statements
+-
+-**For Excel files themselves**:
+-- Add comments to cells with complex formulas or important assumptions
+-- Document data sources for hardcoded values
+-- Include notes for key calculations and model sections
++## Constraints / Pitfalls
++- Do not run Python, openpyxl, pandas, LibreOffice recalc scripts, or any programmatic spreadsheet edit when the task/user says &quot;Excel only&quot; (treat this as a hard stop constraint).
++- Do not hardcode derived/calculated outputs: if a cell is meant to be computed, implement an Excel formula or a link to source inputs. If the requirement is ambiguous (input vs computed), pause and ask before editing.</pre></details><details><summary>提交的 diagnosis 原文</summary><pre>[
+  {
+    &quot;prediction_id&quot;: &quot;P1&quot;,
+    &quot;description&quot;: &quot;The skill is built around Python-based spreadsheet automation and extensive generic modeling guidelines, but the task required Excel-only work and specific external-data ingestion. The agent consequently used disallowed Python, got stuck in unbounded Geostat endpoint discovery, hit max_iterations, and never completed the workbook population/linking/scenario build. The skill failed primarily because it is incompatible with the task’s required execution mode: it prescribes Python-based Excel editing (openpyxl/pandas + recalc.py), while the task requires using only Excel (no Python). When applied, the agent violated the constraint and then spent most iterations trying to reverse-engineer Geostat download endpoints via repeated Python network probes, exhausting the iteration budget (max_iterations) before populating/linking the workbook or building scenarios. The skill’s overly broad, verbose guidelines further diluted focus and offered no concrete, bounded decision path for acquiring the specific SUT (38-38) sheets and finishing the Excel model.&quot;,
+    &quot;locations&quot;: [
+      {
+        &quot;file&quot;: &quot;xlsx/SKILL.md&quot;
+      }
+    ]
+  }
+]</pre></details></details></main><footer class="foot">只分析已上传材料，未运行模型或重做 benchmark。结论按固定版本的 JSON、日志和文件核对；主分支、开放 PR 与分支汇总分开记录。<a href="../protocol.html">指标与可比性说明</a> · <a href="../history.html">版本与来源核对</a></footer><script src="../assets/filter.js"></script></body></html>
